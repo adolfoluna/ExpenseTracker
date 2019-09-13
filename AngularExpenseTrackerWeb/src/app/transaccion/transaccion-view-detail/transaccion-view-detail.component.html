@@ -1,0 +1,96 @@
+	<!-- The Modal -->
+	<div class="modal fade" id="transactionViewWindow">
+	
+		<div class="modal-dialog modal-xl" [style.margin-left]="marginLeft">
+		
+			<div class="modal-content" [style.min-width.px]="minWidth">
+      
+				<!-- Modal Header -->
+				<div class="modal-header">
+					<h4 class="modal-title">Transacci&oacute;n {{transaction_view_row.idtransaccion}}</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+        		</div>
+        
+        		<!-- Modal body -->
+        		<div class="modal-body">
+        		
+        			<table width="100%">
+        				
+        				<tbody>
+        				
+        					<tr>
+        						<td>Fecha:</td>
+        						<td class="text-primary">{{transaction_view_row.fechaString | truncate:10}}</td>
+        						<td>Cuenta:</td>
+        						<td class="text-primary">{{transaction_view_row.nombrecuenta}}</td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4"><hr/></td>
+        					</tr>
+        					
+        					<tr>
+        						<td>Proveedor:</td>
+        						<td class="text-primary">{{transaction_view_row.nombreproveedor}}</td>
+        						<td>Articulos:</td>
+        						<td class="text-primary">{{transaction_view_row.articulos}}</td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4"><hr/></td>
+        					</tr>
+        					
+        					<tr>
+        						<td>Total:</td>
+        						<td class="text-primary"><b>{{transaction_view_row.total/100 |  number:'1.2-2'}}</b></td>
+        						<td>Req. com.:</td>
+        						<td class="text-primary">{{transaction_view_row.complementoRequeridoNombre}}</td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4"><hr/></td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4">Nota:&nbsp;<pre class="text-primary">{{transaction_view_row.nota}}</pre></td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4"><hr/></td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4">
+        							<button class="btn btn-info" [class.disabled]="transaction_view_row.ticket==null"  (click)="clickViewDoc('ticket')"><i class="fa fa-file"></i>&nbsp;Ticket</button>&nbsp;&nbsp;
+        							<button class="btn btn-info" [class.disabled]="transaction_view_row.factura==null"  (click)="clickViewDoc('factura')"><i class="fa fa-file"></i>&nbsp;Factura</button>&nbsp;&nbsp;
+        							<button class="btn btn-info" [class.disabled]="transaction_view_row.complemento==null" (click)="clickViewDoc('complemento')"><i class="fa fa-file"></i>&nbsp;Complemento</button>&nbsp;&nbsp;
+        							<button class="btn btn-info" [class.disabled]="transaction_view_row.voucher==null"  (click)="clickViewDoc('voucher')"><i class="fa fa-file"></i>&nbsp;Voucher</button>
+        						</td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4"><hr/></td>
+        					</tr>
+        					
+        					<tr>
+        						<td colspan="4">
+        							<app-transaccion-list-articulos></app-transaccion-list-articulos>
+        						</td>
+        					</tr>
+        					
+        				</tbody>
+        				
+        			</table>
+          				
+				</div>
+        
+        		<!-- Modal footer -->
+        		<div class="modal-footer">
+          			<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        		</div>
+        		
+      		</div>
+      		
+    	</div>
+  	
+  	</div>

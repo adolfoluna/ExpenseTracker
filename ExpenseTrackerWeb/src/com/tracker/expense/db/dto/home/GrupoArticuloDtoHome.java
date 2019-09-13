@@ -1,0 +1,103 @@
+package com.tracker.expense.db.dto.home;
+
+import java.util.HashMap;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import com.tracker.expense.db.dto.GrupoArticuloDto;
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.model.CategoriaHome;
+import com.tracker.expense.db.model.GrupoArticulo;
+import com.tracker.expense.db.model.GrupoArticuloHome;
+import com.tracker.expense.db.model.GrupoArticuloId;
+
+@Stateless
+public class GrupoArticuloDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+
+	@PersistenceContext private EntityManager entityManager;
+	@EJB private CategoriaHome categoriaHome;
+	@EJB private GrupoArticuloHome grupoArticuloHome;
+
+	//asigna todos los valores del dto al objeto entidad y regresa el objeto entidad
+	public Object fromDtoToInstance(Object dto) {
+		
+		//validar que el argumento sea de tipo CategoriaDto
+		if( !(dto instanceof GrupoArticuloDto) )
+			return null;
+		
+		GrupoArticuloDto cdto = (GrupoArticuloDto) dto;
+		
+		GrupoArticulo instance = new GrupoArticulo();
+		
+		GrupoArticuloId id = new GrupoArticuloId(cdto.getIdgrupo(), cdto.getIdarticulo());
+		instance.setId(id);
+		instance.setVersion(cdto.getVersion());
+		
+		return instance;
+	}
+	
+	//encontrar la instancia con el id del registro
+	public Object getInstance(SearchDto search) {
+		GrupoArticuloId id = new GrupoArticuloId(
+				Integer.valueOf(search.getSearhFieldsMap().get("idgrupo")),
+				Integer.valueOf(search.getSearhFieldsMap().get("idarticulo"))
+				);
+		return grupoArticuloHome.findById(id);
+	}
+
+	//hacer query, agregando busquedas y ordenamientos
+	public String getDtoQuery(SearchDto search) {
+		
+		String temp = "";
+		
+		//agregar todos los campo por los que se va a ordenar los resultados
+		if( search.getOrderFields() != null && search.getOrderFields().length > 0 ) {
+			
+			for(String x : search.getOrderFields() ) {
+				
+				if( x.equals("idgrupo") ) x = "id.idgrupo";
+				if( x.equals("idarticulo") ) x = "id.idarticulo";
+				if( x.equals("nombrearticulo") ) x = "articulo.nombre";
+				if( x.equals("nombregrupo") ) x = "grupo.nombre";
+				if(temp.length() > 0 )
+					temp+=",";
+				
+				temp+="res."+x;
+			}
+		}
+		
+		if( temp.length() > 0 )
+			temp=" order by "+temp;
+		
+		//GrupoArticuloDto(int idgrupo, String nombregrupo, int idarticulo, String nombrearticulo, int version) {
+		return "select new com.tracker.expense.db.dto.GrupoArticuloDto(res.id.idgrupo,res.grupo.nombre,res.id.idarticulo,res.articulo.nombre,res.version) from GrupoArticulo res"+addFilters(search)+temp;
+	}
+	
+	//hacer el query que cuenta el numero de resultados
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from GrupoArticulo"+addFilters(search);
+	}
+	
+	private String addFilters(SearchDto search) {
+		
+		HashMap<String, String> aux = search.getSearhFieldsMap();
+		String temp = "";
+		
+		if( aux != null && aux.containsKey("idgrupo") ) 
+			temp+=" and res.id.idgrupo="+Integer.valueOf(aux.get("idgrupo"));
+		
+		if( aux != null && aux.containsKey("idarticulo") && temp.length() > 0 )
+			temp+=" and res.id.idarticulo="+Integer.valueOf(aux.get("idarticulo"));
+		
+		//quitar el primer and y reemplazarlo por where
+		if( temp.startsWith(" and") ) 
+			temp=" where "+temp.substring(4);
+		
+		return temp;
+	}
+	
+
+}

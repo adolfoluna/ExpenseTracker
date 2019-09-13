@@ -1,0 +1,58 @@
+
+
+	<div class="card">
+		
+		<div class="card-header bg-info">Registro de cuenta</div>
+		
+		<div class="card-body" [formGroup]="datosForma">
+				
+				<div class="form-group">
+					<label for="idcuenta">Id:</label>
+					<input type="text" class="form-control" id="idcuenta" formControlName="idcuenta" readonly>
+				</div>
+				
+				<div class="form-group">
+					<label for="nombre">Nombre:</label>
+					<input type="text" class="form-control" id="nombre" formControlName="nombre">
+				</div>
+				
+				<div class="form-group">
+					<label for="saldo">Saldo: (poner en centavos)</label>
+					<input type="text" class="form-control" id="saldo" formControlName="saldo">
+				</div>
+				
+				<div class="form-group">
+					<label for="idmoneda">Moneda:</label>
+      				<select  class="form-control" formControlName="monedaSeleccionada">
+						<option *ngFor="let mon of monedas" [ngValue]="mon">{{ mon.nombre }}</option>
+      				</select>
+				</div>
+			
+				<div class="form-group">
+					<label for="tipo">Tipo:</label>
+					<input type="text" class="form-control" id="tipo" formControlName="tipo">
+				</div>
+				
+				<div class="form-group">
+					<label for="version">Version:</label>
+					<input type="text" class="form-control" id="version" formControlName="version" readonly>
+				</div>
+				
+				<div class="row">
+  					<div class="col-sm-8">
+  						<button class="btn btn-info"  (click)="backClick()">Regresar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+						<button *ngIf="mostrarBotonEliminar" class="btn btn-danger"  (click)="remove()">Eliminar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+  						<div class="float-right">
+  							<button class="btn btn-success"  (click)="save()">Guardar</button>
+						</div>
+					</div>
+				</div>
+		</div>
+		
+	</div>
+
+

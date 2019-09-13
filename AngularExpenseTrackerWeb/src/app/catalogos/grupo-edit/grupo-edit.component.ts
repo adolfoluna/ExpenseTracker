@@ -1,0 +1,58 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { ParentEditComponent } from "../parent-edit.component";
+import { PersistenceService } from '../../services/persistence.service';
+import { PaginacionService } from '../../services/paginacion.service';
+import { EditItemService } from '../../services/edit.item.service';
+import { ListaService } from '../../services/lista.service';
+
+import { SearchObject } from '../../model/searchobject';
+
+
+@Component({
+  selector: 'app-grupo-edit',
+  templateUrl: './grupo-edit.component.html',
+  styleUrls: ['./grupo-edit.component.css']
+})
+export class GrupoEditComponent extends ParentEditComponent implements OnInit {
+    
+    datosForma = this.fb.group({
+        idgrupo : [0],
+        nombre : [""],
+        version: [0],
+    });
+
+    constructor(private persistenceService:PersistenceService,
+                private fb: FormBuilder,
+                private edititemService:EditItemService,
+                private paginacionService:PaginacionService,
+                private route: ActivatedRoute,) {
+        
+        super(paginacionService,persistenceService,route);
+    }
+    
+    ngOnInit() {
+        
+        this.updateValues("grupo",["idgrupo"], this.datosForma, this.formToInstance,this.instanceToForm);
+
+        //se ejecuta cada ves que se presiona el boton de editar registro
+        this.edititemService.editItemEvent().subscribe( message => {this.getInstanceFromServer("grupo",message); });
+    }
+    
+    instanceToForm(obj:any) {
+        
+        if( obj == null ) {
+            obj = { idgrupo:0,nombre:"",version:0};
+            this.datosForma.patchValue(obj);
+            return;
+        }
+        
+    }
+    
+    formToInstance() {
+        return true;
+    }
+
+}

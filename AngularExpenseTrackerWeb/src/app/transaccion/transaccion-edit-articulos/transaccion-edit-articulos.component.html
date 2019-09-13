@@ -1,0 +1,71 @@
+	<div class="container">
+  			
+  		<div class="form-inline">
+  			
+  			<div  class="form-inline">
+				<label>Articulo:</label>
+				<ng-multiselect-dropdown [placeholder]="'seleccione un articulo'" [data]="listaArticulos" [settings]="dropdownSettingsArticulos" [(ngModel)]="articuloSeleccionado"></ng-multiselect-dropdown>
+			</div>
+			
+			<div class="form-inline" [formGroup]="datosDetalleForma">
+			
+				<label for="cantidadArticuloInput">&nbsp;&nbsp;Cantidad:</label>
+				<input  type="text" size="5" class="form-control" id="cantidadArticuloInput" formControlName="cantidad">
+				
+				<label for="subtotalArticuloInput">&nbsp;&nbsp;Monto:</label>
+				<input type="text" size="5" class="form-control" id="subtotalArticuloInput" formControlName="subtotal">
+				
+				<label>&nbsp;&nbsp;Iva:</label>
+				<select class="form-control" formControlName="iva">
+					<optgroup>
+						<option value="1">Ninguno</option>
+						<option value="1.08">8%</option>
+						<option value="1.16">16%</option>
+					</optgroup>
+				</select>
+				
+				&nbsp;&nbsp;
+				<button class="btn btn-success" (click)="agregar()">Nuevo&nbsp;<i class="fa fa-plus"></i></button>
+	
+			</div>
+  		</div>
+  		
+  
+		
+		
+	</div>
+			
+		<br/>
+			
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Articulo</th>
+					<th>Cantidad</th>
+					<th>Subtotal</th>
+					<th>Iva</th>
+					<th>Total</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+				<tr *ngIf="tablaArticulos.length <= 0">
+					<td colspan="6" align="center"><b>No se encontraron resultados</b></td>
+				</tr>
+			
+				<tr *ngFor="let temp of tablaArticulos">
+					<td>{{temp.articuloNombre}}</td>
+					<td>{{temp.cantidad}}</td>
+					<td>{{temp.subtotal/100 |  number:'1.2-2'}}</td>
+					<td>{{temp.iva | number:'1.2-2'}}</td>
+					<td>{{temp.total/100 |  number:'1.2-2'}}</td>
+					<td>
+						<button class="btn btn-outline-danger" (click)="remove(temp)"><i class="fa fa-trash"></i></button>	
+					</td>
+	      		</tr>
+			</tbody>
+		
+		</table>
+			
+	

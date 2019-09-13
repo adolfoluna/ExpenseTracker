@@ -1,0 +1,35 @@
+	
+<!-- 	<ul class="nav nav-tabs"> -->
+<!--   		<li class="nav-item"> -->
+<!--     		<a class="nav-link active" data-toggle="tab" href="#tablist">Lista</a> -->
+<!--   		</li> -->
+  
+<!--   		<li class="nav-item"> -->
+<!--     		<a class="nav-link"  data-toggle="tab" href="#tabedit" >Editar</a> -->
+<!--   		</li> -->
+  		
+<!--   		<li class="nav-item"> -->
+<!--     		<a class="nav-link" href="#">Link</a> -->
+<!--   		</li> -->
+  
+<!--   		<li class="nav-item"> -->
+<!--     		<a class="nav-link disabled" href="#">Disabled</a> -->
+<!--   		</li> -->
+<!-- 	</ul> -->
+	
+	<div class="tab-content">
+  		
+  		<div class="tab-pane active" id="tablist">
+  			<h2>Transacciones</h2>
+  			<app-transaccion-list></app-transaccion-list>		
+  		</div>
+  		
+		
+		<div class="tab-pane container" id="tabedit">
+			<br/>
+			<app-transaccion-edit></app-transaccion-edit>	
+		</div>
+		
+	</div>
+	
+	<app-transaccion-view-detail></app-transaccion-view-detail>

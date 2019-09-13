@@ -1,0 +1,42 @@
+
+	<div class="card">
+	
+		<div class="card-header bg-info">Registro de moneda</div>
+		
+		<div class="card-body" [formGroup]="datosForma">
+				<div class="form-group">
+					<label for="idmoneda">Id:</label>
+					<input type="text" class="form-control" id="idmoneda" formControlName = "idmoneda" readonly>
+				</div>
+			
+				<div class="form-group">
+					<label for="nombre">Nombre:</label>
+					<input type="test" class="form-control" id="nombre" formControlName="nombre">
+				</div>
+				
+				<div class="form-group form-check">
+					<label class="form-check-label">
+						<input class="form-check-input" type="checkbox" formControlName="monedaBase">Usar como moneda base del sistema
+					</label>
+				</div>
+				
+				<div class="form-group">
+					<label for="version">Versi&oacute;n:</label>
+					<input type="text" class="form-control" id="version" formControlName="version" readonly>
+				</div>
+				
+				<div class="row">
+  					<div class="col-sm-8">
+  						<button class="btn btn-info"  (click)="backClick()">Regresar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+						<button *ngIf="mostrarBotonEliminar" class="btn btn-danger"  (click)="remove()">Eliminar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+  						<div class="float-right">
+  							<button class="btn btn-success"  (click)="save()">Guardar</button>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>

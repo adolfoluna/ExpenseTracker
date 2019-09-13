@@ -1,0 +1,56 @@
+
+
+	<div [hidden]="true">
+		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#tableArticulosComponent" aria-expanded="false" aria-controls="collapseExample">Ver art&iacute;culos</button>
+		<br/><br/>
+	</div>
+
+	<div id="tableArticulosComponent">
+		
+	
+		<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>Articulo</th>
+						<th>Cantidad</th>
+						<th>Subtotal</th>
+						<th>Iva</th>
+						<th>Total</th>
+						<th [hidden]="listaArticulosReadOnly">&nbsp;</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr *ngIf="listaArticulos.length <= 0 && loadingArticulos==false">
+						<td colspan="6" align="center"><b>No se encontraron resultados</b></td>
+					</tr>
+				
+					<tr *ngFor="let temp of listaArticulos">
+						<td>{{temp.articuloNombre}}</td>
+						<td>{{temp.cantidad}}</td>
+						<td>{{temp.subtotal/100 |  number:'1.2-2'}}</td>
+						<td>{{temp.iva | number:'1.2-2'}}</td>
+						<td>{{temp.total/100 |  number:'1.2-2'}}</td>
+						<td [hidden]="listaArticulosReadOnly">
+							<button class="btn btn-outline-danger" (click)="remove(temp)"><i class="fa fa-trash"></i></button>	
+						</td>
+		      		</tr>
+		      		
+		      		<tr [hidden]="!loadingArticulos">
+		      			<td colspan="6" align="center">
+		      				<div class="spinner-border text-primary text-center" role="status"><span class="sr-only">Loading...</span></div>
+		      			</td>
+		      		</tr>
+		      		
+		      		<tr>
+		      			<td colspan="3">&nbsp;</td>
+		      			<td align="right"><b>Suma:</b></td>
+		      			<td><b>{{articulosTotal/100 |  number:'1.2-2'}}</b></td>
+		      		</tr>
+		      		
+		      		
+				</tbody>
+			
+			</table>
+		
+	</div>

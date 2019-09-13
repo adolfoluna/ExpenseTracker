@@ -1,0 +1,57 @@
+
+	<br/>
+	<div class="container" *ngFor="let itemx of cuentas; let i = index">
+	
+		<div class="card text-white">
+      		      		
+      		<div class="card-header bg-secondary">
+				<div class="d-flex">
+	    			<div class="p-2 flex-fill">
+	    				
+	    				<h1 data-toggle="collapse" [attr.data-target] = "'#cardbody-'+i" style="cursor: pointer;" (click)="cardclick($event,itemx)">
+	    					<i class="fa fa-minus-circle"></i>
+	    					{{itemx.nombre}}
+	    				</h1>
+	    			</div>
+	    			<div class="p-2 flex-fill text-right total-cuentas"><h1>{{itemx.saldo/100 | number:'1.2-2'}} {{nombreMonedaBase}}</h1></div>
+	    			<div class="p-2 flex-fill text-right"><button type="button" class="btn btn-info" (click)="detalleCuentas(itemx)">detalle</button></div>
+	  			</div>
+			</div>
+			
+			<div class="card-body collapse show" id="{{ 'cardbody-' + i }}">
+				<div *ngFor="let detail of itemx.cuentas">
+					<div class="card bg-light text-dark">
+		   				<div class="card-body total-cuentas">
+		   					<div class="d-flex">
+		   						<div class="p-2 mr-auto"><h2>{{detail.nombre}}</h2></div>
+		   						<div class="p-2"><h2><span *ngIf="(detail.monedaBase!=true)">({{detail.saldoMonedaBase/100 | number:'1.2-2'}} {{nombreMonedaBase}}) </span>{{detail.saldo/100 | number:'1.2-2'}} {{detail.moneda}}</h2></div>
+		   						<div class="p-2"><button type="button" class="btn btn-warning" (click)="detalleClick(detail)">detalle</button></div>
+		 					</div>
+		   				</div>
+		  			</div>
+		  			<br/>
+	  			</div>
+	  			
+			</div>
+		
+					
+			
+		</div>
+		
+		<br/>
+		
+	</div>
+	
+	<div class="container">
+		<div class="card bg-warning text-dark">
+			<div class="card-body total-cuentas">
+				<div class="d-flex">
+					<div class="p-2 flex-fill"><h1>Gran Total</h1></div>			
+					<div class="p-2 flex-fill text-right"><h1>{{granTotal/100 | number:'1.2-2'}} MXN</h1></div>
+					<div class="p-2 flex-fill text-right"><button type="button" class="btn btn-info" routerLink="/transacciones">detalle</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	

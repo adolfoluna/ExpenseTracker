@@ -1,0 +1,53 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { ParentEditComponent } from "../parent-edit.component";
+import { PersistenceService } from '../../services/persistence.service';
+import { PaginacionService } from '../../services/paginacion.service';
+import { EditItemService } from '../../services/edit.item.service';
+
+@Component({
+  selector: 'app-moneda-edit',
+  templateUrl: './moneda-edit.component.html',
+  styleUrls: ['./moneda-edit.component.css']
+})
+export class MonedaEditComponent extends ParentEditComponent implements OnInit {
+    
+    datosForma = this.fb.group({
+        idmoneda : [0],
+        nombre : [""],
+        monedaBase : [false],
+        version: [0],
+    });
+
+    constructor(private persistenceService:PersistenceService,
+                private fb: FormBuilder,
+                private edititemService:EditItemService,
+                private paginacionService:PaginacionService,
+                private route: ActivatedRoute,) {
+        
+        super(paginacionService,persistenceService,route);
+       
+    }
+    
+    ngOnInit() {
+        
+        this.updateValues("moneda",["idmoneda"], this.datosForma, this.formToInstance,this.instanceToForm);
+
+        //se ejecuta cada ves que se presiona el boton de editar registro
+        this.edititemService.editItemEvent().subscribe( message => {this.getInstanceFromServer("moneda",message); });
+    }
+    
+    instanceToForm(obj:any) {
+        if( obj == null ) {
+            obj = { idmoneda:0,nombre:"",monedaBase:false,version:0};
+            this.datosForma.patchValue(obj);
+        }
+    }
+    
+    formToInstance() {
+        return true;
+    }
+
+}

@@ -1,0 +1,39 @@
+
+
+	<h2>Catalogo de tipos de cambio</h2>
+	
+	<button class="btn btn-primary" (click)="newRowClick()">Nuevo +</button>
+	
+	<br/>
+	<br/>
+	
+	<table class="table table-striped">
+		
+		<thead class="thead-dark">
+			<tr>
+				<th>Moneda Origen</th>
+				<th>Moneda Destino</th>
+				<th>Tipo de cambio</th>
+				<th>Version</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			
+			<tr *ngIf="data.length <= 0">
+				<td colspan="5" align="center"><b>No se encontraron resultados</b></td>
+			</tr>
+			
+			<tr *ngFor="let temp of data">
+				<td>{{temp.nombreMonedaOrigen}}</td>
+				<td>{{temp.nombreMonedaDestino}}</td>
+				<td>{{temp.tipocambio  | number:'1.2'}}</td>
+				<td>{{temp.version}}</td>
+				<td>
+					<img alt="" src="assets/editrow.png" width="20px" height="20px" style="cursor:pointer;" (click)="editRowClick(temp,'tipocambio')">
+				</td>
+      		</tr>
+		</tbody>
+  
+  </table>

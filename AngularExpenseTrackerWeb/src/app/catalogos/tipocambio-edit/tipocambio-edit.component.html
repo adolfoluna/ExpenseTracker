@@ -1,0 +1,47 @@
+
+	<div class="card">
+	
+		<div class="card-header bg-info">Registro de tipo de cambio</div>
+		
+		<div class="card-body" [formGroup]="datosForma">
+
+				<div class="form-group">
+					<label for="idmoneda_origen">Moneda Origen:</label>
+      				<select  class="form-control" id="idmoneda_origen" formControlName="monedaOrigenSeleccionada">
+						<option *ngFor="let mon of monedas" [ngValue]="mon">{{ mon.nombre }}</option>
+      				</select>
+				</div>
+				
+				<div class="form-group">
+					<label for="idmoneda_dest">Moneda Destino:</label>
+      				<select  class="form-control" id="idmoneda_dest" formControlName="monedaDestinoSeleccionada">
+						<option *ngFor="let mon of monedas" [ngValue]="mon">{{ mon.nombre }}</option>
+      				</select>
+				</div>
+				
+				<div class="form-group">
+					<label for="tipo">Tipo de cambio:</label>
+					<input type="text" class="form-control" id="tipo" formControlName="tipocambio">
+				</div>
+				
+				<div class="form-group">
+					<label for="version">Versi&oacute;n:</label>
+					<input type="text" class="form-control" id="version" formControlName="version" readonly>
+				</div>
+				
+				<div class="row">
+  					<div class="col-sm-8">
+  						<button class="btn btn-info" (click)="backClick()">Regresar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+						<button *ngIf="mostrarBotonEliminar" class="btn btn-danger" (click)="remove()">Eliminar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+  						<div class="float-right">
+  							<button class="btn btn-success" (click)="save()">Guardar</button>
+						</div>
+					</div>
+				</div>
+		</div>
+		
+	</div>

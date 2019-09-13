@@ -1,0 +1,41 @@
+
+	
+	<br/>
+	<br/>
+	<ul class="nav nav-tabs" id="navtabsDatosgenerales">
+  		<li class="nav-item">
+    		<a class="nav-link active" data-toggle="tab" href="#tabdatosgenerales">Datos generales</a>
+  		</li>
+  		
+  		<li class="nav-item">
+    		<a class="nav-link" data-toggle="tab" href="#tabdetalle">Articulos</a>
+  		</li>
+  
+  		<li class="nav-item">
+    		<a class="nav-link"  data-toggle="tab" href="#tabdocumentos">Documentos adjuntos</a>
+  		</li>
+ 
+	</ul>
+	
+	<div class="tab-content" id="tabcontentDatosgenerales">
+  	
+  		<div class="tab-pane active" id="tabdatosgenerales">
+  			<br/>
+  			<app-transaccion-edit-gral [idtransaccion]="idtransaccion"></app-transaccion-edit-gral>
+  		</div>
+  		
+  		<div class="tab-pane" id="tabdetalle">
+  			<br/>
+  			<app-transaccion-edit-articulos></app-transaccion-edit-articulos>			
+  		</div>
+		
+		<div class="tab-pane" id="tabdocumentos">
+			<br/>
+			<app-transaccion-edit-docs [idtransaccion]="idtransaccion"></app-transaccion-edit-docs>
+		</div>
+		
+	</div>
+	<hr/>
+	<button class="btn btn-info"  (click)="backClick()">Regresar</button>
+	
+

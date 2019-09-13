@@ -1,0 +1,79 @@
+<form class="form-group" (ngSubmit)="submitUpload()" [formGroup]="datosForma">
+
+	<table>
+		<tbody>
+		
+			<tr>
+				<td>Ticket:</td>
+				<td><input type="file" class="form-control" id="ticket" (change)="onFileChange($event,'ticket')" disabled></td>
+				<td><button type="button" id="button_upload_ticket" class="btn btn-success" (click)="uploadFile('ticket')"  data-toggle="modal" data-target="#progressWindow"><i class="fa fa-upload" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_view_ticket" class="btn btn-info" (click)="viewDocument('ticket')"><i class="fa fa-file" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_remove_ticket" class="btn btn-danger" (click)="remove('ticket')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+			</tr>
+			
+			<tr>
+				<td colspan="5">
+					
+				</td>
+			</tr>
+			
+			<tr><td colspan="5">&nbsp;</td></tr>
+			
+			<tr>
+				<td>Factura:</td>
+				<td><input type="file" class="form-control" id="factura" (change)="onFileChange($event,'factura')"></td>
+				<td><button type="button" id="button_upload_factura" class="btn btn-success" (click)="uploadFile('factura')" data-toggle="modal" data-target="#progressWindow"><i class="fa fa-upload" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_view_factura" class="btn btn-info" (click)="viewDocument('factura')"><i class="fa fa-file" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_remove_factura" class="btn btn-danger" (click)="remove('factura')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+			</tr>
+			
+			<tr><td colspan="5">&nbsp;</td></tr>
+			
+			<tr>
+				<td>Comlemento de pago:</td>
+				<td><input type="file" class="form-control" id="complemento" (change)="onFileChange($event,'complemento')"></td>
+				<td><button type="button" id="button_upload_complemento" class="btn btn-success" (click)="uploadFile('complemento')" data-toggle="modal" data-target="#progressWindow"><i class="fa fa-upload" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_view_complemento" class="btn btn-info" (click)="viewDocument('complemento')"><i class="fa fa-file" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_remove_complemento" class="btn btn-danger" (click)="remove('complemento')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+			</tr>
+			
+			<tr><td colspan="5">&nbsp;</td></tr>
+			
+			<tr>
+				<td>Vale/Voucher:</td>
+				<td><input type="file" class="form-control" id="voucher" (change)="onFileChange($event,'voucher')"></td>
+				<td><button type="button" id="button_upload_voucher" class="btn btn-success" (click)="uploadFile('voucher')" data-toggle="modal" data-target="#progressWindow"><i class="fa fa-upload" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_view_voucher" class="btn btn-info" (click)="viewDocument('voucher')"><i class="fa fa-file" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_remove_voucher" class="btn btn-danger" (click)="remove('voucher')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+			</tr>
+			
+		</tbody>
+	</table>
+	
+	<div class="modal fade" id="progressWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLongTitle">Subiendo {{upload_file_tittle}}</h5>
+				</div>
+
+				<div class="modal-body">
+					
+					<div>Progreso:</div>
+        			
+        			<div class="progress" style="height:30px;"> 
+						<div class="progress-bar" [style.width]="upload_file_progress">{{upload_file_progress}}</div> 
+					</div> 
+					<br/>
+					<div><b>{{upload_file_message}}</b></div>
+					
+				</div>
+		
+				<div class="modal-footer">
+					<button type="button" id="closeWindowButton" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</form>

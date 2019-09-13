@@ -1,0 +1,38 @@
+
+
+	<ul class="pagination">	
+	
+		<li class="page-item"><button class="page-link" (click)="refresh()"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+	
+		<li class="page-item disabled"><span class="page-link"><b>{{paginacion.numResultados}}</b> res</span></li>
+	
+		<li [className]="paginacion.pagina == 0 ? 'page-item disabled' : 'page-item'" class="page-item"><button class="page-link" (click)="firstPage()">Primero</button></li>
+		<li [className]="paginacion.pagina == 0 ? 'page-item disabled' : 'page-item'"><button class="page-link" (click)="previousPage()">Anterior</button></li>
+		
+		<li [className]="paginacion.pagina == (item-1) ? 'page-item active' : 'page-item'" *ngFor="let item of paginacion.paginas">
+			<button class="page-link" (click)="pageClick(item)">{{item}}</button>
+		</li>
+		
+		<li [className]="(paginacion.pagina+1) >= paginacion.numeroPaginas ? 'page-item disabled' : 'page-item'"><button class="page-link" (click)="nextPage()">Siguiente</button></li>
+		<li [className]="(paginacion.pagina+1) >= paginacion.numeroPaginas ? 'page-item disabled' : 'page-item'"><button class="page-link" (click)="lastPage()">Ultimo</button></li>
+		
+		&nbsp; &nbsp;
+		
+		<div class="btn-group">
+		
+			<button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown"><b>{{paginacion.limite}}</b> resultados por p&aacute;gina</button>
+			
+			<div class="dropdown-menu">
+				<button class="dropdown-item" (click)="limitClick(10)">10 resultados por p&aacute;gina</button>
+				<button class="dropdown-item" (click)="limitClick(20)">20 resultados por p&aacute;gina</button>
+				<button class="dropdown-item" (click)="limitClick(30)">30 resultados por p&aacute;gina</button>
+				<button class="dropdown-item" (click)="limitClick(50)">50 resultados por p&aacute;gina</button>
+				<button class="dropdown-item" (click)="limitClick(100)">100 resultados por p&aacute;gina</button>
+				<button class="dropdown-item" (click)="limitClick(200)">200 resultados por p&aacute;gina</button>
+				<button class="dropdown-item" (click)="limitClick(300)">300 resultados por p&aacute;gina</button>
+				<button class="dropdown-item" (click)="limitClick(500)">500 resultados por p&aacute;gina</button>
+			</div>
+			
+		</div>
+			
+	</ul>

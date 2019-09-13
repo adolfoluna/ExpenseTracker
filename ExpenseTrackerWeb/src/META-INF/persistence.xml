@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+	<persistence-unit name="expensetrackerdbpu" transaction-type="JTA">
+		<jta-data-source>java:jboss/datasources/expensetrackerds</jta-data-source>
+		<non-jta-data-source>java:jboss/datasources/expensetrackerds</non-jta-data-source>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+			<properties>
+				<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+				<property name="hibernate.archive.autodetection" value="class, hbm"/>
+				<property name="hibernate.show_sql" value="true" />
+				<property name="hibernate.format_sql" value="true" />
+				<property name="hibernateEntityCache" value="NONE" />
+				<property name="jboss.entity.manager.jndi.name" value="java:/Manager2" />
+				<property name="jboss.entity.manager.factory.jndi.name" value="java:/Manager2Factory" />
+				<property name="hibernate.cache.use_second_level_cache" value="true"/>
+				<property name="hibernate.cache.use_query_cache" value="false"/>		
+			</properties>
+	</persistence-unit>
+</persistence>
