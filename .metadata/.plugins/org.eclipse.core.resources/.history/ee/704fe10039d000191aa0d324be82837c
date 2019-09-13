@@ -1,0 +1,82 @@
+package com.tracker.expense.db.dto.home;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import com.tracker.expense.db.dto.ArticuloDto;
+import com.tracker.expense.db.dto.GrupoDto;
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.model.Articulo;
+import com.tracker.expense.db.model.ArticuloHome;
+import com.tracker.expense.db.model.Categoria;
+import com.tracker.expense.db.model.Grupo;
+import com.tracker.expense.db.model.GrupoHome;
+
+@Stateless
+public class GrupoDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	@EJB private ArticuloHome articuloHome;
+	@EJB private GrupoHome grupoHome;
+
+	@Override
+	public String getDtoQuery(SearchDto search) {
+		return "select new com.tracker.expense.db.dto.GrupoDto(a.idgrupo,a.nombre,a.version) from Grupo a"+addFilters(search)+addOrderFields(search);
+	}
+
+	@Override
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Articulo a"+addFilters(search);
+	}
+	
+	private String addFilters(SearchDto search) {
+		String temp = "";
+		if( search.getSearhFieldsMap() != null && search.getSearhFieldsMap().containsKey("idgrupo") )
+			temp=" where a.idgrupo="+Integer.valueOf(search.getSearhFieldsMap().get("idgrupo"));
+		
+		return temp;
+	}
+	
+	private String addOrderFields(SearchDto search) {
+		
+		if( search.getOrderFields() == null || search.getOrderFields().length <= 0)
+			return "";
+		
+		String temp = "";
+		
+		for(String x : search.getOrderFields() ) {
+			if( temp.length() <= 0 )
+				temp = " order by a."+x;
+			else
+				temp+=",a."+x;
+		}
+		
+		return temp;
+		
+	}
+
+	@Override
+	public Object fromDtoToInstance(Object dto) {
+		
+		if( !(dto instanceof GrupoDto) )
+			return null;
+		
+		GrupoDto gdto = (GrupoDto) dto;
+		Grupo instance = null;
+		
+		if( gdto.getIdgrupo() > 0 )
+			instance = grupoHome.findById(gdto.getIdgrupo());
+		else
+			instance = new Grupo();
+				
+		instance.setNombre(gdto.getNombre().trim());
+		instance.setVersion(gdto.getVersion());
+		
+		return instance;
+	}
+
+	@Override
+	public Object getInstance(SearchDto search) {
+		return articuloHome.findById(Integer.valueOf(search.getSearhFieldsMap().get("idarticulo")));
+	}
+
+}

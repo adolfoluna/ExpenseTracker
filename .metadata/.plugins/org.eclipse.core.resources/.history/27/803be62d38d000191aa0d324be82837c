@@ -1,0 +1,25 @@
+package com.tracker.expense.db.dto;
+
+import java.io.Serializable;
+
+public class GrupoDto implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8876673085618426903L;
+	
+	private int idgrupo;
+	private String nombre;
+	private int version;
+	
+	public GrupoDto(int idgrupo, String nombre, int version) {
+		super();
+		this.idgrupo = idgrupo;
+		this.nombre = nombre;
+		this.version = version;
+	}
+	
+	
+	
+}

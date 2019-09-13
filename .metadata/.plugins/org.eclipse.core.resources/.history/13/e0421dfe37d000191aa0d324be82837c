@@ -1,0 +1,7 @@
+package com.tracker.expense.db.dto;
+
+import java.io.Serializable;
+
+public class GrupoDto implements Serializable {
+	
+}

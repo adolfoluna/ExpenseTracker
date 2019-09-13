@@ -1,0 +1,306 @@
+package com.tracker.expense.db.dto.home;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.dto.TransaccionDto;
+import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.model.Cuenta;
+import com.tracker.expense.db.model.Proveedor;
+import com.tracker.expense.db.model.Transaccion;
+import com.tracker.expense.db.model.TransaccionHome;
+import com.tracker.expense.web.rest.service.OperationRestResult;
+
+@Stateless
+@Remote(PersistenceDtoRemote.class)
+@Interceptors(MonedaBaseInterceptor.class)
+public class TransaccionDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	@PersistenceContext private EntityManager entityManager;
+
+	@EJB private TransaccionQueryBuilderHome queryBuilder;
+	@EJB private TransaccionHome transaccionHome;
+	
+	private static final Log log = LogFactory.getLog(TransaccionDtoHome.class);
+	
+	@Override
+	public String getDtoQuery(SearchDto search) {
+		return "select new com.tracker.expense.db.dto.TransaccionDto("
+				+ "t.idtransaccion,"
+				+ "t.cuenta.idcuenta,"
+				+ "t.cuenta.nombre,"
+				+ "t.proveedor.idproveedor,"
+				+ "t.proveedor.nombre,"
+				+ "t.fecha,"
+				+ "t.articulos,"
+				+ "t.total,"
+				+ "t.tipocambio,"
+				+ "t.ticket,"
+				+ "t.pago,"
+				+ "t.factura,"
+				+ "t.complemento,"
+				+ "t.complementorequerido,"
+				+ "t.voucher,"
+				+ "t.nota,"
+				+ "t.version) from Transaccion t";
+	}
+
+	@Override
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Transaccion t";
+	}
+
+	@Override
+	public Object fromDtoToInstance(Object dto) {
+		
+		if(!(dto instanceof TransaccionDto) )
+			return null;
+		
+		TransaccionDto tdto = (TransaccionDto) dto;
+		Transaccion tx = null;
+		
+		if( tdto.getIdtransaccion() > 0 )
+			tx = transaccionHome.findById(tdto.getIdtransaccion());
+		else
+			tx = new Transaccion();
+		
+		
+		if( tx.getCuenta() == null || tdto.getIdcuenta() != tx.getCuenta().getIdcuenta() ) {
+			Cuenta c = new Cuenta();
+			c.setIdcuenta(tdto.getIdcuenta());
+			tx.setCuenta(c);
+		}
+		
+		if( tx.getProveedor() == null || tdto.getIdproveedor() != tx.getProveedor().getIdproveedor() ) {
+			Proveedor p = new Proveedor();
+			p.setIdproveedor(tdto.getIdproveedor());
+			tx.setProveedor(p);
+		}
+		
+		tx.setFecha(tdto.getFecha());
+		tx.setTotal(tdto.getTotal());
+		
+		if( tdto.getNota() != null && tdto.getNota().trim().length() > 0 )
+			tx.setNota(tdto.getNota().trim());
+		else 
+			tx.setNota(null);
+		
+		tx.setVersion(tdto.getVersion());
+		
+		if( tdto.isComplementoRequerido())	tx.setComplementorequerido((byte)1);
+		else tx.setComplementorequerido((byte)0);
+		
+		return tx;
+	}
+
+	@Override
+	public Object getInstance(SearchDto search) {
+		Transaccion c = transaccionHome.findById(Integer.valueOf(search.getSearhFieldsMap().get("idtransaccion")));
+		return c;
+	}
+	
+	///////////////////
+	public OperationRestResult upsertDto(Object dto) {
+		
+		if( !(dto instanceof TransaccionDto) ) return new OperationRestResult(false, "error, argumento no es de tipo TransaccionDto, tipo:"+dto.getClass());
+		
+		
+		TransaccionDto t = (TransaccionDto) dto;
+		
+		if( t.getIdtransaccion() > 0 ) {
+			
+			Transaccion tx = null;
+			
+			try {
+				tx = transaccionHome.findById(t.getIdtransaccion());
+				if( tx == null )
+					return new OperationRestResult(false, "error instancia con id "+t.getIdtransaccion()+" no encontrada");
+			}catch(Exception ex) {
+				log.error("error al intentar consultar instancia "+ex.getMessage());
+				ex.printStackTrace();
+				return new OperationRestResult(false, "error instancia con id "+t.getIdtransaccion()+" no encontrada "+ex.getMessage());
+			}
+			
+			asignarDtoAInstancia(t, tx);
+			
+			try {
+				entityManager.merge(tx);
+			}catch(Exception ex) {
+				return new OperationRestResult(false, "error al intentar persistir instancia "+ex.getMessage());
+			}
+			
+			return new OperationRestResult(true, null);
+		}
+		
+		Transaccion e = new Transaccion();
+		asignarDtoAInstancia(t, e);
+		
+		try {
+			entityManager.merge(e);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar persistir instancia "+ex.getMessage());
+		}
+		
+		return new OperationRestResult(true, null);
+		
+	}
+	
+	public OperationRestResult removeDto(SearchDto dto) {
+		
+		HashMap<String, String> temp = dto.getSearhFieldsMap();
+		
+		if( temp == null ) return new OperationRestResult(false, "error, argumentos de busqueda en null");
+		
+		if( !temp.containsKey("idtransaccion") ) return new OperationRestResult(false, "error, no se encontro argumento idtransaccion");
+		
+		Transaccion c = transaccionHome.findById(Integer.valueOf(temp.get("idtransaccion")));
+		
+		if( c == null )
+			return new OperationRestResult(false, "error, no se encontro cuenta con idtransaccion:"+temp.get("idtransaccion"));
+		
+		try {
+			transaccionHome.remove(c);
+			return new OperationRestResult(true, null);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error, no se pudo eliminar transaccion "+ex.getMessage());
+		}
+	}
+
+	public OperationRestResult getDto(SearchDto dto) {
+		
+		HashMap<String, String> temp = dto.getSearhFieldsMap();
+		
+		if( temp == null ) return new OperationRestResult(false, "error, argumentos de busqueda en null");
+		
+		if( !temp.containsKey("idtransaccion") ) return new OperationRestResult(false, "error, no se encontro argumento idtransaccion");
+		
+		//crear query
+		Query q = entityManager.createQuery(transaccionQuery()+" where t.idtransaccion =:idtransaccion");
+		
+		//poner el parametro de la llave
+		q.setParameter("idtransaccion", Integer.valueOf(temp.get("idtransaccion")));
+		
+		//intentar obtener instancia
+		try {
+			TransaccionDto res = (TransaccionDto) q.getSingleResult();
+			OperationRestResult t = new OperationRestResult(true, null);
+			t.setData(res);
+			return t;
+		}catch(NoResultException ex) {
+			log.info("error no se entrontro instancia con idtransaccion "+temp.get("idtransaccion"));
+			return new OperationRestResult(false, "error, no se encontro instancia con idtransaccion "+temp.get("idtransaccion"));
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return new OperationRestResult(false, "error al intentar consultar cuenta con idtransaccion "+temp.get("idtransaccion")+" "+ex.getMessage());
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public OperationRestResult listDto(SearchDto dto) {
+		
+			
+		//crear Query para obtener la lista de cuentas ordenadas por tipo y nombre
+		Query q = queryBuilder.createQuery(dto);
+		
+		//objeto que va a contener la lista de resultados
+		List<TransaccionDto> res = null;
+		
+		//intentar traer la lista de resultados
+		try {
+			res = (List<TransaccionDto>) q.getResultList();
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar obtener lista "+ex.getMessage());
+		}
+		
+		//crear una resupuesta exitosa
+		OperationRestResult rs = new OperationRestResult(true, null);
+		
+		//agregar el numero total de resultados, esto es un count(*)
+		rs.setResults(queryBuilder.getResultsCount(dto));
+		
+		//agregar los resultados encontrados
+		rs.setData(res.toArray(new TransaccionDto[0]));
+		
+		//regresar respuesta
+		return rs;
+	}
+	
+	private void asignarDtoAInstancia(TransaccionDto dto,Transaccion tx) {
+		
+		//en caso de ser una transaccion ya existente entonces asignar el idtransaccion
+		//en caso de que la transaccion sea nueva poner en null el campo idtransaccion
+		if( dto.getIdtransaccion() > 0 )
+			tx.setIdtransaccion(dto.getIdtransaccion());
+		else
+			tx.setIdtransaccion(null);
+		
+		if( tx.getCuenta() == null || dto.getIdcuenta() != tx.getCuenta().getIdcuenta() ) {
+			Cuenta c = new Cuenta();
+			c.setIdcuenta(dto.getIdcuenta());
+			tx.setCuenta(c);
+		}
+		
+		if( tx.getProveedor() == null || dto.getIdproveedor() != tx.getProveedor().getIdproveedor() ) {
+			Proveedor p = new Proveedor();
+			p.setIdproveedor(dto.getIdproveedor());
+			tx.setProveedor(p);
+		}
+		
+		tx.setFecha(dto.getFecha());
+		tx.setTotal(dto.getTotal());
+		
+		if( dto.getNota() != null && dto.getNota().trim().length() > 0 )
+			tx.setNota(dto.getNota().trim());
+		else 
+			tx.setNota(null);
+		
+		tx.setVersion(dto.getVersion());
+		
+		if( dto.isComplementoRequerido())	tx.setComplementorequerido((byte)1);
+		else tx.setComplementorequerido((byte)0);
+		
+	} 
+	
+	
+	/*public TransaccionDto(int idtransaccion, int idcuenta, String nombrecuenta, int idproveedor, String nombreproveedor,
+			Date fecha, String articulos, long total, double tipocambio, String ticket, String pago, String factura,
+			String complemento, String voucher, String nota,int version) {*/
+	
+	private String transaccionQuery() {
+		return "select new com.tracker.expense.db.dto.TransaccionDto("
+				+ "t.idtransaccion,"
+				+ "t.cuenta.idcuenta,"
+				+ "t.cuenta.nombre,"
+				+ "t.proveedor.idproveedor,"
+				+ "t.proveedor.nombre,"
+				+ "t.fecha,"
+				+ "t.articulos,"
+				+ "t.total,"
+				+ "t.tipocambio,"
+				+ "t.ticket,"
+				+ "t.pago,"
+				+ "t.factura,"
+				+ "t.complemento,"
+				+ "t.complementorequerido,"
+				+ "t.voucher,"
+				+ "t.nota,"
+				+ "t.version) from Transaccion t";
+	}
+
+	
+
+}

@@ -1,0 +1,108 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { CuentasResumenComponent } from './cuentas-resumen/cuentas-resumen.component';
+import { MonedaListComponent } from './catalogos/moneda-list/moneda-list.component';
+import { MonedaEditComponent } from './catalogos/moneda-edit/moneda-edit.component';
+import { PaginacionComponent } from './paginacion/paginacion.component';
+import { CuentaListComponent } from './catalogos/cuenta-list/cuenta-list.component';
+import { CuentaEditComponent } from './catalogos/cuenta-edit/cuenta-edit.component';
+import { TipocambioListComponent } from './catalogos/tipocambio-list/tipocambio-list.component';
+import { TipocambioEditComponent } from './catalogos/tipocambio-edit/tipocambio-edit.component';
+import { ProveedorListComponent } from './catalogos/proveedor-list/proveedor-list.component';
+import { ProveedorEditComponent } from './catalogos/proveedor-edit/proveedor-edit.component';
+import { CatalogoViewComponent } from './catalogos/catalogo-view/catalogo-view.component';
+import { ViewDirective } from './catalogos/view.directive';
+import { ViewEditDirective } from "./catalogos/viewedit.directive";
+
+import { TransaccionEditComponent } from './transaccion/transaccion-edit/transaccion-edit.component';
+import { TransaccionViewComponent } from './transaccion/transaccion-view/transaccion-view.component';
+import { TransaccionListComponent } from './transaccion/transaccion-list/transaccion-list.component';
+import { TransaccionCuentasComponent } from './transaccion/transaccion-cuentas/transaccion-cuentas.component';
+import { TransaccionParametrosComponent } from './transaccion/transaccion-parametros/transaccion-parametros.component';
+
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { NgDatepickerModule } from 'ng2-datepicker';
+//import { TransaccionarticulosEditComponent } from './transaccion/transaccionarticulos-edit/transaccionarticulos-edit.component';
+import { TransaccionEditArticulosComponent } from './transaccion/transaccion-edit-articulos/transaccion-edit-articulos.component';
+import { TransaccionEditDocsComponent } from './transaccion/transaccion-edit-docs/transaccion-edit-docs.component';
+import { TransaccionEditGralComponent } from './transaccion/transaccion-edit-gral/transaccion-edit-gral.component';
+import { TransaccionViewDetailComponent } from './transaccion/transaccion-view-detail/transaccion-view-detail.component';
+import { TransaccionListArticulosComponent } from './transaccion/transaccion-list-articulos/transaccion-list-articulos.component';
+import { CategoriaListComponent } from './catalogos/categoria-list/categoria-list.component';
+import { CategoriaEditComponent } from './catalogos/categoria-edit/categoria-edit.component';
+import { ArticuloEditComponent } from './catalogos/articulo-edit/articulo-edit.component';
+import { ArticuloListComponent } from './catalogos/articulo-list/articulo-list.component';
+import { GrupoListComponent } from './catalogos/grupo-list/grupo-list.component';
+import { GrupoEditComponent } from './catalogos/grupo-edit/grupo-edit.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    CuentasResumenComponent,
+    MonedaListComponent,
+    MonedaEditComponent,
+    PaginacionComponent,
+    CuentaListComponent,
+    CuentaEditComponent,
+    TipocambioListComponent,
+    TipocambioEditComponent,
+    ProveedorListComponent,
+    ProveedorEditComponent,
+    CatalogoViewComponent,
+    ViewDirective,
+    ViewEditDirective,
+    TransaccionListComponent,
+    TransaccionEditComponent,
+    TransaccionViewComponent,
+    TransaccionCuentasComponent,
+    TransaccionParametrosComponent,
+    TransaccionEditArticulosComponent,
+    TransaccionEditDocsComponent,
+    TransaccionEditGralComponent,
+    TransaccionViewDetailComponent,
+    TransaccionListArticulosComponent,
+    CategoriaListComponent,
+    CategoriaEditComponent,
+    ArticuloEditComponent,
+    ArticuloListComponent,
+    GrupoListComponent,
+    GrupoEditComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    NgMultiSelectDropDownModule,
+    NgDatepickerModule,
+  ],
+  
+  entryComponents : [
+        MonedaListComponent,
+        MonedaEditComponent,
+        PaginacionComponent,
+        CuentaListComponent,
+        CuentaEditComponent,
+        TipocambioListComponent,
+        TipocambioEditComponent,
+        ProveedorListComponent,
+        ProveedorEditComponent,
+        TransaccionListComponent,
+        TransaccionEditComponent,
+        CategoriaListComponent,
+        CategoriaEditComponent,
+        ArticuloListComponent,
+        ArticuloEditComponent,
+        GrupoListComponent,
+        GrupoEditComponent,
+                     ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule {
+}

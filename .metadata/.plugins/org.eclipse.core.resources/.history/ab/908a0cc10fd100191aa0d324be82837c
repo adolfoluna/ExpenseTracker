@@ -1,0 +1,19 @@
+ <div class="container">
+ 	
+ 	<div class="d3-chart" style="height: 800px;" #chart></div>
+ 	
+ 	<table>
+ 		
+ 		<thead>
+ 			<tr>Mes</tr>
+ 			<tr>Categoria</tr>
+ 		</thead>
+ 		
+ 		<tbody>
+ 			<tr>
+ 				<td>asd</td>
+ 				<td>asd</td>
+ 			</tr>
+ 		</tbody>
+ 	</table>
+ </div>

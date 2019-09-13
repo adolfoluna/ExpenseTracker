@@ -1,0 +1,5 @@
+package com.tracker.expense.db.dto;
+
+public class GrupoDto {
+
+}

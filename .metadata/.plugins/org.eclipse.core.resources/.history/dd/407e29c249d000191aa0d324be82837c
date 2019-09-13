@@ -1,0 +1,15 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-grupoarticulo-edit',
+  templateUrl: './grupoarticulo-edit.component.html',
+  styleUrls: ['./grupoarticulo-edit.component.css']
+})
+export class GrupoarticuloEditComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
+}

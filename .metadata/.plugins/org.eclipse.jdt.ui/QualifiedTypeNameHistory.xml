@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.home.TransaccionAttachmentRemote"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.web.util.AddRemoveFileUtil"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.TransaccionHome"/>
+    <fullyQualifiedTypeName name="java.lang.Exception"/>
+    <fullyQualifiedTypeName name="java.util.List"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.CuentaHome"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.CategoriaHome"/>
+    <fullyQualifiedTypeName name="java.lang.reflect.Array"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.CategoriaDto"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.web.rest.service.OperationRestResult"/>
+    <fullyQualifiedTypeName name="java.util.Arrays"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.TipoCambioDto"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.Transaccion"/>
+    <fullyQualifiedTypeName name="org.apache.commons.logging.LogFactory"/>
+    <fullyQualifiedTypeName name="org.apache.commons.logging.Log"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.home.ParentPersistenceHome"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.home.PersistenceDtoRemote"/>
+    <fullyQualifiedTypeName name="javax.ejb.Stateless"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.ArticuloHome"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.Articulo"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.Categoria"/>
+    <fullyQualifiedTypeName name="javax.ejb.EJB"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.ArticuloDto"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.Grupo"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.GrupoHome"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.GrupoDto"/>
+    <fullyQualifiedTypeName name="java.io.Serializable"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.home.GrupoArticuloDtoHome"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.GrupoArticulo"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.GrupoArticuloHome"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.model.GrupoArticuloId"/>
+    <fullyQualifiedTypeName name="com.tracker.expense.db.dto.GrupoArticuloDto"/>
+</qualifiedTypeNameHistroy>

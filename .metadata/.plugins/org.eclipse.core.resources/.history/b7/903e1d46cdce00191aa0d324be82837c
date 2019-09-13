@@ -1,0 +1,303 @@
+package com.tracker.expense.db.dto.home;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.tracker.expense.db.dto.CategoriaDto;
+import com.tracker.expense.db.dto.CuentaDto;
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.home.MonedaBaseHome;
+import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.home.TipocambioHome2;
+import com.tracker.expense.db.model.Categoria;
+import com.tracker.expense.db.model.Cuenta;
+import com.tracker.expense.db.model.CuentaHome;
+import com.tracker.expense.db.model.Moneda;
+import com.tracker.expense.db.model.Tipocambio;
+import com.tracker.expense.web.rest.service.OperationRestResult;
+
+@Stateless
+@Remote(PersistenceDtoRemote.class)
+@Interceptors(MonedaBaseInterceptor.class)
+public class CuentaDtoHome2 extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	@PersistenceContext private EntityManager entityManager;
+	
+	@EJB private TipocambioHome2 tipocambioHome;
+	@EJB private CuentaHome cuentaHome;
+	
+	private static final Log log = LogFactory.getLog(CuentaDtoHome2.class);
+	
+	//asigna todos los valores del dto al objeto entidad y regresa el objeto entidad
+	public Object fromDtoToInstance(Object dto) {
+		
+		//validar que el argumento sea de tipo CategoriaDto
+		if( !(dto instanceof CuentaDto) )
+			return null;
+		
+		CuentaDto cdto = (CuentaDto) dto;
+		
+		Cuenta instance = new Cuenta();
+		
+		if( cdto.getIdcuenta() > 0 )
+			instance.setIdcuenta(cdto.getIdcuenta());
+		else
+			instance.setIdcuenta(null);
+		
+		if( cdto.getIdmoneda() > 0 ) {
+			Moneda m = new Moneda();
+			m.setIdmoneda(cdto.getIdmoneda());
+			instance.setMoneda(m);
+		}
+		
+		instance.setNombre(cdto.getNombre());
+		instance.setSaldo(cdto.getSaldo());
+		instance.setTipo(cdto.getTipo());
+		instance.setVersion(cdto.getVersion());
+		
+		return instance;
+	}
+	
+	//encontrar la instancia con el id del registro
+	public Object getInstance(SearchDto search) {
+		HashMap<String, String> temp = search.getSearhFieldsMap();
+		Cuenta c = cuentaHome.findById(Integer.valueOf(temp.get("idcuenta")));
+		return c;
+	}
+
+	//hacer query, agregando busquedas y ordenamientos
+	public String getDtoQuery(SearchDto search) {
+		
+		String temp = addFilters(search);
+		
+		//agregar todos los campo por los que se va a ordenar los resultados
+		if( search.getOrderFields() != null && search.getOrderFields().length > 0 ) {
+			
+			for(String x : search.getOrderFields() ) {
+				if( temp.length() <= 0 )
+					temp = " order by c."+x;
+				else
+					temp+=",c."+x;
+			}
+		}
+		
+		return "select new com.tracker.expense.db.dto.CuentaDto(c.idcuenta,c.nombre,c.saldo,c.moneda.idmoneda,c.moneda.nombre,c.moneda.monedaBase,c.tipo,c.version) from Cuenta c"+temp;
+	}
+	
+	//hacer el query que cuenta el numero de resultados
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Cuenta"+addFilters(search);
+	}
+	
+	private String addFilters(SearchDto search) {
+		
+		HashMap<String, String> aux = search.getSearhFieldsMap();
+		
+		if( aux != null && aux.containsKey("idcuenta") ) 
+			return " where c.idcuenta="+Integer.valueOf(aux.get("idcuenta"));
+		
+		return "";
+	}
+	
+	
+	public OperationRestResult upsertDto(Object dto) {
+		
+		if( !(dto instanceof CuentaDto) ) return new OperationRestResult(false, "error, argumento no es de tipo CuentaDto, tipo:"+dto.getClass());
+				
+		CuentaDto c = (CuentaDto) dto;
+		Cuenta e = new Cuenta();
+		asignarDtoAInstancia(c, e);
+		
+		try {
+			cuentaHome.merge(e);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar persistir instancia "+ex.getMessage());
+		}
+		
+		return new OperationRestResult(true, null);
+		
+	}
+	
+	public OperationRestResult removeDto(SearchDto dto) {
+		
+		HashMap<String, String> temp = dto.getSearhFieldsMap();
+		
+		if( temp == null ) return new OperationRestResult(false, "error, argumentos de busqueda en null");
+		
+		if( !temp.containsKey("idcuenta") ) return new OperationRestResult(false, "error, no se encontro argumento idcuenta");
+		
+		Cuenta c = cuentaHome.findById(Integer.valueOf(temp.get("idcuenta")));
+		
+		if( c == null )
+			return new OperationRestResult(false, "error, no se encontro cuenta con idcuenta:"+temp.get("idcuenta"));
+		
+		try {
+			cuentaHome.remove(c);
+			return new OperationRestResult(true, null);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error, no se pudo eliminar cuenta "+ex.getMessage());
+		}
+	}
+
+	public OperationRestResult getDto(SearchDto dto) {
+		
+		HashMap<String, String> temp = dto.getSearhFieldsMap();
+		
+		if( temp == null ) return new OperationRestResult(false, "error, argumentos de busqueda en null");
+		
+		if( !temp.containsKey("idcuenta") ) return new OperationRestResult(false, "error, no se encontro argumento idcuenta");
+		
+		//crear query
+		Query q = entityManager.createQuery(cuentaQuery()+" where c.idcuenta =:idcuenta");
+		
+		//poner el parametro de la llave
+		q.setParameter("idcuenta", Integer.valueOf(temp.get("idcuenta")));
+		
+		//intentar obtener instancia
+		try {
+			CuentaDto res = (CuentaDto) q.getSingleResult();
+			OperationRestResult t = new OperationRestResult(true, null);
+			t.setData(res);
+			return t;
+		}catch(NoResultException ex) {
+			log.info("error no se entrontro instancia con idcuenta "+temp.get("idcuenta"));
+			return new OperationRestResult(false, "error, no se encontro instancia con idcuenta "+temp.get("idcuenta"));
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return new OperationRestResult(false, "error al intentar consultar cuenta con idcuenta "+temp.get("idcuenta")+" "+ex.getMessage());
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public OperationRestResult listDto(SearchDto search) {
+		
+		//intentar extraer la lista de resultados
+		OperationRestResult res = super.listDto(search);
+		
+		if( res == null || !res.isSuccess() )
+			return res;
+		/*
+		String temp = "";
+		
+		if( dto.getOrderFields() != null && dto.getOrderFields().length > 0 ) {
+			
+			for(String x : dto.getOrderFields() ) {
+				if( temp.length() <= 0 )
+					temp = " order by c."+x;
+				else
+					temp+=",c."+x;
+			}
+		}
+		else
+			temp = " order by c.tipo,c.nombre";
+		
+		//crear Query para obtener la lista de cuentas ordenadas por tipo y nombre
+		Query q = entityManager.createQuery(cuentaQuery()+temp);
+		
+		//en caso de estar especificado, limitar resultados
+		if( dto.getLimite() > 0 ) {
+			q.setMaxResults(dto.getLimite());
+			q.setFirstResult(dto.getPagina()*dto.getLimite());
+		}
+		
+		//objeto que va a contener la lista de resultados
+		List<CuentaDto> res = null;
+		
+		//intentar traer la lista de resultados
+		try {
+			res = (List<CuentaDto>) q.getResultList();
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar obtener lista "+ex.getMessage());
+		}
+		
+		//convertir las monedas que no esten en la moneda base y guardar el resultado en saldoMonedaBase
+		convertirMonedas(res);
+		
+		//crear una resupuesta exitosa
+		OperationRestResult rs = new OperationRestResult(true, null);
+		
+		//agregar el numero total de resultados, esto es un count(*)
+		rs.setResults(getCuentasDtoCount());
+		
+		//agregar los resultados encontrados
+		rs.setData(res.toArray(new CuentaDto[0]));
+		
+		//regresar respuesta
+		return rs;*/
+	}
+	
+	private int getCuentasDtoCount() {
+		Query q = entityManager.createQuery("select count(*) from Cuenta");
+		long count = (long) q.getSingleResult();
+		return (int) count;
+	}
+	
+	private void convertirMonedas(List<CuentaDto> lista) {
+		
+		if( lista == null || lista.size() <= 0 )
+			return;
+		double total = 0;
+		
+		for( CuentaDto c : lista ) {
+			
+			if( c.getIdmoneda() == MonedaBaseHome.getMonedaBase() ) {
+				c.setSaldoMonedaBase(c.getSaldo());
+				continue;
+			}
+			
+			log.info("buscando conversion de moneda "+c.getIdmoneda()+"-"+c.getMoneda()+" a "+MonedaBaseHome.getMonedaBase()+"-"+MonedaBaseHome.getMonedaBaseNombre());
+			
+			Tipocambio t = tipocambioHome.getTipocambio(c.getIdmoneda(), MonedaBaseHome.getMonedaBase());
+				
+			if( t == null ) 
+				log.info("no se encontro conversion de moneda de "+c.getIdmoneda()+"-"+c.getMoneda()+" a "+MonedaBaseHome.getMonedaBase()+"-"+MonedaBaseHome.getMonedaBaseNombre());
+			else {
+				log.info("conversion de moneda encontrada tipo de cambio:"+t.getTipocambio()+" origen:"+t.getMonedaByIdmonedaOrigen().getIdmoneda()+" a "+t.getMonedaByIdmonedaDestino().getIdmoneda());
+				total =  ((double) c.getSaldo() * t.getTipocambio());
+				c.setSaldoMonedaBase((long)total);
+			}
+
+		}
+	}
+	
+	private void asignarDtoAInstancia(CuentaDto dto,Cuenta cuenta) {
+		
+		if( dto.getIdcuenta() > 0 )
+			cuenta.setIdcuenta(dto.getIdcuenta());
+		else
+			cuenta.setIdcuenta(null);
+		
+		if( dto.getIdmoneda() > 0 ) {
+			Moneda m = new Moneda();
+			m.setIdmoneda(dto.getIdmoneda());
+			cuenta.setMoneda(m);
+		}
+		
+		cuenta.setNombre(dto.getNombre());
+		cuenta.setSaldo(dto.getSaldo());
+		cuenta.setTipo(dto.getTipo());
+		cuenta.setVersion(dto.getVersion());
+	}
+	
+	private String cuentaQuery() {
+		return "select new com.tracker.expense.db.dto.CuentaDto(c.idcuenta,c.nombre,c.saldo,c.moneda.idmoneda,c.moneda.nombre,c.moneda.monedaBase,c.tipo,c.version) from Cuenta c";
+	}
+	
+	public String getDtoQuery() {
+		return "select new com.tracker.expense.db.dto.CuentaDto(c.idcuenta,c.nombre,c.saldo,c.moneda.idmoneda,c.moneda.nombre,c.moneda.monedaBase,c.tipo,c.version) from Cuenta c";
+	}
+
+}

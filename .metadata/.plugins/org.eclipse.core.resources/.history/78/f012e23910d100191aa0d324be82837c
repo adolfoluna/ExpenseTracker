@@ -1,0 +1,21 @@
+ <div class="container">
+ 	
+ 	<div class="d3-chart" style="height: 800px;" #chart></div>
+ 	
+ 	<table class="table table-striped">
+ 		
+ 		<thead class="thead-dark">
+ 			<tr>
+ 				<th>Categoria</th>
+ 				<th>Mes</th>
+ 			</tr>
+ 		</thead>
+ 		
+ 		<tbody>
+ 			<tr>
+ 				<td>asd</td>
+ 				<td>asd</td>
+ 			</tr>
+ 		</tbody>
+ 	</table>
+ </div>

@@ -1,0 +1,97 @@
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { ParentEditComponent } from "../parent-edit.component";
+import { PersistenceService } from '../../services/persistence.service';
+import { PaginacionService } from '../../services/paginacion.service';
+import { EditItemService } from '../../services/edit.item.service';
+import { ListaService } from '../../services/lista.service';
+
+import { SearchObject } from '../../model/searchobject';
+
+@Component({
+  selector: 'app-articulo-edit',
+  templateUrl: './articulo-edit.component.html',
+  styleUrls: ['./articulo-edit.component.css']
+})
+export class ArticuloEditComponent extends ParentEditComponent implements OnInit {
+    
+    listaCategorias = [ ];
+    categoriaSeleccionada = [];
+    
+    dropdownSettings = {
+            singleSelection: true,
+            idField: 'id',
+            textField: 'name',
+            itemsShowLimit: 5,
+            allowSearchFilter: true,
+            closeDropDownOnSelection : true,
+            clearSearchFilter : true,
+        };
+    
+    datosForma = this.fb.group({
+        idarticulo : [0],
+        nombre : [""],
+        version: [0],
+    });
+    
+    monedas = [];
+
+    constructor(private persistenceService:PersistenceService,
+                private fb: FormBuilder,
+                private edititemService:EditItemService,
+                private paginacionService:PaginacionService,
+                private listaService : ListaService,
+                private route: ActivatedRoute,) {
+        
+        super(paginacionService,persistenceService,route);
+       
+    }
+    
+    ngOnInit() {
+        
+        this.updateValues("articulo",["idarticulo"], this.datosForma, this.formToInstance,this.instanceToForm);
+
+        this.listaService.getCategoriasNombre().subscribe(res => this.listaCategoriasResponse(res));
+        //se ejecuta cada ves que se presiona el boton de editar registro
+        this.edititemService.editItemEvent().subscribe( message => {this.getInstanceFromServer(message); });
+    }
+    
+    instanceToForm(obj:any) {
+        
+        if( obj == null ) {
+            obj = { idarticulo:0,nombre:"",version:0};
+            this.datosForma.patchValue(obj);
+            this.categoriaSeleccionada = [];
+            return;
+        }
+        
+        for( var i = 0; i < this.listaCategorias.length; i++) {
+            if( this.listaCategorias[i].id == obj.idcategoria ) {
+                this.categoriaSeleccionada = [this.listaCategorias[i]];
+                break;
+            }
+        }
+        
+    }
+    
+    formToInstance() {
+        
+        if(this.categoriaSeleccionada.length <= 0 ) {
+            alert("debe seleccionar una categoria");
+            return false;
+        }
+            
+        this.datosForma.value.idcategoria = this.categoriaSeleccionada[0].id;
+        
+        return true;
+    }
+    
+    listaCategoriasResponse(res:any) {
+        if( res == null || res == undefined || res.success == false)
+            return;
+        this.listaCategorias = res.data;
+    }
+
+}

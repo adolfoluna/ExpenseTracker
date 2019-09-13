@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+/Users/adolfoluna/Documents/CodigoExterno/eclipse_workspaces/expensetracker_new/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
+2843214191.index
+398471242.index
+1090557398.index
+870363794.index
+633794967.index
+739442792.index

@@ -1,0 +1,250 @@
+package com.tracker.expense.db.dto.home;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.dto.TipoCambioDto;
+import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.model.CuentaHome;
+import com.tracker.expense.db.model.Moneda;
+import com.tracker.expense.db.model.Tipocambio;
+import com.tracker.expense.db.model.TipocambioHome;
+import com.tracker.expense.db.model.TipocambioId;
+import com.tracker.expense.web.rest.service.OperationRestResult;
+
+@Stateless
+@Remote(PersistenceDtoRemote.class)
+@Interceptors(MonedaBaseInterceptor.class)
+public class TipoCambioDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	@PersistenceContext private EntityManager entityManager;
+	
+	@EJB private TipocambioHome tipocambioHome;
+	@EJB private CuentaHome cuentaHome;
+	
+	private static final Log log = LogFactory.getLog(TipoCambioDtoHome.class);
+	
+	////////////////////////////////////////////////
+	@Override
+	public String getDtoQuery(SearchDto search) {
+		return "select new com.tracker.expense.db.dto.TipoCambioDto("
+				+ "t.id.idmonedaOrigen,"
+				+ "t.monedaByIdmonedaOrigen.nombre,"
+				+ "t.id.idmonedaDestino,"
+				+ "t.monedaByIdmonedaDestino.nombre,"
+				+ "t.tipocambio,"
+				+ "t.version) from Tipocambio t"+addFilters(search);
+	}
+
+	@Override
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Tipocambio t"+addFilters(search);
+	}
+
+	@Override
+	public Object fromDtoToInstance(Object dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getInstance(SearchDto search) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private String addFilters(SearchDto search) {
+		
+		if( search.getSearhFieldsMap() == null ) return "";
+		
+		String temp = "";
+		
+		if( search.getSearhFieldsMap().containsKey("idmonedaorigen") )
+			temp = " where t.id.idmonedaOrigen="+Integer.valueOf(search.getSearhFieldsMap().get("idmonedaorigen"));
+		
+		if( search.getSearhFieldsMap().containsKey("idmonedadestino") ) {
+			if( temp.length() <= 0 )
+				temp = " where t.id.idmonedaDestino="+Integer.valueOf(search.getSearhFieldsMap().get("idmonedadestino"));
+			else
+				temp+= " and t.id.idmonedaDestino="+Integer.valueOf(search.getSearhFieldsMap().get("idmonedadestino"));
+		}
+			
+		return temp;
+	}
+	////////////////////////////////////////////////
+	
+	public OperationRestResult upsertDto(Object dto) {
+		
+		if( !(dto instanceof TipoCambioDto) ) return new OperationRestResult(false, "error, argumento no es de tipo TipoCambioDto, tipo:"+dto.getClass());
+				
+		TipoCambioDto c = (TipoCambioDto) dto;
+		Tipocambio e = new Tipocambio();
+		asignarDtoAInstancia(c, e);
+		
+		try {
+			tipocambioHome.merge(e);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar persistir instancia "+ex.getMessage());
+		}
+		
+		return new OperationRestResult(true, null);
+		
+	}
+	
+	public OperationRestResult removeDto(SearchDto dto) {
+		
+		HashMap<String, String> temp = dto.getSearhFieldsMap();
+		
+		if( temp == null ) return new OperationRestResult(false, "error, argumentos de busqueda en null");
+		
+		if( !temp.containsKey("idmonedaorigen") || temp.get("idmonedaorigen") == null ) 
+				return new OperationRestResult(false, "error, no se encontro argumento idmonedaorigen");
+		if( !temp.containsKey("idmonedadestino") || temp.get("idmonedadestino") == null ) 
+			return new OperationRestResult(false, "error, no se encontro argumento idmonedadestino");
+		
+		TipocambioId search = new TipocambioId(Integer.valueOf(temp.get("idmonedaorigen")), Integer.valueOf(temp.get("idmonedadestino")));
+		
+		Tipocambio c = tipocambioHome.findById(search);
+		
+		if( c == null )
+			return new OperationRestResult(false, "error, no se encontro registro con id:"+temp.get("idmonedaorigen")+"-"+temp.get("idmonedadestino"));
+		
+		try {
+			tipocambioHome.remove(c);
+			return new OperationRestResult(true, null);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error, no se pudo eliminar registro "+ex.getMessage());
+		}
+	}
+
+	public OperationRestResult getDto(SearchDto dto) {
+		
+		HashMap<String, String> temp = dto.getSearhFieldsMap();
+		
+		if( temp == null ) return new OperationRestResult(false, "error, argumentos de busqueda en null");
+		
+		if( !temp.containsKey("idmonedaorigen") ) return new OperationRestResult(false, "error, no se encontro argumento idmonedaorigen");
+		if( !temp.containsKey("idmonedadestino") ) return new OperationRestResult(false, "error, no se encontro argumento idmonedadestino");
+		
+		//crear query
+		Query q = entityManager.createQuery(tipocambioQuery()+" where t.id.idmonedaOrigen =:idmonedaorigen and t.id.idmonedaDestino =:idmonedadestino");
+		
+		//poner el parametro de la llave compuesta
+		q.setParameter("idmonedaorigen", Integer.valueOf(temp.get("idmonedaorigen")));
+		q.setParameter("idmonedadestino", Integer.valueOf(temp.get("idmonedadestino")));
+		
+		//intentar obtener instancia
+		try {
+			TipoCambioDto res = (TipoCambioDto) q.getSingleResult();
+			OperationRestResult t = new OperationRestResult(true, null);
+			t.setData(res);
+			return t;
+		}catch(NoResultException ex) {
+			log.info("error no se entrontro instancia con id "+temp.get("idmonedaorigen")+"-"+temp.get("idmonedadestino"));
+			return new OperationRestResult(false, "error, no se encontro instancia con id "+temp.get("idmonedaorigen")+"-"+temp.get("idmonedadestino"));
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return new OperationRestResult(false, "error al intentar consultar instancia con id "+temp.get("idmonedaorigen")+"-"+temp.get("idmonedadestino")+" "+ex.getMessage());
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public OperationRestResult listDto(SearchDto dto) {
+		
+		String temp = "";
+		
+		if( dto.getOrderFields() != null && dto.getOrderFields().length > 0 ) {
+			
+			for(String x : dto.getOrderFields() ) {
+				if( temp.length() <= 0 )
+					temp = " order by t."+x;
+				else
+					temp+=",t."+x;
+			}
+		}
+		else
+			temp = " order by t.id.idmonedaOrigen,t.id.idmonedaDestino";
+		
+		//crear Query para obtener la lista de cuentas ordenadas por tipo y nombre
+		Query q = entityManager.createQuery(tipocambioQuery()+temp);
+		
+		//en caso de estar especificado, limitar resultados
+		if( dto.getLimite() > 0 ) {
+			q.setMaxResults(dto.getLimite());
+			q.setFirstResult(dto.getPagina()*dto.getLimite());
+		}
+		
+		//objeto que va a contener la lista de resultados
+		List<TipoCambioDto> res = null;
+		
+		//intentar traer la lista de resultados
+		try {
+			res = (List<TipoCambioDto>) q.getResultList();
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar obtener lista "+ex.getMessage());
+		}
+		
+		
+		//crear una resupuesta exitosa
+		OperationRestResult rs = new OperationRestResult(true, null);
+		
+		//agregar el numero total de resultados, esto es un count(*)
+		rs.setResults(getTipocambioDtoCount());
+		
+		//agregar los resultados encontrados
+		rs.setData(res.toArray(new TipoCambioDto[0]));
+		
+		//regresar respuesta
+		return rs;
+	}
+	
+	private int getTipocambioDtoCount() {
+		Query q = entityManager.createQuery("select count(*) from Tipocambio");
+		long count = (long) q.getSingleResult();
+		return (int) count;
+	}
+	
+	private void asignarDtoAInstancia(TipoCambioDto dto,Tipocambio tc) {
+		
+		TipocambioId id = new TipocambioId(dto.getIdmonedaOrigen(), dto.getIdmonedaDestino()); 
+		tc.setId(id);
+		
+		Moneda monedaOrigen = new Moneda();
+		monedaOrigen.setIdmoneda(dto.getIdmonedaOrigen());
+		tc.setMonedaByIdmonedaOrigen(monedaOrigen);
+		
+		Moneda monedaDestino = new Moneda();
+		monedaDestino.setIdmoneda(dto.getIdmonedaDestino());
+		tc.setMonedaByIdmonedaDestino(monedaDestino);
+		
+		tc.setTipocambio(dto.getTipocambio());
+		tc.setVersion(dto.getVersion());
+		
+	}
+	
+	private String tipocambioQuery() {
+		//TipoCambioDto(int idmonedaOrigen, String nombreMonedaOrigen, int idmonedaDestino,String nombreMonedaDestino, double tipocambio, int version
+		return "select new com.tracker.expense.db.dto.TipoCambioDto("
+				+ "t.id.idmonedaOrigen,"
+				+ "t.monedaByIdmonedaOrigen.nombre,"
+				+ "t.id.idmonedaDestino,"
+				+ "t.monedaByIdmonedaDestino.nombre,"
+				+ "t.tipocambio,"
+				+ "t.version) from Tipocambio t";
+	}
+
+}

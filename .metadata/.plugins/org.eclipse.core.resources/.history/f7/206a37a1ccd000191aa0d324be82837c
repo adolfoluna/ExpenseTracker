@@ -1,0 +1,80 @@
+
+	<div class="card container collapse" id="divTransaccionParametros">
+	
+	
+		<br/>
+		
+		<div class="form-group">
+			<label for="idtransaccion">Id</label>
+			<input id="idtransaccion" [(ngModel)]="formaParametros.idtransaccion" type="text" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="selectProveedor">Cuentas</label>
+			<ng-multiselect-dropdown id="selectCuentas"
+							[placeholder]="'seleccione uno o varios'"
+							[data]="listaCuentas"
+							[settings]="dropdownSettings"
+							[(ngModel)] = "formaParametros.cuentas"
+							>
+							
+						</ng-multiselect-dropdown>
+		</div>
+		
+		<div class="form-group">
+			<label for="selectProveedor">Proveedor</label>
+			<ng-multiselect-dropdown id="selectProveedor"
+							[placeholder]="'seleccione uno o varios'"
+							[data]="listaProveedores"
+							[settings]="dropdownSettings"
+							[(ngModel)] = "formaParametros.proveedores"
+							>
+							
+			</ng-multiselect-dropdown>
+		</div>
+		
+		<div class="form-group">
+			<label for="selectArticulos">Articulos</label>
+			<ng-multiselect-dropdown id="selectArticulos"
+							[placeholder]="'seleccione uno o varios'"
+							[data]="listaArticulos"
+							[settings]="dropdownSettings"
+							[(ngModel)]="formaParametros.articulos"
+							>
+							
+						</ng-multiselect-dropdown>
+		</div>
+		
+		<div class="form-group">
+			<label for="selectTicket">Compobantes:</label>
+			<ng-multiselect-dropdown id="selectComprobantes" [(ngModel)]="formaParametros.comprobantes" [placeholder]="'seleccione uno o varios'"	[data]="listaComprobantes"	[settings]="dropdownSettings"></ng-multiselect-dropdown>
+		</div>
+		<br/>
+		
+		<div class="form-inline">
+			<label>Fecha desde:&nbsp;</label>
+			<ng-datepicker [options]="minDatePickerOptions" [(ngModel)]="formaParametros.minfecha" (click)="datePickerClick()"></ng-datepicker>
+			<button (click)="clearMinDate()" class="btn btn-outline-dark"><i class="fa fa-times"></i></button>
+			<label>&nbsp;&nbsp;&nbsp;Fecha hasta:&nbsp;</label>
+			<ng-datepicker [options]="maxDatePickerOptions" [(ngModel)]="formaParametros.maxfecha"  (click)="datePickerClick()"></ng-datepicker>
+			<button (click)="clearMaxDate()" class="btn btn-outline-dark"><i class="fa fa-times"></i></button>
+		</div>
+		
+		<br/>
+		<!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+		<div class="row">
+  			<div class="col-6 col-md-4"></div>
+  			<div class="col-6 col-md-4">
+  				<button 
+  					class="form-control btn btn-info" 
+  					(click)="buscarClick()"
+  					data-toggle="collapse"
+  					data-target="#divTransaccionParametros">Buscar</button>
+  			</div>
+  			<div class="col-6 col-md-4"></div>
+		</div>
+		
+		<br/>
+		
+	</div>
+

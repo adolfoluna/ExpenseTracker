@@ -1,0 +1,33 @@
+package com.tracker.expense.db.dto.home;
+
+import javax.ejb.Stateless;
+
+import com.tracker.expense.db.dto.SearchDto;
+
+@Stateless
+public class ArticuloDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+
+	@Override
+	public String getDtoQuery(SearchDto search) {
+		return "select new com.tracker.expense.db.dto.ArticuloDto(a.idarticulo,a.categoria.idcategoria,a.categoria.nombre,a.nombre,a.version) from Articulo a";
+	}
+
+	@Override
+	public String getCountDtoQuery(SearchDto search) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object fromDtoToInstance(Object dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Object getInstance(SearchDto search) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,35 @@
+
+	<h2>Catalogo de articulo</h2>
+	<button class="btn btn-primary" (click)="newRowClick()">Nuevo +</button>
+	<br/>
+	<br/>
+	<table class="table table-striped">
+		
+		<thead class="thead-dark">
+			<tr>
+				<th (click)="ordenarporid()" style="cursor: pointer;">Id&nbsp;<i id="col_id" class="fa fa-sort-amount-asc text-info" aria-hidden="true"></i></th>
+				<th (click)="ordenarporcategoria" style="cursor: pointer;">Categoria&nbsp;<i id="col_cat" class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+				<th (click)="ordenarpornombre()" style="cursor: pointer;">Nombre&nbsp;<i id="col_nombre" class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+				<th>Version</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			
+			<tr *ngIf="data.length <= 0">
+				<td colspan="7" align="center"><b>No se encontraron resultados</b></td>
+			</tr>
+			
+			<tr *ngFor="let temp of data">
+				<td>{{temp.idarticulo}}</td>
+				<td>{{temp.nombrecategia}}</td>
+				<td>{{temp.nombre}}</td>
+				<td>{{temp.version}}</td>
+				<td>
+					<img alt="" src="assets/editrow.png" width="20px" height="20px" style="cursor:pointer;" (click)="editRowClick(temp)">
+				</td>
+      		</tr>
+		</tbody>
+  
+  </table>

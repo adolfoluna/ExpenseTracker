@@ -1,0 +1,14 @@
+import { Pipe, PipeTransform } from '@angular/core';
+@Pipe({
+   name: 'truncate'
+})
+export class SubstringPipe implements PipeTransform {
+   transform(value: string, len?: number):any {
+       // check if no arguments are supplied then return 50 characters: Default behavior
+       if (!len) 
+          return value;
+       
+       // if both are provided, then return string between those
+       return value.substring(0, len);
+   }
+}

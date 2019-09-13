@@ -1,0 +1,64 @@
+package com.tracker.expense.db.dto.home;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import com.tracker.expense.db.dto.ArticuloDto;
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.model.Articulo;
+import com.tracker.expense.db.model.ArticuloHome;
+import com.tracker.expense.db.model.Categoria;
+
+@Stateless
+public class ArticuloDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	@EJB private ArticuloHome articuloHome;
+
+	@Override
+	public String getDtoQuery(SearchDto search) {
+		return "select new com.tracker.expense.db.dto.ArticuloDto(a.idarticulo,a.categoria.idcategoria,a.categoria.nombre,a.nombre,a.version) from Articulo a"+addFilters(search);
+	}
+
+	@Override
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Articulo"+addFilters(search);
+	}
+	
+	private String addFilters(SearchDto search) {
+		String temp = "";
+		if( search.getSearhFieldsMap() != null && search.getSearhFieldsMap().containsKey("idarticulo") )
+			temp=" where a.idarticulo="+Integer.valueOf(search.getSearhFieldsMap().get("idarticulo"));
+		return temp;
+	}
+
+	@Override
+	public Object fromDtoToInstance(Object dto) {
+		
+		if( !(dto instanceof ArticuloDto) )
+			return null;
+		
+		ArticuloDto adto = (ArticuloDto) dto;
+		Articulo instance = null;
+		
+		if( adto.getIdarticulo() > 0 )
+			instance = articuloHome.findById(adto.getIdarticulo());
+		else
+			instance = new Articulo();
+		
+		Categoria categoria = new Categoria();
+		categoria.setIdcategoria(adto.getIdcategoria());
+		instance.setCategoria(categoria);
+		
+		instance.setNombre(adto.getNombre().trim());
+		instance.setVersion(adto.getVersion());
+		
+		return instance;
+	}
+
+	@Override
+	public Object getInstance(SearchDto search) {
+		//
+		return null;
+	}
+
+}

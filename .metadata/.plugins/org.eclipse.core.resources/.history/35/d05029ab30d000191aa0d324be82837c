@@ -1,0 +1,167 @@
+import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit,Input } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { DatepickerOptions } from 'ng2-datepicker';
+
+import * as esLocale from 'date-fns/locale/es';
+import { format } from 'date-fns'
+import * as $ from 'jquery';
+import * as moment from 'moment';
+
+import { ParentEditComponent } from "../../catalogos/parent-edit.component";
+import { PersistenceService } from '../../services/persistence.service';
+import { PaginacionService } from '../../services/paginacion.service';
+import { EditItemService } from '../../services/edit.item.service';
+import { ListaService } from '../../services/lista.service';
+
+import { SearchObject } from '../../model/searchobject'
+
+@Component({
+  selector: 'app-transaccion-edit-gral',
+  templateUrl: './transaccion-edit-gral.component.html',
+  styleUrls: ['./transaccion-edit-gral.component.css']
+})
+export class TransaccionEditGralComponent extends ParentEditComponent implements OnInit {
+    
+    @Input() idtransaccion:number;
+    
+    fechaDatePickerOptions: DatepickerOptions = {
+            minYear: 1970,
+            maxYear: 2030,
+            displayFormat: 'dddd D MMM YYYY',
+            barTitleFormat: 'MMMM YYYY',
+            dayNamesFormat: 'dd',
+            firstCalendarDay: 0, // 0 - Sunday, 1 - Monday
+            locale: esLocale,
+            barTitleIfEmpty: 'Seleccionar fecha',
+            placeholder: 'Clic para seleccionar fecha', // HTML input placeholder attribute (default: '')
+            addClass: 'form-control ui-datepicker', // Optional, value to pass on to [ngClass] on the input field
+            addStyle: { }, // Optional, value to pass to [ngStyle] on the input field
+            fieldId: 'txFechaPicker', // ID to assign to the input field. Defaults to datepicker-<counter>
+            useEmptyBarTitle: false, // Defaults to true. If set to false then barTitleIfEmpty will be disregarded and a date will always be shown 
+            };
+
+    dropdownSettings = {
+        singleSelection: true,
+        idField: 'id',
+        textField: 'name',
+        allowSearchFilter: true,
+        closeDropDownOnSelection: true,
+    };
+
+    datosForma = this.fb.group({
+        idtransaccion : [0],
+        cuentaSeleccionada : [],
+        proveedorSeleccionado : [],
+        total: [0],
+        nota : [""],
+        complementoRequerido : [false],
+        version: [0],
+    });
+    
+    proveedorSeleccionado = null;
+    fechaSeleccionada = null;
+    
+    listaProveedores = [];
+    listaCuentas = [];
+    
+    constructor(private persistenceService:PersistenceService,
+            private fb: FormBuilder,
+            private edititemService:EditItemService,
+            private paginacionService:PaginacionService,
+            private listaService:ListaService,
+            private route:ActivatedRoute) { 
+        
+        super(paginacionService,persistenceService,route);
+        
+    }
+
+    ngOnInit() {
+        
+        this.updateValues("transaccion",["idtransaccion"], this.datosForma, this.formToInstance,this.instanceToForm);
+        
+        //se ejecuta cada ves que se presiona el boton de editar registro
+        this.edititemService.editItemEvent().subscribe( message => {this.getInstanceFromServer(message); });
+        
+        //obtener el catalogo de cuentas
+        this.listaService.getCuentasNombre().subscribe( message => {this.listaCuentas = message.data;});
+        
+        //obtener el catalogo de proveedores
+        this.listaService.getProveedoresNombre().subscribe( message => {this.listaProveedores = message.data;});
+        
+    }
+    
+    formToInstance():boolean {
+        console.log(this.proveedorSeleccionado); 
+        //validar que se hayan seleccionado los valores necearios para guardar el registro
+        if( this.datosForma.controls.cuentaSeleccionada.value == null ||!this.datosForma.controls.cuentaSeleccionada.value.id ) {alert("Cuenta no seleccionada"); return false;}
+        if( this.proveedorSeleccionado == null || this.proveedorSeleccionado.length <= 0 ) {alert("Proveedor no seleccionado"); return false;}
+        if( this.fechaSeleccionada == null ) {alert("Fecha no seleccionada"); return false;}
+        if( this.datosForma.value.total.length <= 0 || parseFloat(this.datosForma.value.total) == NaN ) {alert("Total incorrecto"); return false;}
+        
+        this.datosForma.value.idproveedor = this.proveedorSeleccionado[0].id;
+        this.datosForma.value.idcuenta = this.datosForma.controls.cuentaSeleccionada.value.id;
+        this.datosForma.value.fechaString =  format(this.fechaSeleccionada, "YYYY-MM-DD");
+        this.datosForma.value.total = parseInt( (parseFloat(this.datosForma.value.total) * 100).toString() );
+        
+        if( $('#complementoRequeridoCheck').parent().hasClass("off") )
+            this.datosForma.value.complementoRequerido = false;
+        else
+            this.datosForma.value.complementoRequerido = true;
+        
+        return true;
+      
+    }
+    
+    instanceToForm(obj:any) {
+        
+        //si es una nueva transaccion, iniciar todos los valores en blanco y salir de la rutina
+        if( obj == null ) {
+            this.datosForma.controls.idtransaccion.setValue(0);
+            this.datosForma.controls.total.setValue("0");
+            this.datosForma.controls.cuentaSeleccionada.setValue(null);
+            this.datosForma.controls.proveedorSeleccionado.setValue(null);
+            this.datosForma.controls.complementoRequerido.setValue(false);
+            this.datosForma.controls.version.setValue(0);
+            this.proveedorSeleccionado = null;
+            this.fechaSeleccionada = new Date();
+            this.datosForma.controls.nota.setValue("");
+            $('#complementoRequeridoCheck').parent().removeClass("btn-primary").addClass("off").addClass("btn-light");
+            //$("#txFechaPicker").val("");
+            return;
+        }
+        
+        for( var i = 0; i < this.listaCuentas.length; i++ ) {
+            if( obj.idcuenta == this.listaCuentas[i].id ) {
+                this.datosForma.controls.cuentaSeleccionada.setValue(this.listaCuentas[i]);
+                break;
+            }
+        }
+        
+        for( var i = 0; i < this.listaProveedores.length; i++ ) {
+            if( obj.idproveedor == this.listaProveedores[i].id ) {
+                this.proveedorSeleccionado = [this.listaProveedores[i]];
+                break;
+            }
+        }
+        
+        //convertir de centavos a pesos
+        obj.total = obj.total / 100;
+        
+        this.fechaSeleccionada = obj.fecha;
+        
+        if( obj.complementoRequerido ) 
+            $('#complementoRequeridoCheck').parent().removeClass("btn-light").removeClass("off").addClass("btn-primary");
+        else
+            $('#complementoRequeridoCheck').parent().removeClass("btn-primary").addClass("off").addClass("btn-light");
+
+        if( obj.nota == null || obj.nota == undefined || obj.nota.length <= 0 )
+            this.datosForma.controls.nota.setValue("");
+        
+    }
+    
+    datePickerClick() {
+        $(".ngx-datepicker-calendar-container").css("z-index","10000");
+    }
+
+}

@@ -1,0 +1,216 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { DatepickerOptions } from 'ng2-datepicker';
+import { ActivatedRoute } from '@angular/router';
+import * as esLocale from 'date-fns/locale/es'
+
+import { ParametrosBusquedaTransaccion } from "../../model/parametros_transaccion";
+
+import { ListaService } from "../../services/lista.service";
+import { BuscarTransaccionesService } from "../../services/buscar.transacciones.service";
+
+import * as $ from 'jquery';
+
+@Component({
+  selector: 'app-transaccion-parametros',
+  templateUrl: './transaccion-parametros.component.html',
+  styleUrls: ['./transaccion-parametros.component.css']
+})
+export class TransaccionParametrosComponent implements OnInit {
+
+    listaProveedores = [];
+    listaArticulos = [];
+    listaCuentas = [];
+
+    dropdownSettings = {
+        singleSelection: false,
+        idField: 'id',
+        textField: 'name',
+        selectAllText: 'Select All',
+        unSelectAllText: 'UnSelect All',
+        itemsShowLimit: 5,
+        allowSearchFilter: true,
+    };
+    
+    minDatePickerOptions: DatepickerOptions = {
+        minYear: 1970,
+        maxYear: 2030,
+        displayFormat: 'dddd D MMM YYYY',
+        barTitleFormat: 'MMMM YYYY',
+        dayNamesFormat: 'dd',
+        firstCalendarDay: 0, // 0 - Sunday, 1 - Monday
+        locale: esLocale,
+        //minDate: new Date(Date.now()), // Minimal selectable date
+        //maxDate: new Date(Date.now()),  // Maximal selectable date
+        barTitleIfEmpty: 'Seleccionar fecha',
+        placeholder: 'Clic para seleccionar fecha', // HTML input placeholder attribute (default: '')
+        addClass: 'form-control ui-datepicker', // Optional, value to pass on to [ngClass] on the input field
+        addStyle: { }, // Optional, value to pass to [ngStyle] on the input field
+        fieldId: 'minDatePicker', // ID to assign to the input field. Defaults to datepicker-<counter>
+        useEmptyBarTitle: false, // Defaults to true. If set to false then barTitleIfEmpty will be disregarded and a date will always be shown 
+        };
+    
+    maxDatePickerOptions: DatepickerOptions = {
+        minYear: 1970,
+        maxYear: 2030,
+        displayFormat: 'dddd D MMM YYYY',
+        barTitleFormat: 'MMMM YYYY',
+        dayNamesFormat: 'dd',
+        firstCalendarDay: 0, // 0 - Sunday, 1 - Monday
+        locale: esLocale,
+        //minDate: new Date(Date.now()), // Minimal selectable date
+        //maxDate: new Date(Date.now()),  // Maximal selectable date
+        barTitleIfEmpty: 'Seleccionar fecha',
+        placeholder: 'Clic para seleccionar fecha', // HTML input placeholder attribute (default: '')
+        addClass: 'form-control', // Optional, value to pass on to [ngClass] on the input field
+        addStyle: {}, // Optional, value to pass to [ngStyle] on the input field
+        fieldId: 'maxDatePicker', // ID to assign to the input field. Defaults to datepicker-<counter>
+        useEmptyBarTitle: false, // Defaults to true. If set to false then barTitleIfEmpty will be disregarded and a date will always be shown 
+    };
+    
+    listaComprobantes = [
+                     { id:"ticket-true", name:"Con ticket"},
+                     { id:"ticket-false", name:"Sin ticket"},
+                     { id:"factura-true", name:"Con factura"},
+                     { id:"factura-false", name:"Sin factura"},
+                     { id:"complemento-true", name:"Con complemento"},
+                     { id:"complemento-false", name:"Sin complemento"},
+                     { id:"voucher-true", name:"Con vale"},
+                     { id:"voucher-false", name:"Sin vale"},
+                     { id:"requierecomplemento", name:"Requiere complemento"},
+                     ];
+    
+    //private formaParametros:ParametrosBusquedaTransaccion = new ParametrosBusquedaTransaccion();
+    @Input() formaParametros:ParametrosBusquedaTransaccion;
+   
+    constructor(private listaService:ListaService,private buscarTransaccionesService:BuscarTransaccionesService,private route: ActivatedRoute) { }
+
+    ngOnInit() {
+        this.listaService.getCuentasNombre().subscribe(message=>{this.cuentasResponse(message);});
+        this.listaService.getProveedoresNombre().subscribe(message=> { this.proveedoresResponse(message); });
+        this.listaService.getArticulosNombre().subscribe(message=> { this.articulosResponse(message); });
+        //this.formaParametros.minfecha = "2019-01-01";
+
+    }
+    
+    proveedoresResponse(res) {
+        
+        if( res == null ) {
+            alert("error, lista de proveedores vacia");
+            return;
+        }
+        
+        if( res.success == false ) {
+            alert(res.message);
+            return;
+        }
+        
+        this.listaProveedores = res.data;
+        
+    }
+    
+    articulosResponse(res) {
+        
+        if( res == null ) {
+            alert("error, lista de articulos en null");
+            return;
+        }
+        
+        if( res.success == false ) {
+            alert(res.message);
+            return;
+        }
+        
+        this.listaArticulos = res.data;
+       
+        
+    }
+    
+    cuentasResponse(res) {
+        
+        if( res == null ) {
+            alert("error, lista de articulos en null");
+            return;
+        }
+        
+        if( res.success == false ) {
+            alert(res.message);
+            return;
+        }
+        
+        this.listaCuentas = res.data;
+        
+        var aux = this.route.snapshot.paramMap.get("cuenta");
+        
+        if( aux  != null && aux.indexOf("c") < 0) {
+            
+            var idcuenta = parseInt(this.route.snapshot.paramMap.get("cuenta"));
+            
+            for( var i = 0; i < this.listaCuentas.length; i++ ) {
+                
+                if( idcuenta == this.listaCuentas[i].id ) {
+                    
+                    this.formaParametros.cuentas = [this.listaCuentas[i]];
+                    
+                    break;
+                }
+            }
+        }
+        
+        if( aux != null && aux.indexOf("c") >= 0 ) {
+            
+            var arr = aux.split("c");
+            var dest = [];
+            
+            for( var h = 0; h < arr.length; h++ ) {
+                
+                //no hacer la busqueda si el elemento esta vacio
+                if( arr[h].length <= 0 )
+                    continue;
+                
+                var idcuenta = parseInt(arr[h]);
+                
+                for( var i = 0; i < this.listaCuentas.length; i++ ) {
+                    
+                    if( idcuenta == this.listaCuentas[i].id ) {
+                        dest.push(this.listaCuentas[i]);
+                        break;
+                    }
+                }
+                
+            }
+            
+            this.formaParametros.cuentas = dest;
+        }
+        
+      //disparar el evento de buscar
+      this.buscarTransaccionesService.triggerBuscar(this.formaParametros);
+        
+    }
+
+    clearMinDate() {
+        this.formaParametros.minfecha = null;
+        $("#minDatePicker").val("");
+    }
+    
+    
+    clearMaxDate() {
+        this.formaParametros.maxfecha = null;
+        $("#maxDatePicker").val("");
+    }
+    
+    datePickerClick() {
+        $(".ngx-datepicker-calendar-container").css("z-index","10000");
+    }
+    
+    buscarClick() {
+        
+        //ir al inicio de la pagina
+        $(document).scrollTop(0);
+
+        //disparar el evento de buscar
+        this.buscarTransaccionesService.triggerBuscar(this.formaParametros);
+        
+    }
+    
+    
+}

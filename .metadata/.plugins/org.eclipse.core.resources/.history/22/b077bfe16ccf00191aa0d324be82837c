@@ -1,0 +1,93 @@
+package com.tracker.expense.db.dto.home;
+
+import javax.ejb.EJB;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.persistence.PersistenceContext;
+
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.dto.TipoCambioDto;
+import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.model.Moneda;
+import com.tracker.expense.db.model.Tipocambio;
+import com.tracker.expense.db.model.TipocambioHome;
+import com.tracker.expense.db.model.TipocambioId;
+
+@Stateless
+@Remote(PersistenceDtoRemote.class)
+@Interceptors(MonedaBaseInterceptor.class)
+public class TipoCambioDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	@EJB private TipocambioHome tipocambioHome;
+	
+	////////////////////////////////////////////////
+	@Override
+	public String getDtoQuery(SearchDto search) {
+		return "select new com.tracker.expense.db.dto.TipoCambioDto("
+				+ "t.id.idmonedaOrigen,"
+				+ "t.monedaByIdmonedaOrigen.nombre,"
+				+ "t.id.idmonedaDestino,"
+				+ "t.monedaByIdmonedaDestino.nombre,"
+				+ "t.tipocambio,"
+				+ "t.version) from Tipocambio t"+addFilters(search)+" order by t.id.idmonedaOrigen,t.id.idmonedaDestino";
+	}
+
+	@Override
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Tipocambio t"+addFilters(search);
+	}
+
+	@Override
+	public Object fromDtoToInstance(Object dto) {
+		
+		if( !(dto instanceof TipoCambioDto) )
+			return null;
+		
+		TipoCambioDto tdto = (TipoCambioDto) dto;
+		
+		Tipocambio tc = new Tipocambio();
+		TipocambioId id = new TipocambioId(tdto.getIdmonedaOrigen(), tdto.getIdmonedaDestino()); 
+		tc.setId(id);
+		
+		Moneda monedaOrigen = new Moneda();
+		monedaOrigen.setIdmoneda(tdto.getIdmonedaOrigen());
+		tc.setMonedaByIdmonedaOrigen(monedaOrigen);
+		
+		Moneda monedaDestino = new Moneda();
+		monedaDestino.setIdmoneda(tdto.getIdmonedaDestino());
+		tc.setMonedaByIdmonedaDestino(monedaDestino);
+		
+		tc.setTipocambio(tdto.getTipocambio());
+		tc.setVersion(tdto.getVersion());
+		
+		return tc;
+	}
+
+	@Override
+	public Object getInstance(SearchDto search) {
+		TipocambioId id = new TipocambioId(Integer.valueOf(search.getSearhFieldsMap().get("idmonedaorigen")), Integer.valueOf(search.getSearhFieldsMap().get("idmonedadestino")));
+		Tipocambio c = tipocambioHome.findById(id);
+		return c;
+	}
+	
+	private String addFilters(SearchDto search) {
+		
+		if( search.getSearhFieldsMap() == null ) return "";
+		
+		String temp = "";
+		
+		if( search.getSearhFieldsMap().containsKey("idmonedaorigen") )
+			temp = " where t.id.idmonedaOrigen="+Integer.valueOf(search.getSearhFieldsMap().get("idmonedaorigen"));
+		
+		if( search.getSearhFieldsMap().containsKey("idmonedadestino") ) {
+			if( temp.length() <= 0 )
+				temp = " where t.id.idmonedaDestino="+Integer.valueOf(search.getSearhFieldsMap().get("idmonedadestino"));
+			else
+				temp+= " and t.id.idmonedaDestino="+Integer.valueOf(search.getSearhFieldsMap().get("idmonedadestino"));
+		}
+			
+		return temp;
+	}
+	
+}

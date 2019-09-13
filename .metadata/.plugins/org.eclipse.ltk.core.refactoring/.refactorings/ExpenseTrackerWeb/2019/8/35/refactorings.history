@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;com.tracker.expense.web.util.FileRemoveUtil&apos; to &apos;AddRemoveFileUtil&apos;&#x0A;- Original project: &apos;ExpenseTrackerWeb&apos;&#x0A;- Original element: &apos;com.tracker.expense.web.util.FileRemoveUtil&apos;&#x0A;- Renamed element: &apos;com.tracker.expense.web.util.AddRemoveFileUtil&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;FileRemoveUtil&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;com.tracker.expense.web.util{FileRemoveUtil.java[FileRemoveUtil" matchStrategy="1" name="AddRemoveFileUtil" qualified="false" references="true" similarDeclarations="false" stamp="1567166516953" textual="false" version="1.0"/>
+</session>

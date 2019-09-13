@@ -1,0 +1,53 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { PaginacionService } from '../../services/paginacion.service';
+import { EditItemService } from '../../services/edit.item.service';
+import { PaginacionObject, PaginacionItem} from '../../model/paginacion';
+import { PersistenceService } from '../../services/persistence.service';
+import { SearchObject, SearchField} from '../../model/searchobject';
+
+import { ParentListComponent } from "../parent-list.component";
+
+@Component({
+  selector: 'app-moneda',
+  templateUrl: './moneda-list.component.html',
+  styleUrls: ['./moneda-list.component.css']
+})
+export class MonedaListComponent extends ParentListComponent implements OnInit {
+    
+    search : SearchObject = new SearchObject();
+    
+    @Input() paginacion:PaginacionObject;
+        
+    constructor(    private persistenceService:PersistenceService,
+                    private paginacionService:PaginacionService,
+                    private edititemService: EditItemService,
+                    private route: ActivatedRoute
+                    ) {
+        super(edititemService,paginacionService,persistenceService);
+    }
+
+    ngOnInit() {
+        
+        this.getList();
+        
+        //se ejecuta cada ves que se cambia el numero de pagina
+        this.paginacionService.cambioPaginaEvent().subscribe(message=> { this.getList(); });
+        
+    }
+    
+    getList() {
+        
+        if( this.route.snapshot.paramMap.get("catalogo") != "moneda" )
+            return;  
+        
+        this.search.catalogo = "moneda";
+        this.search.searchFields = [];
+        this.search.orderFields = [ "idmoneda"];
+        
+        this.getResultsList(this.search, this.paginacion);
+        
+    }
+
+}

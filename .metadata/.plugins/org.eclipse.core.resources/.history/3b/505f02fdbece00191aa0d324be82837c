@@ -1,0 +1,177 @@
+package com.tracker.expense.db.dto.home;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.tracker.expense.db.dto.CategoriaDto;
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.model.Categoria;
+import com.tracker.expense.db.model.CategoriaHome;
+import com.tracker.expense.web.rest.service.OperationRestResult;
+
+@Stateless
+public class CategoriaDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	private static final Log log = LogFactory.getLog(CategoriaDtoHome.class);
+
+	@PersistenceContext private EntityManager entityManager;
+	@EJB private CategoriaHome categoriaHome;
+	
+	@Override
+	public OperationRestResult upsertDto(Object dto) {
+		
+		if( !(dto instanceof CategoriaDto) ) return new OperationRestResult(false, "error, argumento no es de tipo CategoriaDto, tipo:"+dto.getClass());
+		
+		CategoriaDto c = (CategoriaDto) dto;
+		Categoria e = new Categoria();
+		
+		asignarDtoAInstancia(c, e);
+		
+		try {
+			categoriaHome.merge(e);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar persistir instancia "+ex.getMessage());
+		}
+		
+		return new OperationRestResult(true, null);
+	}
+
+	@Override
+	public OperationRestResult removeDto(SearchDto dto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public OperationRestResult getDto(SearchDto dto) {
+		
+		HashMap<String, String> temp = dto.getSearhFieldsMap();
+		
+		if( temp == null ) return new OperationRestResult(false, "error, argumentos de busqueda en null");
+		
+		if( !temp.containsKey("idcategoria") ) return new OperationRestResult(false, "error, no se encontro argumento idcategoria");
+		
+		//crear query
+		Query q = entityManager.createQuery(categoriaQuery()+" where c.idcategoria =:idcategoria");
+		
+		//poner el parametro de la llave
+		q.setParameter("idcategoria", Integer.valueOf(temp.get("idcategoria")));
+		
+		//intentar obtener instancia
+		try {
+			CategoriaDto res = (CategoriaDto) q.getSingleResult();
+			OperationRestResult t = new OperationRestResult(true, null);
+			t.setData(res);
+			return t;
+		}catch(NoResultException ex) {
+			log.info("error no se entrontro instancia con idcategoria "+temp.get("idcategoria"));
+			return new OperationRestResult(false, "error, no se encontro instancia con idcategoria "+temp.get("idcategoria"));
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return new OperationRestResult(false, "error al intentar consultar cuenta con idcategoria "+temp.get("idcategoria")+" "+ex.getMessage());
+		}
+	}
+
+	/*
+	@SuppressWarnings("unchecked")
+	@Override
+	public OperationRestResult listDto(SearchDto dto) {
+		
+		String temp = "";
+		
+		if( dto.getOrderFields() != null && dto.getOrderFields().length > 0 ) {
+			
+			for(String x : dto.getOrderFields() ) {
+				if( temp.length() <= 0 )
+					temp = " order by c."+x;
+				else
+					temp+=",c."+x;
+			}
+		}
+		else
+			temp = " order by c.idcategoria";
+		
+		//crear Query para obtener la lista de cuentas ordenadas por tipo y nombre
+		Query q = entityManager.createQuery(categoriaQuery()+temp);
+		
+		//en caso de estar especificado, limitar resultados
+		if( dto.getLimite() > 0 ) {
+			q.setMaxResults(dto.getLimite());
+			q.setFirstResult(dto.getPagina()*dto.getLimite());
+		}
+		
+		List<CategoriaDto> res = null;
+		
+		//intentar traer la lista de resultados
+		try {
+			res = (List<CategoriaDto>) q.getResultList();
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar obtener lista "+ex.getMessage());
+		}
+				
+		//crear una resupuesta exitosa
+		OperationRestResult rs = new OperationRestResult(true, null);
+		
+		//agregar el numero total de resultados, esto es un count(*)
+		rs.setResults(getCategoriaDtoCount());
+		
+		//agregar los resultados encontrados
+		rs.setData(res.toArray(new CategoriaDto[0]));
+		
+		//regresar respuesta
+		return rs;
+
+	}*/
+	
+	private String categoriaQuery() {
+		return "select new com.tracker.expense.db.dto.CategoriaDto(res.idcategoria,res.nombre,res.version) from Categoria res";
+	}
+	
+	public String getDtoQuery(SearchDto dto) {
+		
+		String temp = "";
+
+		//agregar todos los campo por los que se va a ordenar los resultados
+		if( dto.getOrderFields() != null && dto.getOrderFields().length > 0 ) {
+			
+			for(String x : dto.getOrderFields() ) {
+				if( temp.length() <= 0 )
+					temp = " order by res."+x;
+				else
+					temp+=",res."+x;
+			}
+		}
+		
+		return "select new com.tracker.expense.db.dto.CategoriaDto(res.idcategoria,res.nombre,res.version) from Categoria res"+temp;
+	}
+	
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Categoria";
+	}
+	
+	private int getCategoriaDtoCount() {
+		Query q = entityManager.createQuery("select count(*) from Categoria");
+		long count = (long) q.getSingleResult();
+		return (int) count;
+	}
+	
+	private void asignarDtoAInstancia(CategoriaDto c, Categoria instancia) {
+		
+		if( c.getIdcategoria() > 0 )
+			instancia.setIdcategoria(c.getIdcategoria());
+		
+		instancia.setNombre(c.getNombre().trim());
+		instancia.setVersion(c.getVersion());
+	}
+
+}

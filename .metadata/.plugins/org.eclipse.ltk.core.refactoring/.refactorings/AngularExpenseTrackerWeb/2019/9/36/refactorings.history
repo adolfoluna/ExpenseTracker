@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;AngularExpenseTrackerWeb/src/app/model/substringpipe.ts&apos; to &apos;truncatepipe.ts&apos;" description="Rename resource &apos;substringpipe.ts&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/app/model/substringpipe.ts" name="truncatepipe.ts" stamp="1567792308756" updateReferences="true"/>
+</session>

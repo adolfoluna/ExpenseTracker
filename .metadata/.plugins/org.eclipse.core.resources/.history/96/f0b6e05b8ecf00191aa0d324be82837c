@@ -1,0 +1,33 @@
+
+	<h2>Catalogo de articulo</h2>
+	<button class="btn btn-primary" (click)="newRowClick()">Nuevo +</button>
+	<br/>
+	<br/>
+	<table class="table table-striped">
+		
+		<thead class="thead-dark">
+			<tr>
+				<th>Id</th>
+				<th>Nombre</th>
+				<th>Version</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			
+			<tr *ngIf="data.length <= 0">
+				<td colspan="7" align="center"><b>No se encontraron resultados</b></td>
+			</tr>
+			
+			<tr *ngFor="let temp of data">
+				<td>{{temp.idcategoria}}</td>
+				<td>{{temp.nombre}}</td>
+				<td>{{temp.version}}</td>
+				<td>
+					<img alt="" src="assets/editrow.png" width="20px" height="20px" style="cursor:pointer;" (click)="editRowClick(temp)">
+				</td>
+      		</tr>
+		</tbody>
+  
+  </table>

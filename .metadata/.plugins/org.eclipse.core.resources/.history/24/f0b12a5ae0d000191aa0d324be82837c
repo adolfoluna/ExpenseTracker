@@ -1,0 +1,30 @@
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from "rxjs";
+
+
+@Injectable({ providedIn: 'root'})
+export class EditItemService {
+    
+    private subject = new Subject<any>();
+    
+    constructor() { }
+    
+    triggerEditItem(item:any,catalogo:string) {
+        console.log("...........")
+        
+        var test:any = item;
+        
+        console.log(item);
+        if( item ! =null && item != undefined )
+            test.catalogo = catalogo;
+        console.log(item);
+        console.log(test);
+        console.log("...........")
+        this.subject.next(item);
+    }
+    
+    editItemEvent() : Observable<any> {
+        return this.subject.asObservable();
+    }
+  
+}

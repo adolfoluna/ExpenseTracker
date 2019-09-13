@@ -1,0 +1,111 @@
+package com.tracker.expense.db.dto.home;
+
+import java.util.HashMap;
+
+import javax.ejb.EJB;
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.tracker.expense.db.dto.MonedaDto;
+import com.tracker.expense.db.dto.SearchDto;
+import com.tracker.expense.db.home.MonedaBaseHome;
+import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.home.TipocambioHome2;
+import com.tracker.expense.db.model.Moneda;
+import com.tracker.expense.db.model.MonedaHome;
+
+@Stateless
+@Remote(PersistenceDtoRemote.class)
+@Interceptors(MonedaBaseInterceptor.class)
+public class MonedaDtoHome extends ParentPersistenceHome implements PersistenceDtoRemote {
+	
+	@PersistenceContext private EntityManager entityManager;
+	
+	@EJB private TipocambioHome2 tipocambioHome;
+	@EJB private MonedaHome monedaHome;
+	
+	private static final Log log = LogFactory.getLog(MonedaDtoHome.class);
+	
+	@Override
+	public String getDtoQuery(SearchDto search) {
+		return "select new com.tracker.expense.db.dto.MonedaDto(m.idmoneda,m.nombre,m.monedaBase,m.version) from Moneda m"+addFilters(search);
+	}
+
+	@Override
+	public String getCountDtoQuery(SearchDto search) {
+		return "select count(*) from Moneda m"+addFilters(search);
+	}
+
+	@Override
+	public Object fromDtoToInstance(Object dto) {
+		
+		if( !(dto instanceof MonedaDto) )
+			return null;
+		
+		MonedaDto mdto = (MonedaDto) dto;
+		
+		if( mdto.getIdmoneda() > 0 ) {
+			
+			//ir a la base de datos y traer la moneda
+			Moneda moneda = monedaHome.findById(mdto.getIdmoneda());
+			
+			if( moneda == null ) {
+				log.info("error moneda "+mdto.getIdmoneda()+" no encontrada");
+				return null;
+			}
+			
+			//si la moneda no es base y se esta solicitando que se haga base eliminar las otras monedas base
+			if( moneda.getMonedaBase() <= 0 && mdto.isMonedaBase() ) {
+				eliminarMonedaBase(mdto.getIdmoneda());
+				moneda.setMonedaBase((byte) 1);
+			}
+			
+			moneda.setNombre(mdto.getNombre());
+			moneda.setVersion(mdto.getVersion());
+			
+			return moneda;
+		}
+		
+		Moneda moneda = new Moneda();
+		
+		if( mdto.isMonedaBase() ) {
+			eliminarMonedaBase(mdto.getIdmoneda());
+			moneda.setMonedaBase( (byte) 1 );
+		} else
+			moneda.setMonedaBase( (byte) 0 );
+		
+		return moneda;
+	}
+
+	@Override
+	public Object getInstance(SearchDto search) {
+		HashMap<String, String> temp = search.getSearhFieldsMap();
+		Moneda m = monedaHome.findById(Integer.valueOf(temp.get("idmoneda")));
+		return m;
+	}
+	
+	private String addFilters(SearchDto search) {
+		
+		HashMap<String, String> aux = search.getSearhFieldsMap();
+		
+		if( aux != null && aux.containsKey("idmoneda") ) 
+			return " where m.idmoneda="+Integer.valueOf(aux.get("idmoneda"));
+		
+		return "";
+	}
+
+	public void eliminarMonedaBase(int idmoneda) {
+		Query q = entityManager.createQuery("update Moneda m set m.monedaBase=0 where m.idmoneda<>:idmoneda");
+		q.setParameter("idmoneda", idmoneda);
+		q.executeUpdate();
+		MonedaBaseHome.clear();
+	}
+
+}

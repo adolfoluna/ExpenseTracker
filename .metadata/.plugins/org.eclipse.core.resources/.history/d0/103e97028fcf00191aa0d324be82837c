@@ -1,0 +1,44 @@
+import { Component, OnInit, Input } from '@angular/core';
+
+import { PersistenceService } from '../../services/persistence.service';
+import { PaginacionService } from '../../services/paginacion.service';
+import { EditItemService } from '../../services/edit.item.service';
+
+import { PaginacionObject, PaginacionItem } from '../../model/paginacion';
+import { SearchObject, SearchField } from '../../model/searchobject';
+
+import { ParentListComponent } from "../parent-list.component";
+
+@Component({
+  selector: 'app-articulo-list',
+  templateUrl: './articulo-list.component.html',
+  styleUrls: ['./articulo-list.component.css']
+})
+export class ArticuloListComponent extends ParentListComponent implements OnInit {
+
+    @Input() paginacion:PaginacionObject;
+    search : SearchObject = new SearchObject();
+
+    constructor(private edititemService: EditItemService,private persistenceService:PersistenceService,private paginacionService:PaginacionService) {
+        super(edititemService,paginacionService,persistenceService);
+    }
+
+    ngOnInit() {
+        
+        //obtener lista
+        this.getList();
+        
+        //se ejecuta cada ves que se cambia el numero de pagina
+        this.paginacionService.cambioPaginaEvent().subscribe(message=> { this.getList(); });
+    }
+    
+    getList() {
+
+        this.search.catalogo = "articulo";
+        this.search.searchFields = [];
+        this.search.orderFields = [ "adarticulo"];
+        
+        this.getResultsList(this.search, this.paginacion);
+
+    }
+}
