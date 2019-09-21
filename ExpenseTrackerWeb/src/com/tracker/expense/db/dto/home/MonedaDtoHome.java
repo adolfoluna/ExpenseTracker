@@ -13,8 +13,8 @@ import org.apache.commons.logging.LogFactory;
 
 import com.tracker.expense.db.dto.MonedaDto;
 import com.tracker.expense.db.dto.SearchDto;
-import com.tracker.expense.db.home.MonedaBaseHome;
 import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.home.MonedaBaseValues;
 import com.tracker.expense.db.model.Moneda;
 import com.tracker.expense.db.model.MonedaHome;
 
@@ -94,7 +94,7 @@ public class MonedaDtoHome extends ParentPersistenceHome implements PersistenceD
 		Query q = entityManager.createQuery("update Moneda m set m.monedaBase=0 where m.idmoneda<>:idmoneda");
 		q.setParameter("idmoneda", idmoneda);
 		q.executeUpdate();
-		MonedaBaseHome.clear();
+		MonedaBaseValues.clear();
 	}
 
 }

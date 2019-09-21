@@ -65,7 +65,6 @@ public abstract class ParentPersistenceHome {
 				
 	}
 	
-	
 	public OperationRestResult getDto(SearchDto dto) {
 		System.out.println("consultando catalogo:"+dto.getCatalogo());
 		//crear query

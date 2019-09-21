@@ -20,11 +20,10 @@ import com.tracker.expense.db.dto.SearchDto;
 import com.tracker.expense.db.dto.TransaccionArticuloDto;
 import com.tracker.expense.db.dto.TransaccionDto;
 import com.tracker.expense.db.home.MonedaBaseInterceptor;
-import com.tracker.expense.db.model.Transaccion;
+import com.tracker.expense.db.home.TotalUpdaterHome;
 import com.tracker.expense.db.model.TransaccionArticulo;
 import com.tracker.expense.db.model.TransaccionArticuloHome;
 import com.tracker.expense.db.model.TransaccionArticuloId;
-import com.tracker.expense.db.model.TransaccionHome;
 import com.tracker.expense.web.rest.service.OperationRestResult;
 
 @Stateless
@@ -33,9 +32,8 @@ import com.tracker.expense.web.rest.service.OperationRestResult;
 public class TransaccionArticuloDtoHome implements PersistenceDtoRemote {
 	
 	@PersistenceContext private EntityManager entityManager;
-
 	@EJB private TransaccionArticuloHome transaccionArticuloHome;
-	@EJB private TransaccionHome transaccionHome;
+	@EJB private TotalUpdaterHome totalupdaterHome;
 	
 	private static final Log log = LogFactory.getLog(TransaccionArticuloDtoHome.class);
 	
@@ -46,29 +44,30 @@ public class TransaccionArticuloDtoHome implements PersistenceDtoRemote {
 			return new OperationRestResult(false, "error, argumento no es de tipo TransaccionArticuloDto, tipo:"+dto.getClass());
 		
 		//convertir argumento tipo Object a TransaccionArticuloDto
-		TransaccionArticuloDto articulodto = (TransaccionArticuloDto) dto;
-		
-		//actualizar el total de la transaccion
-		OperationRestResult res = updateTotal(articulodto.getIdtransaccion(), articulodto.getTotal());
-		
-		//si hubo algun error al intentar actualizar el total de la transaccion, salir de la rutina
-		if( res != null )
-			return res;
+		TransaccionArticuloDto adto = (TransaccionArticuloDto) dto;
 		
 		//validar que el numero de transaccion este especificado
-		if( articulodto.getIdtransaccion() <= 0 ) 
+		if( adto.getIdtransaccion() <= 0 ) 
 			return new OperationRestResult(false,"error, parametros idtransaccion menor o igual a cero");
 		
-		updateTotal(articulodto.getIdarticulo(),articulodto.getTotal());
+		//asegurarse que no exista un articulo ya registrado
+		TransaccionArticuloId aux = new TransaccionArticuloId(adto.getIdtransaccion(), adto.getIdarticulo());
+		if( transaccionArticuloHome.findById(aux) != null ) 
+			return new OperationRestResult(false, "ya existe este articulo capturado, intentar borrar el articulo existente para reinsertarlo");
+		
+		//consultar el tipo de cambio y actualizar el total de la transaccion y el saldo de la cuenta
+		double tc = totalupdaterHome.updateTransactionItem(adto.getIdtransaccion(), adto.getTotal());
 		
 		//asignar valores a la instancia que se va a guardar en la base de datos
-		TransaccionArticuloId id = new TransaccionArticuloId(articulodto.getIdtransaccion(), articulodto.getIdarticulo());
+		TransaccionArticuloId id = new TransaccionArticuloId(adto.getIdtransaccion(), adto.getIdarticulo());
 		TransaccionArticulo row = new TransaccionArticulo();
 		row.setId(id);
-		row.setCantidad(articulodto.getCantidad());
-		row.setSubtotal(articulodto.getSubtotal());
-		row.setIva(articulodto.getIva());
-		row.setTotal(articulodto.getTotal());
+		row.setCantidad(adto.getCantidad());
+		row.setSubtotal(adto.getSubtotal());
+		row.setIva(adto.getIva());
+		row.setTotal(adto.getTotal());
+		row.setTotalbase( (long) (adto.getTotal()*tc) );//totalbase = tipo de cambio * total moneda original
+		row.setVersion(0);
 		
 		try {
 
@@ -110,7 +109,7 @@ public class TransaccionArticuloDtoHome implements PersistenceDtoRemote {
 				return new OperationRestResult(false, "registro no encontrado");
 			
 			//restar el total de la transaccion lo del articulo que se esta eliminando
-			updateTotal(aux.getId().getIdtransaccion(), aux.getTotal() * -1);
+			totalupdaterHome.updateTransactionItem(id.getIdtransaccion(), aux.getTotal()*-1);
 			
 			//intentar eliminar registro de la base de datos
 			transaccionArticuloHome.remove(aux);
@@ -183,9 +182,6 @@ public class TransaccionArticuloDtoHome implements PersistenceDtoRemote {
 		return rs;
 	}
 
-	/*public TransaccionArticuloDto(int idtransaccion, int idarticulo, String articuloNombre, float cantidad,
-			long subtotal, float iva, long total, int version) {*/
-	
 	private String transaccionArticuloQuery() {
 		return "select new com.tracker.expense.db.dto.TransaccionArticuloDto("
 				+ "t.id.idtransaccion,"
@@ -219,27 +215,6 @@ public class TransaccionArticuloDtoHome implements PersistenceDtoRemote {
 		}
 		
 		return q;
-		
-	}
-	
-	private OperationRestResult updateTotal(int idtransaccion,long total) {
-		
-		try {
-			
-			//intentar traer la instancia con la transaccion idtransaccion
-			Transaccion t = transaccionHome.findById(idtransaccion);
-			
-			//sumar el total que ya tiene la transaccion mas el total del articulo que se esta agregando
-			t.setTotal(t.getTotal()+total);
-			
-			//guardar cambios en la base de datos
-			entityManager.merge(t);
-			
-			//si regresa null significa que no hubo ningun error
-			return null;
-		}catch(Exception ex) {
-			return new OperationRestResult(false, "error al intentar actualizar total de transaccion "+ex.getMessage());
-		}
 		
 	}
 	

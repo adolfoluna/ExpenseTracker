@@ -1,25 +1,67 @@
  <div class="container">
- 	<h1 class="text-center">Gr&aacute;fica de gastos por categoria</h1>
- 	<div class="d3-chart" style="height: 800px;" #chart></div>
- 	<br/>
- 	<table class="table table-striped">
+ 	<h1 class="text-center">Gr&aacute;fica de gastos por mes</h1>
+ 	<div id="aux" style="position: absolute; background-color: whitesmoke;"></div>
+ 	
+ 	<ul class="nav nav-tabs">
+ 		<li class="nav-item">
+ 			<a class="nav-link active" data-toggle="tab" href="#tabgraph" id="navtabgraph">Gr&aacute;fica</a>
+ 		</li>
  		
- 		<thead class="thead-dark">
- 			<tr>
- 				<th>Categoria</th>
- 				<th>Mes</th>
- 			</tr>
- 		</thead>
- 		
- 		<tbody>
- 			<tr>
- 				<td>asd</td>
- 				<td>asd</td>
- 			</tr>
- 			<tr>
- 				<td>asd</td>
- 				<td>asd</td>
- 			</tr>
- 		</tbody>
- 	</table>
+ 		<li class="nav-item">
+ 			<a class="nav-link" data-toggle="tab" href="#tabgraphparams" id="navtabgraphparams">Par&aacute;metros</a>
+ 		</li>
+ 	</ul>
+ 	
+ 	<div class="tab-content">
+  		
+  		<div class="tab-pane container active" id="tabgraph">
+			
+			<div class="d3-chart" style="height: 400px;" #chart></div>
+			
+			<br/>
+			
+			<table class="table table-striped">
+		 		<thead class="thead-dark">
+		 			<tr>
+		 				<th>Fecha</th>
+		 				<th>Total</th>
+		 			</tr>
+		 		</thead>
+		 		
+		 		<tbody>
+		 			<tr *ngFor="let temp of data">
+						<td>{{temp.label}}</td>
+						<td>{{ temp.value  |  number:'1.0-2' }}</td>
+		      		</tr>
+		 		</tbody>
+		 	</table>
+		 	
+		</div>
+		
+  		<div class="tab-pane container" id="tabgraphparams">
+  			<br/>
+  			<div class="form-group" [formGroup]="datosForma">
+			    <label>N&uacute;mero de meses a graficar</label>
+			    <select class="form-control" formControlName="limiteSeleccionado">
+			    	<option *ngFor="let item of listaLimite" [ngValue]="item">{{ item }}</option>
+			    </select>
+		  </div>
+		  
+		  <div class="form-group" [formGroup]="datosForma">
+			    <label>Seleccionar a&ntilde;o</label>
+			    <select class="form-control" formControlName="yearSeleccionado">
+			    	<option *ngFor="let item of listaYears" [ngValue]="item">{{ item }}</option>
+			    </select>
+		  </div>
+		  
+		  <button class="btn btn-info" (click)="actualizarGrafica()">Actualizar gr&aacute;fica</button>
+		  		
+  		</div>
+  		
+		
+		
+		
+	</div>
+ 	
+ 	
  </div>

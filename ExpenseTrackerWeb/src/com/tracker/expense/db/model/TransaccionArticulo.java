@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Aug 10, 2019, 12:46:39 PM by Hibernate Tools 3.2.2.GA
+// Generated Sep 20, 2019, 1:07:25 AM by Hibernate Tools 3.2.2.GA
 
 
 import javax.persistence.AttributeOverride;
@@ -31,11 +31,12 @@ public class TransaccionArticulo  implements java.io.Serializable {
      private long subtotal;
      private float iva;
      private long total;
+     private long totalbase;
 
     public TransaccionArticulo() {
     }
 
-    public TransaccionArticulo(TransaccionArticuloId id, Transaccion transaccion, Articulo articulo, float cantidad, long subtotal, float iva, long total) {
+    public TransaccionArticulo(TransaccionArticuloId id, Transaccion transaccion, Articulo articulo, float cantidad, long subtotal, float iva, long total, long totalbase) {
        this.id = id;
        this.transaccion = transaccion;
        this.articulo = articulo;
@@ -43,6 +44,7 @@ public class TransaccionArticulo  implements java.io.Serializable {
        this.subtotal = subtotal;
        this.iva = iva;
        this.total = total;
+       this.totalbase = totalbase;
     }
    
      @EmbeddedId
@@ -119,6 +121,15 @@ public class TransaccionArticulo  implements java.io.Serializable {
     
     public void setTotal(long total) {
         this.total = total;
+    }
+    
+    @Column(name="totalbase", nullable=false)
+    public long getTotalbase() {
+        return this.totalbase;
+    }
+    
+    public void setTotalbase(long totalbase) {
+        this.totalbase = totalbase;
     }
 
 

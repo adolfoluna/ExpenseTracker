@@ -18,13 +18,13 @@ public class MonedaBaseInterceptor {
 	 public Object intercept(InvocationContext context) throws Exception {
 	 
 		 //si la moneda base ya fue determinada entonces proceguir y abandonar rutina
-		 if( MonedaBaseHome.getMonedaBase() > 0 ) 
+		 if( MonedaBaseValues.getMonedaBase() > 0 ) 
 			 return context.proceed();
 		 
 		 //consultar la base de datos para poner la base moneda del sistema
 		 monedaBaseHome.setMonedaBase();
 		 
-		 if( MonedaBaseHome.getMonedaBase() <= 0 )
+		 if( MonedaBaseValues.getMonedaBase() <= 0 )
 			 return null;
 
 		 return context.proceed();

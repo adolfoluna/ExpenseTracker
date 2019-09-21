@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Aug 10, 2019, 12:46:39 PM by Hibernate Tools 3.2.2.GA
+// Generated Sep 20, 2019, 1:07:25 AM by Hibernate Tools 3.2.2.GA
 
 
 import java.util.Date;
@@ -38,6 +38,7 @@ public class Transaccion  implements java.io.Serializable {
      private String articulos;
      private long total;
      private double tipocambio;
+     private long totalbase;
      private String ticket;
      private String pago;
      private String factura;
@@ -51,21 +52,23 @@ public class Transaccion  implements java.io.Serializable {
     }
 
 	
-    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, long total, double tipocambio, byte complementorequerido) {
+    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, long total, double tipocambio, long totalbase, byte complementorequerido) {
         this.proveedor = proveedor;
         this.cuenta = cuenta;
         this.fecha = fecha;
         this.total = total;
         this.tipocambio = tipocambio;
+        this.totalbase = totalbase;
         this.complementorequerido = complementorequerido;
     }
-    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, String articulos, long total, double tipocambio, String ticket, String pago, String factura, String complemento, byte complementorequerido, String voucher, String nota, Set<TransaccionArticulo> transaccionArticulos) {
+    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, String articulos, long total, double tipocambio, long totalbase, String ticket, String pago, String factura, String complemento, byte complementorequerido, String voucher, String nota, Set<TransaccionArticulo> transaccionArticulos) {
        this.proveedor = proveedor;
        this.cuenta = cuenta;
        this.fecha = fecha;
        this.articulos = articulos;
        this.total = total;
        this.tipocambio = tipocambio;
+       this.totalbase = totalbase;
        this.ticket = ticket;
        this.pago = pago;
        this.factura = factura;
@@ -148,6 +151,15 @@ public class Transaccion  implements java.io.Serializable {
     
     public void setTipocambio(double tipocambio) {
         this.tipocambio = tipocambio;
+    }
+    
+    @Column(name="totalbase", nullable=false)
+    public long getTotalbase() {
+        return this.totalbase;
+    }
+    
+    public void setTotalbase(long totalbase) {
+        this.totalbase = totalbase;
     }
     
     @Column(name="ticket", length=50)

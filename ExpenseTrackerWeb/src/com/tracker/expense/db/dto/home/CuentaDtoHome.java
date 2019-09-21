@@ -16,6 +16,7 @@ import com.tracker.expense.db.dto.CuentaDto;
 import com.tracker.expense.db.dto.SearchDto;
 import com.tracker.expense.db.home.MonedaBaseHome;
 import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.home.MonedaBaseValues;
 import com.tracker.expense.db.home.TipocambioHome2;
 import com.tracker.expense.db.model.Cuenta;
 import com.tracker.expense.db.model.CuentaHome;
@@ -134,17 +135,17 @@ public class CuentaDtoHome extends ParentPersistenceHome implements PersistenceD
 			
 			CuentaDto c = (CuentaDto) temp;
 			
-			if( c.getIdmoneda() == MonedaBaseHome.getMonedaBase() ) {
+			if( c.getIdmoneda() == MonedaBaseValues.getMonedaBase() ) {
 				c.setSaldoMonedaBase(c.getSaldo());
 				continue;
 			}
 			
-			log.info("buscando conversion de moneda "+c.getIdmoneda()+"-"+c.getMoneda()+" a "+MonedaBaseHome.getMonedaBase()+"-"+MonedaBaseHome.getMonedaBaseNombre());
+			log.info("buscando conversion de moneda "+c.getIdmoneda()+"-"+c.getMoneda()+" a "+MonedaBaseValues.getMonedaBase()+"-"+MonedaBaseValues.getMonedaBaseNombre());
 			
-			Tipocambio t = tipocambioHome.getTipocambio(c.getIdmoneda(), MonedaBaseHome.getMonedaBase());
+			Tipocambio t = tipocambioHome.getTipocambio(c.getIdmoneda(), MonedaBaseValues.getMonedaBase());
 				
 			if( t == null ) 
-				log.info("no se encontro conversion de moneda de "+c.getIdmoneda()+"-"+c.getMoneda()+" a "+MonedaBaseHome.getMonedaBase()+"-"+MonedaBaseHome.getMonedaBaseNombre());
+				log.info("no se encontro conversion de moneda de "+c.getIdmoneda()+"-"+c.getMoneda()+" a "+MonedaBaseValues.getMonedaBase()+"-"+MonedaBaseValues.getMonedaBaseNombre());
 			else {
 				log.info("conversion de moneda encontrada tipo de cambio:"+t.getTipocambio()+" origen:"+t.getMonedaByIdmonedaOrigen().getIdmoneda()+" a "+t.getMonedaByIdmonedaDestino().getIdmoneda());
 				total =  ((double) c.getSaldo() * t.getTipocambio());

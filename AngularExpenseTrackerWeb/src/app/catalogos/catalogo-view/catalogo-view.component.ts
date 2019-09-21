@@ -67,6 +67,7 @@ export class CatalogoViewComponent implements OnInit {
         
         //cada ves que cambie la ruta, cargar el componente y subcomponente
         this.route.url.subscribe(url =>{
+            this.paginacionObject.pagina = 0; //volver a la pagina 0
             this.loadComponent();
             this.loadSubComponent();
        });

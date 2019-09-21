@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Aug 10, 2019, 12:46:39 PM by Hibernate Tools 3.2.2.GA
+// Generated Sep 20, 2019, 1:07:25 AM by Hibernate Tools 3.2.2.GA
 
 
 import javax.persistence.Column;

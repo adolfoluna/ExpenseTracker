@@ -13,10 +13,12 @@ import com.tracker.expense.db.dto.AdvancedSearchDtoGroup;
 import com.tracker.expense.db.dto.SearchDto;
 import com.tracker.expense.db.dto.TransaccionDto;
 import com.tracker.expense.db.home.MonedaBaseInterceptor;
+import com.tracker.expense.db.home.TotalUpdaterHome;
 import com.tracker.expense.db.model.Cuenta;
 import com.tracker.expense.db.model.Proveedor;
 import com.tracker.expense.db.model.Transaccion;
 import com.tracker.expense.db.model.TransaccionHome;
+import com.tracker.expense.web.rest.service.OperationRestResult;
 
 @Stateless
 @Remote(PersistenceDtoRemote.class)
@@ -25,6 +27,7 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 
 	private static final Log log = LogFactory.getLog(TransaccionDtoHome.class);
 	@EJB private TransaccionHome transaccionHome;
+	@EJB private TotalUpdaterHome totalupdaterHome;
 	
 	@Override
 	public String getDtoQuery(SearchDto search) {
@@ -38,6 +41,7 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 				+ "t.articulos,"
 				+ "t.total,"
 				+ "t.tipocambio,"
+				+ "t.totalbase,"
 				+ "t.ticket,"
 				+ "t.pago,"
 				+ "t.factura,"
@@ -59,14 +63,19 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 		if(!(dto instanceof TransaccionDto) )
 			return null;
 		
+		double tc = 0;
+		
 		TransaccionDto tdto = (TransaccionDto) dto;
 		Transaccion tx = null;
 		
-		if( tdto.getIdtransaccion() > 0 )
+		if( tdto.getIdtransaccion() > 0 ) {
 			tx = transaccionHome.findById(tdto.getIdtransaccion());
-		else
+			tc = totalupdaterHome.updateTansaction(tdto.getIdtransaccion(),tdto.getIdcuenta(),tx.getCuenta().getIdcuenta(), tdto.getTotal(), tx.getTotal());
+		}
+		else {
 			tx = new Transaccion();
-		
+			tc = totalupdaterHome.updateTansaction(0,tdto.getIdcuenta(),tdto.getIdcuenta(), tdto.getTotal(), 0);
+		}
 		
 		if( tx.getCuenta() == null || tdto.getIdcuenta() != tx.getCuenta().getIdcuenta() ) {
 			Cuenta c = new Cuenta();
@@ -82,7 +91,9 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 		
 		tx.setFecha(tdto.getFecha());
 		tx.setTotal(tdto.getTotal());
-		
+		tx.setTipocambio(tc);
+		tx.setTotalbase((long)(tdto.getTotal()*tc));
+			
 		if( tdto.getNota() != null && tdto.getNota().trim().length() > 0 )
 			tx.setNota(tdto.getNota().trim());
 		else 
@@ -102,13 +113,36 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 		return c;
 	}
 	
+	@Override
+	public OperationRestResult removeDto(SearchDto search) {
+		
+		Transaccion instance = (Transaccion) getInstance(search);
+		
+		if( instance == null )
+			return new OperationRestResult(false,"instancia no encontrada");
+		
+		//antes de remover la instancia, actualizar el saldo de la cuenta
+		totalupdaterHome.updateTansaction(instance.getIdtransaccion(),instance.getCuenta().getIdcuenta(), instance.getCuenta().getIdcuenta(), 0, instance.getTotal());
+		
+		//intentar eliminar transaccion
+		try {
+			transaccionHome.remove(instance);
+		}catch(Exception ex) {
+			return new OperationRestResult(false, "error al intentar intentar remover instancia "+ex.getMessage());
+		}
+		
+		//regresar que si se pudo realizar la operacion
+		return new OperationRestResult(true, null);
+				
+	}
+	
 	private String addFilters(SearchDto search) {
-		String temp = " where 1=1";
+		String temp = "";
 		
 		if( search.getSearhFieldsMap() != null && search.getSearhFieldsMap().containsKey("idtransaccion") )
 			return " where t.idtransaccion="+search.getSearhFieldsMap().get("idtransaccion");
 		
-		//si no hay busqueda de avanzada salir
+		//si no hay busqueda avanzada salir
 		if( search.getAdvancedSearchGroups() == null || search.getAdvancedSearchGroups().length <= 0 )
 			return temp;
 		
@@ -146,7 +180,17 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 			
 			temp+=" )";
 		}
+		
+		//eliminar espacios en blanco al inicio y al final
+		temp = temp.trim();
 
+		//quitar el primer and
+		if( temp.startsWith("and") )
+			temp= temp.substring(3);
+		
+		//si hubo alguna busqueda agregar la clausula where al inicio de la cadena
+		if( temp.length() > 0 )
+			temp = " where "+temp;
 		
 		return temp;
 	}
