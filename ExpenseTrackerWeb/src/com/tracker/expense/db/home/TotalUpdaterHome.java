@@ -26,27 +26,43 @@ public class TotalUpdaterHome {
 		
 	}
 	
-	public double updateTansaction(int idtransaccion,int idcuenta,int oldidcuenta,long total,long oldtotal) {
+	public double updateNewTransaction(int idcuenta,long total) {
 		
-		//buscar el tipo de cambio de la moneda de la cuenta a la moneda base, en caso de ser la misma es tc = 1
-		double tc = tipocambioHome.getTipocambioAMonedabase(idcuenta);
+		//actualizar el saldo de la cuenta a la que pertenece la transaccion sumando el total de la transaccion
+		updateSaldo(idcuenta,total);
 		
-		//si no hay cambio de cuenta simplemente actualizar el nuevo saldo restando el anterior
-		if( idcuenta == oldidcuenta ) 
+		//consultar el tipo de cambio dee la moneda de la transaccion a la moneda base del sistema
+		//en caso de que la moneda base sea igual a la moneda de la transaccion regresa 1
+		return tipocambioHome.getTipocambioAMonedabase(idcuenta);
+		
+	}
+	
+	public double updateExistingTansaction(int idtransaccion,int idcuenta,int oldidcuenta,long total,long oldtotal,double tc) {
+		
+		//si no hay cambio de cuenta en la transaccion
+		if( idcuenta == oldidcuenta ) {
+			
+			//actualizar el saldo de la cuenta sumando el actual y restando el anterior
 			updateSaldo(idcuenta, total-oldtotal);
-		else {
 			
-			//actualizar todos los articulos que pertenescan a esta transaccion
-			updateArticulos(idtransaccion,tc);
+			//la transaccion no es nueva por lo tanto regresar el mismo tipo de cambio especificado en el argumento
+			return tc;
 			
-			//restar el total de la transaccion de la cuenta la que pertenecia la transaccion
-			updateSaldo(oldidcuenta, oldtotal*-1);
-			
-			//sumar el total de la transaccion al saldo de la cuenta a la que va a pertenecer la transaccion
-			updateSaldo(idcuenta,total);
 		}
-
-		//en caso de ser la misma regresa 1
+		
+		//consultar el tipo de cambio que hay de la moneda de la transaccion a la moneda base del sistema
+		tc = tipocambioHome.getTipocambioAMonedabase(idcuenta);
+		
+		//actualizar el totalbase de todos los articulos que pertenescan a esta transaccion
+		updateArticulos(idtransaccion,tc);
+			
+		//restar el total de la transaccion al saldo de la cuenta a la que pertenecia la transaccion
+		updateSaldo(oldidcuenta, oldtotal*-1);
+			
+		//sumar el total de la transaccion al saldo de la cuenta a la que va a pertenecer la transaccion
+		updateSaldo(idcuenta,total);
+		
+		//regresar el tipo de cambio consultado
 		return tc;
 		
 	}

@@ -14,7 +14,7 @@ export class ParentEditComponent  {
     private instanceToFormf:any = null; 
     private keys:string[] = [];
 
-    protected mostrarBotonEliminar = false;
+    public mostrarBotonEliminar = false;
     
     constructor(private pgService:PaginacionService,private persistService:PersistenceService,private ruta: ActivatedRoute) {
       

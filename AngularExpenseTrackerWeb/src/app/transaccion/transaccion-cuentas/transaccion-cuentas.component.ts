@@ -11,7 +11,7 @@ export class TransaccionCuentasComponent implements OnInit {
 
   constructor(private cuentaService:CuentaService) { }
 
-  private data = [];
+  public data = [];
   
   ngOnInit() {
     //se ejecuta cada ves que se cambia el numero de pagina
@@ -21,7 +21,6 @@ export class TransaccionCuentasComponent implements OnInit {
   
   summaryListResponse(res){
       this.data = res;
-      console.log(res);
   }
   
   checkClick(event) {

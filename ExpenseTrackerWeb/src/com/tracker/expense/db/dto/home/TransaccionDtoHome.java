@@ -70,11 +70,12 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 		
 		if( tdto.getIdtransaccion() > 0 ) {
 			tx = transaccionHome.findById(tdto.getIdtransaccion());
-			tc = totalupdaterHome.updateTansaction(tdto.getIdtransaccion(),tdto.getIdcuenta(),tx.getCuenta().getIdcuenta(), tdto.getTotal(), tx.getTotal());
+			//idtransaccion, idcuenta, total nuevo, total anteior, tipo de cambio especificado
+			tc = totalupdaterHome.updateExistingTansaction(tdto.getIdtransaccion(),tdto.getIdcuenta(),tx.getCuenta().getIdcuenta(), tdto.getTotal(), tx.getTotal(),tdto.getTipocambio());
 		}
 		else {
 			tx = new Transaccion();
-			tc = totalupdaterHome.updateTansaction(0,tdto.getIdcuenta(),tdto.getIdcuenta(), tdto.getTotal(), 0);
+			tc = totalupdaterHome.updateNewTransaction(tdto.getIdcuenta(), tdto.getTotal());
 		}
 		
 		if( tx.getCuenta() == null || tdto.getIdcuenta() != tx.getCuenta().getIdcuenta() ) {
@@ -121,8 +122,8 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 		if( instance == null )
 			return new OperationRestResult(false,"instancia no encontrada");
 		
-		//antes de remover la instancia, actualizar el saldo de la cuenta
-		totalupdaterHome.updateTansaction(instance.getIdtransaccion(),instance.getCuenta().getIdcuenta(), instance.getCuenta().getIdcuenta(), 0, instance.getTotal());
+		//antes de remover la instancia, actualizar el saldo de la cuenta int idtransaccion,int idcuenta,int oldidcuenta,long total,long oldtotal,double tc
+		totalupdaterHome.updateExistingTansaction(instance.getIdtransaccion(),instance.getCuenta().getIdcuenta(), instance.getCuenta().getIdcuenta(), 0, instance.getTotal(),instance.getTipocambio());
 		
 		//intentar eliminar transaccion
 		try {

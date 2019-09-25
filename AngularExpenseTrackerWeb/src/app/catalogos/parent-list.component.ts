@@ -11,8 +11,8 @@ import * as $ from 'jquery';
 
 export class ParentListComponent  {
     
-    protected data = [];
-    protected loading:boolean = false;
+    public data = [];
+    public loading:boolean = false;
     
     constructor(private editItemService:EditItemService,private pgService:PaginacionService,private persistService:PersistenceService,private ruta: ActivatedRoute,) {
         

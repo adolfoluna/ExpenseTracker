@@ -15,7 +15,7 @@ export class CategoriaGraphComponent implements OnInit, AfterViewInit, OnChanges
     
     @ViewChild('chart',{static: false}) private chartContainer: ElementRef;
 
-    private data = [ ];
+    public data = [ ];
     private margin: any = { top: 20, bottom: 20, left: 50, right: 20};
     private chart: any;
     private width: number;
@@ -26,8 +26,8 @@ export class CategoriaGraphComponent implements OnInit, AfterViewInit, OnChanges
     private xAxis: any;
     private yAxis: any;
     
-    private listaLimite = [ 6,12,24,36,48,60];
-    private listaYears = [ 0 ];
+    public listaLimite = [ 6,12,24,36,48,60];
+    public listaYears = [ 0 ];
     
     
     datosForma = this.fb.group({

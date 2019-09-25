@@ -21,7 +21,7 @@ public class AddRemoveFileUtil {
 		
 		//si la propiedad no existe marcar error y salir
 		if( System.getProperty(propertyName) == null ) {
-			log.error( "error no se encontro propiedad del sistema "+propertyName);
+			log.error( "error no se encontro propiedad del sistema "+propertyName+"...................................................");
 			return null;
 		}
 		

@@ -54,6 +54,8 @@ export class TransaccionEditGralComponent extends ParentEditComponent implements
         cuentaSeleccionada : [],
         proveedorSeleccionado : [],
         total: [0],
+        tipocambio: [0],
+        totalbase: [0],
         nota : [""],
         complementoRequerido : [false],
         version: [0],
@@ -98,11 +100,14 @@ export class TransaccionEditGralComponent extends ParentEditComponent implements
         if( this.proveedorSeleccionado == null || this.proveedorSeleccionado.length <= 0 ) {alert("Proveedor no seleccionado"); return false;}
         if( this.fechaSeleccionada == null ) {alert("Fecha no seleccionada"); return false;}
         if( this.datosForma.value.total.length <= 0 || parseFloat(this.datosForma.value.total) == NaN ) {alert("Total incorrecto"); return false;}
+        //if( this.datosForma.value.totalbase.length <= 0 || parseFloat(this.datosForma.value.totalbase) == NaN ) {alert("Total base incorrecto"); return false;}
+        if( this.datosForma.value.tipocambio.length <= 0 || parseFloat(this.datosForma.value.tipocambio) == NaN ) {alert("Tipo de cambio incorrecto"); return false;}
         
         this.datosForma.value.idproveedor = this.proveedorSeleccionado[0].id;
         this.datosForma.value.idcuenta = this.datosForma.controls.cuentaSeleccionada.value.id;
         this.datosForma.value.fechaString =  format(this.fechaSeleccionada, "YYYY-MM-DD");
         this.datosForma.value.total = parseInt( (parseFloat(this.datosForma.value.total) * 100).toString() );
+        //this.datosForma.value.totalbase = parseInt( (parseFloat(this.datosForma.value.totalbase) * 100).toString() );
         
         if( $('#complementoRequeridoCheck').parent().hasClass("off") )
             this.datosForma.value.complementoRequerido = false;
@@ -119,6 +124,8 @@ export class TransaccionEditGralComponent extends ParentEditComponent implements
         if( obj == null ) {
             this.datosForma.controls.idtransaccion.setValue(0);
             this.datosForma.controls.total.setValue("0");
+            this.datosForma.controls.tipocambio.setValue("0");
+            this.datosForma.controls.totalbase.setValue("0");
             this.datosForma.controls.cuentaSeleccionada.setValue(null);
             this.datosForma.controls.proveedorSeleccionado.setValue(null);
             this.datosForma.controls.complementoRequerido.setValue(false);
@@ -147,6 +154,7 @@ export class TransaccionEditGralComponent extends ParentEditComponent implements
         
         //convertir de centavos a pesos
         obj.total = obj.total / 100;
+        obj.totalbase = obj.totalbase / 100;
         
         this.fechaSeleccionada = obj.fecha;
         

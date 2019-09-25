@@ -28,6 +28,16 @@
 		<label for="total">Total:</label>
 		<input type="text" class="form-control" id="total" formControlName="total">
 	</div>
+	
+	<div class="form-group" [formGroup]="datosForma">
+		<label for="tipocambio">Tipo de cambio:</label>
+		<input type="text" class="form-control" id="tipocambio" formControlName="tipocambio">
+	</div>
+	
+	<div class="form-group" [formGroup]="datosForma">
+		<label for="totalbase">Total en moneda base:</label>
+		<input type="text" class="form-control" id="total" formControlName="totalbase" readonly>
+	</div>
 		
 	<div class="form-group" [formGroup]="datosForma">
 		<label for="nota">Nota:</label>
