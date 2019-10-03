@@ -44,6 +44,21 @@ import { GrupoarticuloEditComponent } from './catalogos/grupoarticulo-edit/grupo
 
 import { TruncatePipe } from './model/truncatepipe';
 import { CategoriaGraphComponent } from './graficas/categoria-graph/categoria-graph.component';
+import { LoginComponent } from './login/login.component';
+import { HeadernavComponent } from './headernav/headernav.component';
+
+import { BehaviorSubject } from "rxjs";
+//Importing social login module and google login provider.
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angular4-social-login';
+
+const google_oauth_client_id:string = '172719573787-an7rev6thkjiu39jskup4akelu4tv2j5.apps.googleusercontent.com';
+let config = new AuthServiceConfig([
+                                    {
+                                      id: GoogleLoginProvider.PROVIDER_ID,
+                                      provider: new GoogleLoginProvider(google_oauth_client_id)
+                                    }
+                                  ]);
+
 
 @NgModule({
   declarations: [
@@ -81,6 +96,8 @@ import { CategoriaGraphComponent } from './graficas/categoria-graph/categoria-gr
     GrupoarticuloEditComponent,
     TruncatePipe,
     CategoriaGraphComponent,
+    LoginComponent,
+    HeadernavComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,6 +106,7 @@ import { CategoriaGraphComponent } from './graficas/categoria-graph/categoria-gr
     ReactiveFormsModule,
     NgMultiSelectDropDownModule,
     NgDatepickerModule,
+    SocialLoginModule.initialize(config),
   ],
   
   entryComponents : [
@@ -112,7 +130,7 @@ import { CategoriaGraphComponent } from './graficas/categoria-graph/categoria-gr
         GrupoarticuloListComponent,
         GrupoarticuloEditComponent,
         ],
-  providers: [],
+  providers: [  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

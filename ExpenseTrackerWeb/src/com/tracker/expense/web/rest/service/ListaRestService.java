@@ -18,6 +18,7 @@ import com.tracker.expense.db.dto.home.ListaDtoHome;
 @Path("/lista")
 @Produces({ "application/xml", "application/json" })
 @Consumes({ "application/xml", "application/json" })
+@Secured({Role.ADMIN,Role.OPERATOR,Role.READ_ONLY,Role.ACCOUNTANT})
 public class ListaRestService {
 	
 	@EJB private ListaDtoHome listaDtoHome;

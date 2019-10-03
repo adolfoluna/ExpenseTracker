@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Aug 10, 2019, 12:46:42 PM by Hibernate Tools 3.2.2.GA
+// Generated Oct 2, 2019, 10:38:21 PM by Hibernate Tools 3.2.2.GA
 
 
 import javax.ejb.Stateless;

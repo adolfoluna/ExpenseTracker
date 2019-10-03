@@ -16,13 +16,19 @@ import { TransaccionViewComponent } from "./transaccion/transaccion-view/transac
 
 import { CategoriaGraphComponent } from "./graficas/categoria-graph/categoria-graph.component";
 
+import {LoginComponent} from "./login/login.component";
+
+import {AuthGuard} from "./auth.guard";
+
 const routes: Routes = [
-    { path: '', component: CuentasResumenComponent },      
-    { path: 'catalogos/catalogo-view/:catalogo', component: CatalogoViewComponent },
-    { path: 'transacciones', component: TransaccionViewComponent },
-    { path: 'transacciones/tipo/:tipo', component: TransaccionViewComponent },
-    { path: 'transacciones/cuenta/:cuenta', component: TransaccionViewComponent },
-    { path: 'graficas/categoria', component : CategoriaGraphComponent },
+    { path: 'login', component: LoginComponent},
+    { path: '', component: CuentasResumenComponent,  canActivate:[AuthGuard] },
+    { path: 'resumen', component: CuentasResumenComponent, canActivate:[AuthGuard] },      
+    { path: 'catalogos/catalogo-view/:catalogo', component: CatalogoViewComponent, canActivate:[AuthGuard] },
+    { path: 'transacciones', component: TransaccionViewComponent, canActivate:[AuthGuard] },
+    { path: 'transacciones/tipo/:tipo', component: TransaccionViewComponent, canActivate:[AuthGuard] },
+    { path: 'transacciones/cuenta/:cuenta', component: TransaccionViewComponent, canActivate:[AuthGuard] },
+    { path: 'graficas/categoria', component : CategoriaGraphComponent, canActivate:[AuthGuard] },
     ];
 
 @NgModule({

@@ -9,19 +9,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Home object for domain model class Proveedor.
- * @see com.tracker.expense.db.model.Proveedor
+ * Home object for domain model class Rol.
+ * @see com.tracker.expense.db.model.Rol
  * @author Hibernate Tools
  */
 @Stateless
-public class ProveedorHome {
+public class RolHome {
 
-    private static final Log log = LogFactory.getLog(ProveedorHome.class);
+    private static final Log log = LogFactory.getLog(RolHome.class);
 
     @PersistenceContext private EntityManager entityManager;
     
-    public void persist(Proveedor transientInstance) {
-        log.debug("persisting Proveedor instance");
+    public void persist(Rol transientInstance) {
+        log.debug("persisting Rol instance");
         try {
             entityManager.persist(transientInstance);
             log.debug("persist successful");
@@ -32,8 +32,8 @@ public class ProveedorHome {
         }
     }
     
-    public void remove(Proveedor persistentInstance) {
-        log.debug("removing Proveedor instance");
+    public void remove(Rol persistentInstance) {
+        log.debug("removing Rol instance");
         try {
             entityManager.remove(persistentInstance);
             log.debug("remove successful");
@@ -44,10 +44,10 @@ public class ProveedorHome {
         }
     }
     
-    public Proveedor merge(Proveedor detachedInstance) {
-        log.debug("merging Proveedor instance");
+    public Rol merge(Rol detachedInstance) {
+        log.debug("merging Rol instance");
         try {
-            Proveedor result = entityManager.merge(detachedInstance);
+            Rol result = entityManager.merge(detachedInstance);
             log.debug("merge successful");
             return result;
         }
@@ -57,10 +57,10 @@ public class ProveedorHome {
         }
     }
     
-    public Proveedor findById( Integer id) {
-        log.debug("getting Proveedor instance with id: " + id);
+    public Rol findById( int id) {
+        log.debug("getting Rol instance with id: " + id);
         try {
-            Proveedor instance = entityManager.find(Proveedor.class, id);
+            Rol instance = entityManager.find(Rol.class, id);
             log.debug("get successful");
             return instance;
         }

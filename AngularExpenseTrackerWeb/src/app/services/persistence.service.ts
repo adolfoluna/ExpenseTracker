@@ -14,11 +14,11 @@ export class PersistenceService {
   constructor(private http: HttpClient) { }
   
   public getList(search:SearchObject) {
-      return this.http.post<any>(enviroment.serviceURL+"persistence/listar",search);
+      return this.http.post<any>(enviroment.serviceURL+"persistence/listar/"+search.catalogo,search);
   }
   
   public getObject(search:SearchObject) {
-      return this.http.post<any>(enviroment.serviceURL+"persistence/obtener",search); 
+      return this.http.post<any>(enviroment.serviceURL+"persistence/obtener/"+search.catalogo,search); 
   }
   
   public setObject(catalogo:string,objeto:any) {
@@ -26,7 +26,7 @@ export class PersistenceService {
   }
   
   public removeObject(search:SearchObject) {
-      return this.http.post<any>(enviroment.serviceURL+"persistence/remover",search);
+      return this.http.post<any>(enviroment.serviceURL+"persistence/remover/"+search.catalogo,search);
   }
   
   public uploadFile(idtransaccion:number,tipo:string,data:any) {

@@ -9,19 +9,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Home object for domain model class Proveedor.
- * @see com.tracker.expense.db.model.Proveedor
+ * Home object for domain model class Usuario.
+ * @see com.tracker.expense.db.model.Usuario
  * @author Hibernate Tools
  */
 @Stateless
-public class ProveedorHome {
+public class UsuarioHome {
 
-    private static final Log log = LogFactory.getLog(ProveedorHome.class);
+    private static final Log log = LogFactory.getLog(UsuarioHome.class);
 
     @PersistenceContext private EntityManager entityManager;
     
-    public void persist(Proveedor transientInstance) {
-        log.debug("persisting Proveedor instance");
+    public void persist(Usuario transientInstance) {
+        log.debug("persisting Usuario instance");
         try {
             entityManager.persist(transientInstance);
             log.debug("persist successful");
@@ -32,8 +32,8 @@ public class ProveedorHome {
         }
     }
     
-    public void remove(Proveedor persistentInstance) {
-        log.debug("removing Proveedor instance");
+    public void remove(Usuario persistentInstance) {
+        log.debug("removing Usuario instance");
         try {
             entityManager.remove(persistentInstance);
             log.debug("remove successful");
@@ -44,10 +44,10 @@ public class ProveedorHome {
         }
     }
     
-    public Proveedor merge(Proveedor detachedInstance) {
-        log.debug("merging Proveedor instance");
+    public Usuario merge(Usuario detachedInstance) {
+        log.debug("merging Usuario instance");
         try {
-            Proveedor result = entityManager.merge(detachedInstance);
+            Usuario result = entityManager.merge(detachedInstance);
             log.debug("merge successful");
             return result;
         }
@@ -57,10 +57,10 @@ public class ProveedorHome {
         }
     }
     
-    public Proveedor findById( Integer id) {
-        log.debug("getting Proveedor instance with id: " + id);
+    public Usuario findById( int id) {
+        log.debug("getting Usuario instance with id: " + id);
         try {
-            Proveedor instance = entityManager.find(Proveedor.class, id);
+            Usuario instance = entityManager.find(Usuario.class, id);
             log.debug("get successful");
             return instance;
         }

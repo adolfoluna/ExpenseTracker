@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -64,10 +65,12 @@ public class PersistenceRestService {
 	}
 	
 	@POST
-	@Path("/remover")
+	@Path("/remover/{catalogo}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public OperationRestResult remove(SearchDto obj,@Context ServletContext servletContext) {
+	public OperationRestResult remove(@PathParam("catalogo")String catalogo,SearchDto obj,@Context ServletContext servletContext) {
+		
+		log.info("request /persistence/remover/"+catalogo);
 		
 		if( obj.getCatalogo() == null )
 			return new OperationRestResult(false, "error, catalogo en nulo");
@@ -91,10 +94,12 @@ public class PersistenceRestService {
 	}
 	
 	@POST
-	@Path("/listar")
+	@Path("/listar/{catalogo}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public OperationRestResult getList(SearchDto obj) {
+	public OperationRestResult getList(@PathParam("catalogo")String catalogo,SearchDto obj) {
+		
+		log.info("request /persistence/listar/"+catalogo);
 		
 		if( obj.getCatalogo() == null )
 			return new OperationRestResult(false, "error, catalogo en nulo");
@@ -135,10 +140,12 @@ public class PersistenceRestService {
 	}
 	
 	@POST
-	@Path("/obtener")
+	@Path("/obtener/{catalogo}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public OperationRestResult getDto(SearchDto obj) {
+	public OperationRestResult getDto(@PathParam("catalogo")String catalogo,SearchDto obj) {
+		
+		log.info("request /persistence/obtener/"+catalogo);
 		
 		if( obj.getCatalogo() == null )
 			return new OperationRestResult(false, "error, catalogo en nulo");

@@ -21,7 +21,7 @@ public class ResponseRestFilter implements ContainerResponseFilter {
         //log.info( "Executing REST response filter" );
         responseCtx.getHeaders().add( "Access-Control-Allow-Origin", "*" );
         //responseCtx.getHeaders().add( "Access-Control-Allow-Credentials", "true" );
-        responseCtx.getHeaders().add("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
+        responseCtx.getHeaders().add("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept, UserToken");
         responseCtx.getHeaders().add( "Access-Control-Allow-Methods", "GET, POST, DELETE, PUT" );
     }
 
