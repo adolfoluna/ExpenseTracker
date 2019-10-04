@@ -27,6 +27,13 @@ import { GrupoEditComponent } from "../grupo-edit/grupo-edit.component";
 import { GrupoarticuloListComponent } from "../grupoarticulo-list/grupoarticulo-list.component";
 import { GrupoarticuloEditComponent } from "../grupoarticulo-edit/grupoarticulo-edit.component";
 
+import { UsuarioListComponent } from "../usuario-list/usuario-list.component";
+import { UsuarioEditComponent } from "../usuario-edit/usuario-edit.component";
+
+import { RolListComponent } from "../rol-list/rol-list.component";
+import { RolEditComponent } from "../rol-edit/rol-edit.component";
+
+
 import { PaginacionObject } from "../../model/paginacion";
 
 import { ComponentListInterface } from "../../model/componentlist.interface";
@@ -56,7 +63,9 @@ export class CatalogoViewComponent implements OnInit {
                     categoria   : { list : CategoriaListComponent, edit: CategoriaEditComponent },
                     articulo    : { list : ArticuloListComponent, edit: ArticuloEditComponent },
                     grupo       : { list : GrupoListComponent, edit: GrupoEditComponent },
-                    grupoarticulo: {list : GrupoarticuloListComponent,  edit: GrupoarticuloEditComponent }
+                    grupoarticulo: {list : GrupoarticuloListComponent,  edit: GrupoarticuloEditComponent },
+                    usuario     : { list : UsuarioListComponent, edit: UsuarioEditComponent },
+                    rol         : { list : RolListComponent, edit: RolEditComponent },
                 };
     
     constructor(private componentFactoryResolver: ComponentFactoryResolver,private route: ActivatedRoute) {

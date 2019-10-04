@@ -25,7 +25,7 @@ public class RolUsuarioHome {
 	private HashMap<String,UsuarioDto> usuarios = new HashMap<String,UsuarioDto>();
 	private HashMap<String,RolDto> rolesRutas = new HashMap<String,RolDto>();
 	
-	public int getRolUsuario(String token) {
+	public int getRolUsuario(String username,String token) {
 		
 		//buscar en el mapa si esta el usuario
 		if( usuarios.containsKey(token) ) {
@@ -41,8 +41,9 @@ public class RolUsuarioHome {
 		}
 		
 		//int idusuario, String clave, boolean admin, boolean activo, String token, int rolnum,int version
-		Query q = entityManager.createQuery("select new com.tracker.expense.db.dto.UsuarioDto(u.idusuario,u.clave,u.admin,u.activo,u.token,u.rolnum,u.version) from Usuario u where u.token=:token");
+		Query q = entityManager.createQuery("select new com.tracker.expense.db.dto.UsuarioDto(u.idusuario,u.clave,u.activo,u.token,u.rolnum,u.version) from Usuario u where u.usuario=:usuario and u.token=:token");
 		q.setParameter("token", token);
+		q.setParameter("usuario", username);
 		
 		try {
 			//buscar instancia

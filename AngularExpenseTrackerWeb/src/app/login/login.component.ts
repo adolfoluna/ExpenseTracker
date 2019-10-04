@@ -22,19 +22,25 @@ export class LoginComponent implements OnInit {
     errorMessage:string = "";
     temp:string = "";
     
-  constructor(private auth_service: AuthService, private userService:UserService, private fb: FormBuilder,private router: Router ) { }
+    constructor(private auth_service: AuthService, private userService:UserService, private fb: FormBuilder,private router: Router ) { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
    
-  login() {
+    login() {
+      
+      //limpiar mensaje de error si es que existe
       this.errorMessage = "";
+
+      //cifrar la clave con MD5
       var md5 = new Md5();
       var pwd = md5.appendStr(this.loginForma.controls["pwd"].value).end().toString();
-      this.userService.login(this.loginForma.controls["user"].value, pwd).subscribe(response=>this.loginResponse(response));
-  }
+      
+      //hacer el request al servidor para iniciar sesion
+      this.userService.loginRequest(this.loginForma.controls["user"].value, pwd).subscribe(response=>this.loginResponse(response));
+    }
   
-  loginResponse(response:any) {
+    loginResponse(response:any) {
       
       if( response == null ) {
           this.errorMessage = "Error desconocido";
@@ -46,35 +52,26 @@ export class LoginComponent implements OnInit {
           return;
       }
       
-      this.userService.setToken(response.data);
+      //avisar que el login fue exitoso para que se actualicen las variables
+      this.userService.loginSuccessful(response);
       
+      //redirigir pagina a resumen
       this.router.navigateByUrl("/resumen");
-  }
+    }
   
-  loginGoogle() {
+    loginGoogle() {
       //console.log(this.loginForma.controls["user"].value);
       var platform = GoogleLoginProvider.PROVIDER_ID;
       this.auth_service.signIn(platform).then(response => this.loginGoogleresponse(response) );
-      
-  }
+    }
   
-  loginGoogleresponse(response:any) {
+    loginGoogleresponse(response:any) {
       this.temp = response.authToken;
-      this.userService.saveToken(response.email, response.authToken).subscribe(res=>this.savetokenResponse(res));
-  }
+      this.userService.loginExternalRequest(response.email, response.authToken).subscribe(res=>this.loginResponse(res));
+    }
   
-  savetokenResponse(res) {
-      if( res != null && res.success ) {
-          this.userService.setToken(this.temp);
-          this.router.navigateByUrl("/resumen");
-      }
-      else
-          this.userService.setToken(null);
-  }
-  
-  signOut(): void {
-      this.auth_service.signOut();
-      console.log('User signed out.');
+    signOut(): void {
+        this.auth_service.signOut();
     }
 
 }

@@ -9,9 +9,9 @@ import { PaginacionService } from '../../services/paginacion.service';
 import { EditItemService } from '../../services/edit.item.service';
 import { ViewItemService } from '../../services/view.item.service';
 import { BuscarTransaccionesService } from "../../services/buscar.transacciones.service";
+import { UserService } from "../../services/user.service";
 
 import { AdvancedSearchGroup, AdvancedSearchField } from "../../model/advancedsearchobject";
-
 import { PaginacionObject, PaginacionItem } from '../../model/paginacion';
 import { SearchObject, SearchField } from '../../model/searchobject';
 import { ParametrosBusquedaTransaccion } from "../../model/parametros_transaccion";
@@ -28,24 +28,29 @@ import * as $ from 'jquery';
 })
 export class TransaccionListComponent extends ParentListComponent implements OnInit {
 
-    //@Input() paginacion:PaginacionObject;// = new PaginacionObject();
     paginacionObject:PaginacionObject = new PaginacionObject();
     search : SearchObject = new SearchObject();
 
     subtitulo = "";
+    
+    trolnum = 4;
 
     constructor(private edititemService: EditItemService,
                 private viewitemService : ViewItemService,
                 private persistenceService:PersistenceService,
                 private paginacionService:PaginacionService,
                 private buscarTransaccionesService: BuscarTransaccionesService,
-                private route: ActivatedRoute) {
+                private route: ActivatedRoute,
+                private userService:UserService) {
         super(edititemService,paginacionService,persistenceService,route);
     }
     
     formaParametros:ParametrosBusquedaTransaccion = new ParametrosBusquedaTransaccion();
 
     ngOnInit() {
+        
+        //consultar el rol que tiene el usuario
+        this.trolnum = this.userService.getRoleNumber();
         
         //poner por default 50 resultados
         this.paginacionObject.limite = 50;

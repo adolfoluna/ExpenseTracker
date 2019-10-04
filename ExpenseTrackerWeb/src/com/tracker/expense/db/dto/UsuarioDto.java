@@ -11,8 +11,8 @@ public class UsuarioDto implements Serializable {
 	 */
 	private static final long serialVersionUID = -6816540843020025470L;
 	private int idusuario;
+	private String usuario;
 	private String clave;
-	private boolean admin;
 	private boolean activo;
 	private String token;
 	private int rolnum;
@@ -23,24 +23,39 @@ public class UsuarioDto implements Serializable {
 		
 	}
 	
-	public UsuarioDto(int idusuario, String clave, int admin, int activo, String token, int rolnum,
-			int version) {
+	public UsuarioDto(String usuario, String token, int rolnum) {
+		super();
+		this.usuario = usuario;
+		this.token = token;
+		this.rolnum = rolnum;
+	}
+
+	public UsuarioDto(int idusuario, String clave, int activo, String token, int rolnum,int version) {
 		super();
 		this.idusuario = idusuario;
 		this.clave = clave;
 		
-		if( admin > 0) this.admin = true;
-		else this.admin = false;
-		
 		if( activo > 0 ) this.activo = true;
-		
 		else this.activo = false;
+		
 		this.token = token;
 		this.rolnum = rolnum;
 		this.version = version;
 		
 		//expirar dato en 15 minutos
 		setExpirationTime(new Date().getTime() + (15*1000*60));
+	}
+
+	public UsuarioDto(int idusuario, String usuario, String clave, int activo, String token, int rolnum,int version) {
+		super();
+		this.idusuario = idusuario;
+		this.usuario = usuario;
+		this.clave = clave;
+		if( activo > 0) 	this.activo = true;
+		else this.activo = false;
+		this.token = token;
+		this.rolnum = rolnum;
+		this.version = version;
 	}
 
 	public int getIdusuario() {
@@ -57,14 +72,6 @@ public class UsuarioDto implements Serializable {
 
 	public void setClave(String clave) {
 		this.clave = clave;
-	}
-
-	public boolean isAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(boolean admin) {
-		this.admin = admin;
 	}
 
 	public boolean isActivo() {
@@ -105,6 +112,14 @@ public class UsuarioDto implements Serializable {
 
 	public void setExpirationTime(long expirationTime) {
 		this.expirationTime = expirationTime;
+	}
+
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 	
 }

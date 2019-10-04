@@ -1,0 +1,40 @@
+
+
+	<h2>Catalogo de roles</h2>
+	<button class="btn btn-primary" (click)="newRowClick('rol')">Nuevo +</button>
+	<br/>
+	<br/>
+	
+	<table class="table table-striped">
+		
+		<thead class="thead-dark">
+			<tr>
+				<th (click)="ordenarporid()">Id&nbsp;<i id="col_id" class="fa fa-sort-amount-asc text-info" aria-hidden="true"></i></th>
+				<th (click)="ordenarporrolnum()">Rol&nbsp;<i id="col_rolnum" class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+				<th>Ruta</th>
+				<th>Version</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			
+			<tr *ngIf="data.length <= 0">
+				<td colspan="5" align="center"><b>No se encontraron resultados</b></td>
+			</tr>
+			
+			<tr *ngFor="let temp of data" [ngSwitch]="temp.rolnum">
+				<td>{{temp.idrol}}</td>
+				<td *ngSwitchCase="1">Admin</td>
+				<td *ngSwitchCase="2">Operador</td>
+				<td *ngSwitchCase="3">Solo lectura</td>
+				<td *ngSwitchCase="4">Contador</td>
+				<td>{{temp.ruta}}</td> 
+				<td>{{temp.version}}</td>
+				<td>
+					<img alt="" src="assets/editrow.png" width="20px" height="20px" style="cursor:pointer;" (click)="editRowClick(temp,'rol')">
+				</td>
+      		</tr>
+		</tbody>
+  
+  </table>

@@ -95,10 +95,14 @@ export class ParentEditComponent  {
         
     save() {
 
-        if( this.formToInstancef != null && !this.formToInstancef() ) {
+        if( this.formToInstancef == null || this.formToInstancef == undefined ) {
             alert("error en componente no existe la funcion formToInstance")
             return;
         }
+        
+        //si la funcion regresa false, entonces salir y no proceder
+        if( !this.formToInstancef() )
+            return;
         
         this.persistService.setObject(this.catalogo,this.forma.value).subscribe( res => {
             

@@ -27,10 +27,12 @@ import com.tracker.expense.db.dto.GrupoArticuloDto;
 import com.tracker.expense.db.dto.GrupoDto;
 import com.tracker.expense.db.dto.MonedaDto;
 import com.tracker.expense.db.dto.ProveedorDto;
+import com.tracker.expense.db.dto.RolDto;
 import com.tracker.expense.db.dto.SearchDto;
 import com.tracker.expense.db.dto.TipoCambioDto;
 import com.tracker.expense.db.dto.TransaccionArticuloDto;
 import com.tracker.expense.db.dto.TransaccionDto;
+import com.tracker.expense.db.dto.UsuarioDto;
 import com.tracker.expense.db.dto.home.PersistenceDtoRemote;
 import com.tracker.expense.db.dto.home.TransaccionAttachmentRemote;
 import com.tracker.expense.db.dto.home.TransaccionDescripcionUpdateRemote;
@@ -54,6 +56,9 @@ public class PersistenceRestService {
 	@EJB(beanName = "ArticuloDtoHome") private PersistenceDtoRemote articuloDtoHome;
 	@EJB(beanName = "GrupoDtoHome") private PersistenceDtoRemote grupoDtoHome;
 	@EJB(beanName = "GrupoArticuloDtoHome") private PersistenceDtoRemote grupoArticuloDtoHome;
+	@EJB(beanName = "UsuarioDtoHome") private PersistenceDtoRemote usuarioDtoHome;
+	@EJB(beanName = "RolDtoHome") private PersistenceDtoRemote rolDtoHome;
+	
 	@EJB private TransaccionDescripcionUpdateRemote transaccionDescripcionHome;
 	@EJB private TransaccionAttachmentRemote transaccionAttachmentRemote;
 	
@@ -68,6 +73,7 @@ public class PersistenceRestService {
 	@Path("/remover/{catalogo}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult remove(@PathParam("catalogo")String catalogo,SearchDto obj,@Context ServletContext servletContext) {
 		
 		log.info("request /persistence/remover/"+catalogo);
@@ -97,6 +103,7 @@ public class PersistenceRestService {
 	@Path("/listar/{catalogo}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR,Role.READ_ONLY,Role.ACCOUNTANT})
 	public OperationRestResult getList(@PathParam("catalogo")String catalogo,SearchDto obj) {
 		
 		log.info("request /persistence/listar/"+catalogo);
@@ -132,8 +139,10 @@ public class PersistenceRestService {
 		
 		PersistenceDtoRemote persistence = getEjbHome(obj.getCatalogo());
 		
-		if( persistence == null ) 
+		if( persistence == null ) {
+			log.info("caralogo:"+obj.getCatalogo()+" no encontrado");
 			return new OperationRestResult(false, "error, catalogo "+obj.getCatalogo()+" no encontrado");
+		}
 		
 		//obtener lista y regresar el resultado
 		return persistence.listDto(obj);
@@ -143,6 +152,7 @@ public class PersistenceRestService {
 	@Path("/obtener/{catalogo}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR,Role.READ_ONLY,Role.ACCOUNTANT})
 	public OperationRestResult getDto(@PathParam("catalogo")String catalogo,SearchDto obj) {
 		
 		log.info("request /persistence/obtener/"+catalogo);
@@ -165,6 +175,7 @@ public class PersistenceRestService {
 	@Path("/guardar/cuenta")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(CuentaDto cuenta) {
 		return upsertDto(cuenta, cuentaDtoHome);
 	}
@@ -173,6 +184,7 @@ public class PersistenceRestService {
 	@Path("/guardar/moneda")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(MonedaDto cuenta) {
 		return upsertDto(cuenta, monedaDtoHome);
 	}
@@ -181,6 +193,7 @@ public class PersistenceRestService {
 	@Path("/guardar/tipocambio")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(TipoCambioDto tc) {
 		return upsertDto(tc, tipoCambioDtoHome);
 	}
@@ -189,6 +202,7 @@ public class PersistenceRestService {
 	@Path("/guardar/proveedor")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(ProveedorDto tc) {
 		return upsertDto(tc, proveedorDtoHome);
 	}
@@ -197,6 +211,7 @@ public class PersistenceRestService {
 	@Path("/guardar/transaccion")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(TransaccionDto tc) {
 		//convertir de fecha en string a objeto Date
 		tc.setFecha(tc.stringToDate(tc.getFechaString()));
@@ -207,6 +222,7 @@ public class PersistenceRestService {
 	@Path("/guardar/transaccionarticulo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(TransaccionArticuloDto tc) {
 		OperationRestResult res = upsertDto(tc, transaccionArticuloDtoHome);
 		
@@ -221,6 +237,7 @@ public class PersistenceRestService {
 	@Path("/guardar/categoria")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(CategoriaDto categoria) {
 		return upsertDto(categoria, categoriaDtoHome);
 	}
@@ -229,6 +246,7 @@ public class PersistenceRestService {
 	@Path("/guardar/articulo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(ArticuloDto categoria) {
 		return upsertDto(categoria, articuloDtoHome);
 	}
@@ -237,6 +255,7 @@ public class PersistenceRestService {
 	@Path("/guardar/grupo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(GrupoDto grupo) {
 		return upsertDto(grupo, grupoDtoHome);
 	}
@@ -245,10 +264,28 @@ public class PersistenceRestService {
 	@Path("/guardar/grupoarticulo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
 	public OperationRestResult upsertDto(GrupoArticuloDto grupoArticulo) {
 		return upsertDto(grupoArticulo, grupoArticuloDtoHome);
 	}
 	
+	@POST
+	@Path("/guardar/usuario")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
+	public OperationRestResult upsertDto(UsuarioDto usuario) {
+		try { return upsertDto(usuario, usuarioDtoHome); }catch(Exception ex) {	return new OperationRestResult(false, ex.getMessage()); }
+	}
+	
+	@POST
+	@Path("/guardar/rol")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Secured({Role.ADMIN,Role.OPERATOR})
+	public OperationRestResult upsertDto(RolDto rol) {
+		try { return upsertDto(rol, rolDtoHome); }catch(Exception ex) {	return new OperationRestResult(false, ex.getMessage()); }
+	}
 	
 	private OperationRestResult upsertDto(Object ob,PersistenceDtoRemote ejb) {
 		return ejb.upsertDto(ob);
@@ -268,6 +305,8 @@ public class PersistenceRestService {
 			case "articulo": return articuloDtoHome;
 			case "grupo": return grupoDtoHome;
 			case "grupoarticulo": return grupoArticuloDtoHome;
+			case "usuario": return usuarioDtoHome;
+			case "rol": return rolDtoHome;
 		}
 		
 		return null;

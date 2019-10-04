@@ -1,0 +1,43 @@
+
+
+	<h2>Catalogo de usuarios</h2>
+	<button class="btn btn-primary" (click)="newRowClick('usuario')">Nuevo +</button>
+	<br/>
+	<br/>
+	<table class="table table-striped">
+		
+		<thead class="thead-dark">
+			<tr>
+				<th>Id</th>
+				<th>Usuario</th>
+				<th>Rol</th>
+				<th>Token</th>
+				<th>Activo</th>
+				<th>Version</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			
+			<tr *ngIf="data.length <= 0">
+				<td colspan="6" align="center"><b>No se encontraron resultados</b></td>
+			</tr>
+			
+			<tr *ngFor="let temp of data" [ngSwitch]="temp.rolnum">
+				<td>{{temp.idusuario}}</td>
+				<td>{{temp.usuario}}</td>
+				<td *ngSwitchCase="1">admin</td>
+				<td *ngSwitchCase="2">operador</td>
+				<td *ngSwitchCase="3">solo lectura</td>
+				<td *ngSwitchCase="4">contador</td>
+				<td>{{temp.token}}</td>
+				<td>{{temp.activo}}</td>
+				<td>{{temp.version}}</td>
+				<td>
+					<img alt="" src="assets/editrow.png" width="20px" height="20px" style="cursor:pointer;" (click)="editRowClick(temp,'usuario')">
+				</td>
+      		</tr>
+		</tbody>
+  
+  </table>

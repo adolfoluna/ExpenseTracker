@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Oct 3, 2019, 1:28:57 AM by Hibernate Tools 3.2.2.GA
+// Generated Oct 3, 2019, 3:42:19 PM by Hibernate Tools 3.2.2.GA
 
 
 import javax.persistence.Column;
@@ -24,7 +24,6 @@ public class Usuario  implements java.io.Serializable {
      private int version;
      private String usuario;
      private String clave;
-     private int admin;
      private int activo;
      private String token;
      private int rolnum;
@@ -33,17 +32,15 @@ public class Usuario  implements java.io.Serializable {
     }
 
 	
-    public Usuario(int idusuario, int admin, int activo, int rolnum) {
+    public Usuario(int idusuario, int activo, int rolnum) {
         this.idusuario = idusuario;
-        this.admin = admin;
         this.activo = activo;
         this.rolnum = rolnum;
     }
-    public Usuario(int idusuario, String usuario, String clave, int admin, int activo, String token, int rolnum) {
+    public Usuario(int idusuario, String usuario, String clave, int activo, String token, int rolnum) {
        this.idusuario = idusuario;
        this.usuario = usuario;
        this.clave = clave;
-       this.admin = admin;
        this.activo = activo;
        this.token = token;
        this.rolnum = rolnum;
@@ -85,15 +82,6 @@ public class Usuario  implements java.io.Serializable {
     
     public void setClave(String clave) {
         this.clave = clave;
-    }
-    
-    @Column(name="admin", nullable=false)
-    public int getAdmin() {
-        return this.admin;
-    }
-    
-    public void setAdmin(int admin) {
-        this.admin = admin;
     }
     
     @Column(name="activo", nullable=false)

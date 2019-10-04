@@ -1,0 +1,60 @@
+
+	<div class="card">
+	
+		<div class="card-header bg-info">Registro de usuario</div>
+		
+		<div class="card-body" [formGroup]="datosForma">
+				<div class="form-group">
+					<label for="idusuario">Id:</label>
+					<input type="text" class="form-control" id="idusuario" formControlName="idusuario" readonly>
+				</div>
+			
+				<div class="form-group">
+					<label for="nombreusuario">Nombre usuario:</label>
+					<input type="text" class="form-control" id="nombreusuario" formControlName="usuario">
+				</div>
+				
+				<div class="form-group">
+					<label>Rol:</label>
+      				<select  class="form-control" formControlName="rolnum">
+						<option *ngFor="let item of listaRoles; index as i" [ngValue]="i">{{item}}</option>
+      				</select>
+				</div>
+				
+				<div class="form-group">
+					<label for="clave">Contrase&ntilde;a:</label>
+					<input type="password" class="form-control" id="clave" formControlName="clave">
+				</div>
+				
+				<div class="form-group">
+					<label for="token">Token</label>
+					<input type="text" class="form-control" id="token" formControlName="token">
+				</div>
+				
+				<div class="form-group form-check">
+					<label class="form-check-label">
+						<input class="form-check-input" type="checkbox" formControlName="activo">Activo
+					</label>
+				</div>
+				
+				<div class="form-group">
+					<label for="version">Versi&oacute;n:</label>
+					<input type="text" class="form-control" id="version" formControlName="version" readonly>
+				</div>
+				
+				<div class="row">
+  					<div class="col-sm-8">
+  						<button class="btn btn-info"  (click)="backClick()">Regresar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+						<button *ngIf="mostrarBotonEliminar" class="btn btn-danger"  (click)="remove()">Eliminar</button>
+  					</div>
+  					<div class="col-sm-2 float-right">
+  						<div class="float-right">
+  							<button class="btn btn-success"  (click)="save()">Guardar</button>
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+

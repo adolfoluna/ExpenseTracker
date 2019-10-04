@@ -30,6 +30,7 @@ import com.tracker.expense.web.util.AddRemoveFileUtil;
 
 @RequestScoped
 @Path("/archivo")
+@Secured({Role.ADMIN,Role.OPERATOR})
 public class UploadFileRestService {
 	
 	private static final Log log = LogFactory.getLog(UploadFileRestService.class);

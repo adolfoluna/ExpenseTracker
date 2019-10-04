@@ -1,28 +1,30 @@
 
 	<div class="card">
 	
-		<div class="card-header bg-info">Registro de moneda</div>
+		<div class="card-header bg-info">Registro de rol</div>
 		
 		<div class="card-body" [formGroup]="datosForma">
+				
 				<div class="form-group">
-					<label for="idmoneda">Id:</label>
-					<input type="text" class="form-control" id="idmoneda" formControlName = "idmoneda" readonly>
+					<label for="idrol">Id:</label>
+					<input type="text" class="form-control" id="idrol" formControlName = "idrol" readonly>
+				</div>
+				
+				<div class="form-group">
+					<label>Rol:</label>
+      				<select  class="form-control" formControlName="rolnum">
+						<option *ngFor="let item of listaRoles; index as i" [ngValue]="i">{{item}}</option>
+      				</select>
 				</div>
 			
 				<div class="form-group">
-					<label for="nombre">Nombre:</label>
-					<input type="text" class="form-control" id="nombre" formControlName="nombre">
-				</div>
-				
-				<div class="form-group form-check">
-					<label class="form-check-label">
-						<input class="form-check-input" type="checkbox" formControlName="monedaBase">Usar como moneda base del sistema
-					</label>
+					<label for="ruta">Ruta:</label>
+					<input type="text" class="form-control" id="ruta" formControlName="ruta">
 				</div>
 				
 				<div class="form-group">
-					<label for="version">Versi&oacute;n:</label>
-					<input type="text" class="form-control" id="version" formControlName="version" readonly>
+					<label for="version">Version:</label>
+					<input type="text" class="form-control" id="version" formControlName = "version" readonly>
 				</div>
 				
 				<div class="row">

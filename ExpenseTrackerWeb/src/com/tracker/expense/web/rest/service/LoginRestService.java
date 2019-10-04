@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.tracker.expense.db.dto.UsuarioDto;
 import com.tracker.expense.db.home.UsuarioHome2;
 
 @RequestScoped
@@ -28,12 +29,28 @@ public class LoginRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public OperationRestResult authenticate( @PathParam("user") String user, @PathParam("pwd") String pwd) {
 		
-		String token = usuarioHome.genetateToken(user, pwd);
+		UsuarioDto udto = usuarioHome.userLogin(user, pwd);
 		
-		if( token == null )
-			return new OperationRestResult(false, "error usuario no encontrado");
+		//no se pudo iniciar sesion, regresar error
+		if( udto == null )
+			return new OperationRestResult(false, "Error usuario o contrasena incorrecto no encontrado");
 		
-		return new OperationRestResult(token);
+		//regresar inf del usuario, token, usuario y rol del usuario
+		return new OperationRestResult(udto);
+	}
+	
+	@GET
+	@Path("/authenticate_external/{user}/{token}") 
+	public OperationRestResult savetoken(@PathParam("user") String user,@PathParam("token") String token) {
+		
+		UsuarioDto udto = usuarioHome.userExternalLogin(user, token);
+		
+		//no se pudo iniciar sesion, regresar error
+		if( udto == null )
+			return new OperationRestResult(false, "Error usuario o contrasena incorrecto no encontrado");
+		
+		//regresar inf del usuario, token, usuario y rol del usuario
+		return new OperationRestResult(udto);
 	}
 	
 	@GET
@@ -42,18 +59,4 @@ public class LoginRestService {
 		return new OperationRestResult(usuarioHome.logout(user), null);
 	}
 	
-	@GET
-	@Path("/savetoken/{user}/{token}") 
-	public OperationRestResult savetoken(@PathParam("user") String user,@PathParam("token") String token) {
-		return new OperationRestResult(usuarioHome.setToken(user, token),null);
-	}
-	
-	@GET
-	@Secured({Role.ADMIN,Role.OPERATOR})
-	@Path("/test")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String test() {
-		return "service test\r\n";
-	}
-
 }

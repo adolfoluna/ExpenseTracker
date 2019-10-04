@@ -5,32 +5,37 @@ import { map } from  'rxjs/operators';
 
 import { enviroment } from '../model/enviroment';
 import { SearchObject } from '../model/searchobject';
+import { UserService } from "./user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PersistenceService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private us:UserService) { }
   
   public getList(search:SearchObject) {
-      return this.http.post<any>(enviroment.serviceURL+"persistence/listar/"+search.catalogo,search);
+      return this.http.post<any>(enviroment.serviceURL+"persistence/listar/"+search.catalogo,search,this.us.getHeaders());
   }
   
   public getObject(search:SearchObject) {
-      return this.http.post<any>(enviroment.serviceURL+"persistence/obtener/"+search.catalogo,search); 
+      return this.http.post<any>(enviroment.serviceURL+"persistence/obtener/"+search.catalogo,search,this.us.getHeaders()); 
   }
   
   public setObject(catalogo:string,objeto:any) {
-      return this.http.post<any>(enviroment.serviceURL+"persistence/guardar/"+catalogo,objeto);
+      return this.http.post<any>(enviroment.serviceURL+"persistence/guardar/"+catalogo,objeto,this.us.getHeaders());
   }
   
   public removeObject(search:SearchObject) {
-      return this.http.post<any>(enviroment.serviceURL+"persistence/remover/"+search.catalogo,search);
+      return this.http.post<any>(enviroment.serviceURL+"persistence/remover/"+search.catalogo,search,this.us.getHeaders());
   }
   
   public uploadFile(idtransaccion:number,tipo:string,data:any) {
-      return this.http.post<any>(enviroment.serviceURL+"archivo/subir/"+idtransaccion+"/"+tipo,data, {reportProgress: true,observe: 'events'})
+      var h = this.us.getHeaders();
+      h.headers.append("reportProgress", "true");
+      h.headers.append("observe", "events");
+      
+      return this.http.post<any>(enviroment.serviceURL+"archivo/subir/"+idtransaccion+"/"+tipo,data, h)// {reportProgress: true,observe: 'events'})
       .pipe(map((event) => {
 
           switch (event.type) {

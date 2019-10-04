@@ -14,7 +14,7 @@
         <a class="nav-link" href="#" routerLink="/resumen">Inicio</a>
       </li>
       
-	<li class="nav-item dropdown">
+	<li class="nav-item dropdown" *ngIf="rolnum<=2">
 		<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cat&aacute;logos</a>
 		<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 			<a class="dropdown-item" routerLink="/catalogos/catalogo-view/articulo">Articulo</a>
@@ -24,11 +24,13 @@
 			<a class="dropdown-item" routerLink="catalogos/catalogo-view/grupoarticulo">Grupo Articulo</a>
 			<a class="dropdown-item" routerLink="/catalogos/catalogo-view/moneda">Moneda</a>
 			<a class="dropdown-item" routerLink="catalogos/catalogo-view/proveedor">Proveedor</a>
+			<a class="dropdown-item" routerLink="/catalogos/catalogo-view/rol" *ngIf="rolnum==1">Rol</a>
 			<a class="dropdown-item" routerLink="/catalogos/catalogo-view/tipocambio">Tipo de cambio</a>
+			<a class="dropdown-item" routerLink="/catalogos/catalogo-view/usuario" *ngIf="rolnum==1">Usuarios</a>
 		</div>
 	</li>
 	
-	<li class="nav-item dropdown">
+	<li class="nav-item dropdown" *ngIf="rolnum<=3">
 		<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Gr&aacute;ficas</a>
 		<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 			<a class="dropdown-item" routerLink="/graficas/categoria">Gastos por mes</a>
@@ -37,7 +39,7 @@
 	
 	<li class="nav-item">
         <a class="nav-link" (click)="logout()">Salir</a>
-      </li>
+	</li>
       
     </ul>
   </div>

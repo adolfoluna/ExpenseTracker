@@ -10,19 +10,20 @@ import { UserService } from "../services/user.service";
 })
 export class HeadernavComponent implements OnInit {
 
-  constructor(private uservice:UserService,private router: Router) { }
+    rolnum:number = 0;
+    
+    constructor(private uservice:UserService,private router: Router) { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        this.rolnum = this.uservice.getRoleNumber();
+    }
   
-  logout() {
-      this.uservice.logout().subscribe(res=>this.logoutResponse(res));
-  }
+    logout() {
+        this.uservice.logout().subscribe(res=>this.logoutResponse(res));
+    }
   
-  logoutResponse(res) {
-      console.log("logout response.....");
-      this.uservice.setToken(null);
-      this.router.navigateByUrl("/login");
-  }
+    logoutResponse(res) {
+        this.router.navigateByUrl("/login");
+    }
 
 }

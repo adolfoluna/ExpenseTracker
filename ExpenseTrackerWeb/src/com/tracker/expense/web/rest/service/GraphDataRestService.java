@@ -21,6 +21,7 @@ import com.tracker.expense.db.dto.home.GraphDataDtoHome;
 @Path("/graph")
 @Produces({ "application/xml", "application/json" })
 @Consumes({ "application/xml", "application/json" })
+@Secured({Role.ADMIN,Role.OPERATOR,Role.READ_ONLY})
 public class GraphDataRestService {
 
 	@EJB private GraphDataDtoHome graphdataHome;

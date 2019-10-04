@@ -18,6 +18,7 @@ import com.tracker.expense.db.dto.home.CuentaResumenDtoHome;
 @Path("/cuenta")
 @Produces({ "application/xml", "application/json" })
 @Consumes({ "application/xml", "application/json" })
+@Secured({ Role.ADMIN, Role.OPERATOR, Role.READ_ONLY})
 public class CuentaRestService {
 	
 	private static final Log log = LogFactory.getLog(CuentaRestService.class);

@@ -14,50 +14,47 @@ export class UserService {
     }
     
     getHeaders() {
-        var httpOptions = { headers: new HttpHeaders({"UserToken": localStorage.getItem("token")})};
+        var httpOptions = { headers: new HttpHeaders({"UserToken": localStorage.getItem("token"),"UserName":localStorage.getItem("user")})};
         return httpOptions;
     }
     
     isUserLoggedIn():boolean {
-        if( localStorage.getItem("userLogged") == "true")
+        if( localStorage.getItem("userLogged") != null && localStorage.getItem("userLogged") == "true")
             return true;
         else 
             return false;
-        //return UserService.userlogged;
     }
     
-    login(user:string,pwd:string) {
-        localStorage.setItem('user', user);
+    getRoleNumber():number {
+        
+        if( localStorage.getItem("role") == null || localStorage.getItem("role") == undefined )
+            return 0;
+        
+        return parseInt( localStorage.getItem("role") );
+    }
+    
+    loginRequest(user:string,pwd:string) {
         return this.http.get<any>(enviroment.serviceURL+"login/authenticate/"+user+"/"+pwd);
     }
     
-    logout() {
-        return this.http.get<any>(enviroment.serviceURL+"login/logout/"+localStorage.getItem("user"));
-    }
-    
-    saveToken(user:string,token:string) {
+    loginExternalRequest(user:string,token:string) {
         localStorage.setItem('user', user);
-        return this.http.get<any>(enviroment.serviceURL+"login/savetoken/"+user+"/"+token);
+        return this.http.get<any>(enviroment.serviceURL+"login/authenticate_external/"+user+"/"+token);
     }
     
-    setToken(token) {
-        
-        //localStorage.setItem('whatever', 'something');
-        
-        if( token == null || token == undefined || token.length <= 0 ) {
-            localStorage.setItem('token', '')
-            localStorage.setItem('userLogged', 'false')
-            //UserService.userlogged = false;
-            //UserService.token = "";
-            this.triggerUserStatusChange();
-            return;
-        }
-        
-        //UserService.userlogged = true;
-        //UserService.token = token;
-        localStorage.setItem('token', token)
-        localStorage.setItem('userLogged', 'true')
-        this.triggerUserStatusChange();
+    loginSuccessful(response:any) {
+        localStorage.setItem("user",response.data.usuario);
+        localStorage.setItem("token",response.data.token);
+        localStorage.setItem("role", response.data.rolnum.toString());
+        localStorage.setItem('userLogged', 'true');//indicar que el usuario ya esta firmado
+        this.triggerUserStatusChange();//avisar que el estatus del usuario cambio
+    }
+    
+    logout() {
+        var user = localStorage.getItem("user");
+        localStorage.clear();
+        this.triggerUserStatusChange();//avisar que el estatus del usuario cambio
+        return this.http.get<any>(enviroment.serviceURL+"login/logout/"+user);
     }
     
     triggerUserStatusChange() {
