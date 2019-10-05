@@ -30,6 +30,7 @@ public class TransaccionDescripcionUpdateHome implements TransaccionDescripcionU
 		log.info("intentando actualizar descripcion de transaccion "+idtransaccion);
 		
 		try {
+			
 			//buscar la transaccion en la base de datos
 			Transaccion t = transaccionHome.findById(idtransaccion);
 			
@@ -45,19 +46,18 @@ public class TransaccionDescripcionUpdateHome implements TransaccionDescripcionU
 			}
 			
 			//coleccion de categorias de articulos
-			Set<String> categorias = new HashSet<String>();
+			Set<String> articulos = new HashSet<String>();
 			
-			//tomar todas las categorias de los diferentes articulos de la transaccion
-			//y guardarlas en categorias
+			//tomar todos los nombres de todos los articulos
 			for( TransaccionArticulo transaccionarticulo: lista ) 
-				categorias.add(transaccionarticulo.getArticulo().getCategoria().getNombre());
+				articulos.add(transaccionarticulo.getArticulo().getNombre().trim());
 			
-			//unir todos los resultados encontrados con una coma
-			String res = String.join(",", categorias);
+			//unir todos los resultados encontrados con una coma y anteponer el nombre de la categoria del primer articulo
+			String res =  lista.stream().findFirst().get().getArticulo().getCategoria().getNombre()+"-"+String.join(",", articulos);
 			
-			//cortar hasta los primeros 30 caracteres si la cadena es muy larga
-			if( res.length() > 30 )
-				res = res.substring(0, 31);
+			//cortar hasta los primeros 50 caracteres si la cadena es muy larga
+			if( res.length() > 50 )
+				res = res.substring(0, 51);
 			
 			//actualizar la lista de categorias que tiene la transaccion
 			t.setArticulos(res);

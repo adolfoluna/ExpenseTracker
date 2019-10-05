@@ -31,7 +31,7 @@ public class ListaDtoHome {
 	
 	public ListaDto[] getArticulosOrdenadosPorNombre() {
 		log.info("obteniendo lista de articulos ordenado por nombre........");
-		Query q = entityManager.createQuery("select new com.tracker.expense.db.dto.ListaDto(a.idarticulo,a.categoria.idcategoria,a.nombre) from Articulo a order by a.nombre");
+		Query q = entityManager.createQuery("select new com.tracker.expense.db.dto.ListaDto(a.idarticulo,a.categoria.idcategoria,concat(a.categoria.nombre,'-',a.nombre)) from Articulo a order by a.categoria.nombre,a.nombre");
 		@SuppressWarnings("unchecked")
 		List<ListaDto> lista = q.getResultList();
 		if( lista == null )

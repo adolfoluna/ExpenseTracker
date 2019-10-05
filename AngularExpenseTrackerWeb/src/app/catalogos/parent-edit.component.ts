@@ -101,6 +101,11 @@ export class ParentEditComponent  {
         }
         
         //si la funcion regresa false, entonces salir y no proceder
+        if( this.formToInstancef == null || this.formToInstancef == undefined ) {
+            alert("funcion formToInstancef no encontrada");
+            return;
+        }
+        
         if( !this.formToInstancef() )
             return;
         

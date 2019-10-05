@@ -20,8 +20,12 @@
 		
 		<tbody>
 			
-			<tr *ngIf="data.length <= 0">
-				<td colspan="6" align="center"><b>No se encontraron resultados</b></td>
+			<tr *ngIf="loading == true">
+				<td colspan="7" align="center"><div class="spinner-border text-primary"></div></td>
+			</tr>
+			
+			<tr *ngIf="loading == false && data.length <= 0">
+				<td colspan="7" align="center"><b>No se encontraron resultados</b></td>
 			</tr>
 			
 			<tr *ngFor="let temp of data" [ngSwitch]="temp.rolnum">

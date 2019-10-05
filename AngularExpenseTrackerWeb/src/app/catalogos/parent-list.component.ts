@@ -12,7 +12,8 @@ import * as $ from 'jquery';
 export class ParentListComponent  {
     
     public data = [];
-    public loading:boolean = false;
+    //por default poner que se estan cargando los datos
+    public loading:boolean = true;
     
     constructor(private editItemService:EditItemService,private pgService:PaginacionService,private persistService:PersistenceService,private ruta: ActivatedRoute,) {
         
@@ -38,9 +39,6 @@ export class ParentListComponent  {
         //indicar que se esta cargando la info
         this.loading = true;
         
-        //mostrar que se estan cargando los resultados
-        $("#tableLoading").show();
-        
         search.limite = paginacion.limite;
         search.pagina = paginacion.pagina;
         
@@ -48,19 +46,18 @@ export class ParentListComponent  {
     }
     
     resultListResponse(res:any,paginacion:PaginacionObject) {
-        
-        //indicar que ya no se esta cargando la info
-        this.loading = false;
-        
-        $("#tableLoading").hide();
        
         if( res == null || res == undefined ) {
             alert("error no hubo respuesta del servidor");
+            //indicar que ya no se esta cargando la info
+            this.loading = false;
             return;
         }
         
         if( res.success == false ) {
             alert(res.message);
+            //indicar que ya no se esta cargando la info
+            this.loading = false;
             return;
         }
         
@@ -72,6 +69,9 @@ export class ParentListComponent  {
             this.data = [];
         
         this.pgService.agregarPaginas(paginacion);
+        
+        //indicar que ya no se esta cargando la info
+        this.loading = false;
     }
     
 }

@@ -11,6 +11,7 @@ import { PersistenceService } from '../../services/persistence.service';
 import { PaginacionService } from '../../services/paginacion.service';
 import { EditItemService } from '../../services/edit.item.service';
 import { ListaService } from '../../services/lista.service';
+import { UserService } from "../../services/user.service";
 
 import { SearchObject } from '../../model/searchobject';
 
@@ -22,6 +23,7 @@ import { SearchObject } from '../../model/searchobject';
 export class TransaccionEditArticulosComponent implements OnInit {
     
     idtransaccion:number = 0;
+    sumaArticulos:number = 0;
 
     dropdownSettingsArticulos = {
             singleSelection: true,
@@ -43,7 +45,7 @@ export class TransaccionEditArticulosComponent implements OnInit {
         cantidad: [""],
         subtotal : [""],
         iva : [1],
-        total: [0]
+        total: [0],
     });
     
     tablaArticulos = [];
@@ -52,14 +54,15 @@ export class TransaccionEditArticulosComponent implements OnInit {
             private fb: FormBuilder,
             private edititemService:EditItemService,
             private paginacionService:PaginacionService,
-            private listaService:ListaService) {
+            private listaService:ListaService,
+           ) {
         
     }
 
     ngOnInit() {
-        
+                
         //obtener el catalogo de articulos
-        this.listaService.getArticulosNombre().subscribe( message => {this.listaArticulos = message.data;});
+        this.listaService.getArticulosNombre().subscribe( res => {this.listaArticulos = res.data });
         
         //cada ves que se presione el boton de editar, obtener lista de articulos correspondientes a la transaccion seleccionada
         this.edititemService.editItemEvent().subscribe( message => {this.editTransaccionClick(message);});
@@ -101,6 +104,11 @@ export class TransaccionEditArticulosComponent implements OnInit {
         this.datosDetalleForma.value.total = parseInt(this.datosDetalleForma.value.subtotal) * parseFloat(this.datosDetalleForma.value.iva);
         this.datosDetalleForma.value.total = parseInt(this.datosDetalleForma.value.total);
         
+        /*if( $('#sumarTransaccionCheck').parent().hasClass("off") )
+            this.datosDetalleForma.value.sumaratransaccion = false;
+        else
+            this.datosDetalleForma.value.sumaratransaccion = true;*/
+        
         this.persistenceService.setObject("transaccionarticulo", this.datosDetalleForma.value).subscribe(message => {this.agregarResponse(message);});
         //console.log(this.datosDetalleForma.value);
     }
@@ -129,7 +137,7 @@ export class TransaccionEditArticulosComponent implements OnInit {
             this.tablaArticulos = [];
             return;
         }
-        
+        this.sumaArticulos = 0;
         var search:SearchObject = new SearchObject();
         search.catalogo = "transaccionarticulo";
         search.addSearchField("idtransaccion", obj.idtransaccion+"");
@@ -153,6 +161,10 @@ export class TransaccionEditArticulosComponent implements OnInit {
             this.tablaArticulos = res.data; 
         else 
             this.tablaArticulos = [];
+        
+        for( var i = 0; i < this.tablaArticulos.length; i++ ) {
+            this.sumaArticulos+=this.tablaArticulos[i].total;
+        }
       
     }
     

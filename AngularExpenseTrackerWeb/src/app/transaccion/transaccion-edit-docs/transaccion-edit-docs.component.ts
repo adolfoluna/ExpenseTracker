@@ -27,6 +27,8 @@ export class TransaccionEditDocsComponent implements OnInit {
         factura: [""],
         complemento : [""],
         voucher : [""],
+        transferencia: [""],
+        cheque : [""],
     });
     
     transaccionRow = null;
@@ -72,9 +74,7 @@ export class TransaccionEditDocsComponent implements OnInit {
         
         //deshabilitar boton de cerrar ventana
         $("#closeWindowButton").attr("disabled","disabled");
-        
-        //$("#progressWindow").modal();
-        
+     
         this.transaccionRow.tipoComprobante = tipocomprobante;
         
         const formData = new FormData();
@@ -148,6 +148,8 @@ export class TransaccionEditDocsComponent implements OnInit {
         this.enable_disable_button("factura");
         this.enable_disable_button("complemento");
         this.enable_disable_button("voucher");
+        this.enable_disable_button("transferencia");
+        this.enable_disable_button("cheque");
     }
     
     enable_disable_button(field:string) {
@@ -170,7 +172,7 @@ export class TransaccionEditDocsComponent implements OnInit {
         }
         
         $("#"+field).removeAttr("disabled");
-        
+       
         if( (this.datosForma.get(field).value instanceof Object) )
             $("#button_upload_"+field).removeAttr("disabled");
         else 

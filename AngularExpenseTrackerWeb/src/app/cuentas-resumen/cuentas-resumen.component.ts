@@ -94,8 +94,6 @@ export class CuentasResumenComponent implements OnInit {
     }
     
     detalleClick(detail) {
-        console.log(detail);
-        //this.router.navigate("/transacciones/cuenta/12");
         this.router.navigateByUrl("/transacciones/cuenta/"+detail.idcuenta);
     }
     

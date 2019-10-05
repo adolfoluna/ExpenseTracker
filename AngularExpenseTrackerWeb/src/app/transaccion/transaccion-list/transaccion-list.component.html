@@ -55,7 +55,7 @@
 				<th>Proveedor</th>
 				<th>Descripci&oacute;n</th>
 				<th>Total</th>
-				<th>T/F/C/V</th>
+				<th>T/F/C</th>
 				<th>Version</th>
 				<th>&nbsp;</th>
 			</tr>
@@ -63,35 +63,42 @@
 		
 		<tbody>
 			
-			<tr id="tableLoading" style="display: none;">
+			<tr *ngIf="loading == true">
 				<td colspan="9" align="center"><div class="spinner-border text-primary"></div></td>
 			</tr>
 			
-			<tr *ngIf="data.length <= 0 && loading == false">
+			<tr *ngIf="loading == false && data.length <= 0">
 				<td colspan="9" align="center"><b>No se encontraron resultados</b></td>
 			</tr>
 			
-			
 			<tr *ngFor="let temp of data">
+			
 				<td>{{temp.idtransaccion}}</td>
 				<td>{{temp.nombrecuenta}}</td>
 				<td>{{temp.fechaString | truncate:10 }}</td>
 				<td>{{temp.nombreproveedor}}</td>
 				<td>{{temp.articulos}}</td>
+				
 				<td>{{temp.total/100 |  number:'1.2-2'}}</td>
 				<td>
 					<div class="dropup">
+    					
     					<button type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown">
     						<i [ngClass]="temp.ticket==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp;
     						<i [ngClass]="temp.factura==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp;
     						<i [ngClass]="temp.complemento==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp;
-    						<i [ngClass]="temp.voucher==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp;
+<!--     						<i [ngClass]="temp.voucher==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp; -->
+<!--     						<i [ngClass]="temp.transferencia==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp; -->
+<!--     						<i [ngClass]="temp.cheque==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp; -->
     					</button>
+    					
     					<div class="dropdown-menu">
-      						<button class="dropdown-item" [class.disabled]="temp.ticket==null" (click)="clickDocument('ticket',temp)" ><h2>Ticket</h2></button>
-      						<button class="dropdown-item" [class.disabled]="temp.factura==null" (click)="clickDocument('factura',temp)"><h2>Factura</h2></button>
-      						<button class="dropdown-item" [class.disabled]="temp.complemento==null" (click)="clickDocument('complemento',temp)"><h2>Complemento</h2></button>
-      						<button class="dropdown-item" [class.disabled]="temp.voucher==null" (click)="clickDocument('voucher',temp)"><h2>Vale</h2></button>
+      						<button *ngIf="temp.ticket!=null" class="dropdown-item" (click)="clickDocument('ticket',temp)" ><h2>Ticket</h2></button>
+      						<button *ngIf="temp.factura!=null" class="dropdown-item" (click)="clickDocument('factura',temp)"><h2>Factura</h2></button>
+      						<button *ngIf="temp.complemento!=null" class="dropdown-item" (click)="clickDocument('complemento',temp)"><h2>Complemento</h2></button>
+      						<button *ngIf="temp.voucher!=null" class="dropdown-item" (click)="clickDocument('voucher',temp)"><h2>Vale</h2></button>
+      						<button *ngIf="temp.transferencia!=null" class="dropdown-item" (click)="clickDocument('transferencia',temp)"><h2>Transferencia</h2></button>
+      						<button *ngIf="temp.cheque!=null" class="dropdown-item" (click)="clickDocument('cheque',temp)"><h2>Cheque</h2></button>
     					</div>
   					</div>
 				</td>

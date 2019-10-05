@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Oct 3, 2019, 3:42:19 PM by Hibernate Tools 3.2.2.GA
+// Generated Oct 4, 2019, 4:41:45 PM by Hibernate Tools 3.2.2.GA
 
 
 import java.util.HashSet;
@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
 /**
@@ -23,6 +24,7 @@ import javax.persistence.Version;
 @Entity
 @Table(name="cuenta"
     ,catalog="expensetrackerdb"
+    , uniqueConstraints = @UniqueConstraint(columnNames="nombre") 
 )
 public class Cuenta  implements java.io.Serializable {
 
@@ -39,8 +41,9 @@ public class Cuenta  implements java.io.Serializable {
     }
 
 	
-    public Cuenta(Moneda moneda, long saldo, String tipo) {
+    public Cuenta(Moneda moneda, String nombre, long saldo, String tipo) {
         this.moneda = moneda;
+        this.nombre = nombre;
         this.saldo = saldo;
         this.tipo = tipo;
     }
@@ -81,7 +84,7 @@ public class Cuenta  implements java.io.Serializable {
         this.moneda = moneda;
     }
     
-    @Column(name="nombre", length=100)
+    @Column(name="nombre", unique=true, nullable=false, length=100)
     public String getNombre() {
         return this.nombre;
     }

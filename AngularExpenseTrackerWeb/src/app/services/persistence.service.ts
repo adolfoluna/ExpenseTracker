@@ -31,11 +31,11 @@ export class PersistenceService {
   }
   
   public uploadFile(idtransaccion:number,tipo:string,data:any) {
-      var h = this.us.getHeaders();
-      h.headers.append("reportProgress", "true");
-      h.headers.append("observe", "events");
-      
-      return this.http.post<any>(enviroment.serviceURL+"archivo/subir/"+idtransaccion+"/"+tipo,data, h)// {reportProgress: true,observe: 'events'})
+      var httpOptions = this.us.getHeaders();
+      httpOptions.reportProgress = true;
+      httpOptions.observe = "events";
+      console.log(httpOptions);
+      return this.http.post<any>(enviroment.serviceURL+"archivo/subir/"+idtransaccion+"/"+tipo,data,httpOptions)//{reportProgress: true,observe: 'events'})
       .pipe(map((event) => {
 
           switch (event.type) {
@@ -55,6 +55,6 @@ export class PersistenceService {
   }
   
   public removeFile(idtransaccion:number,tipo:string) {
-      return this.http.get<any>(enviroment.serviceURL+"archivo/eliminar/"+idtransaccion+"/"+tipo);
+      return this.http.get<any>(enviroment.serviceURL+"archivo/eliminar/"+idtransaccion+"/"+tipo,this.us.getHeaders());
   }
 }

@@ -1,9 +1,11 @@
 package com.tracker.expense.db.model;
-// Generated Oct 3, 2019, 3:42:19 PM by Hibernate Tools 3.2.2.GA
+// Generated Oct 4, 2019, 4:41:45 PM by Hibernate Tools 3.2.2.GA
 
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -18,7 +20,7 @@ import javax.persistence.Version;
 public class Rol  implements java.io.Serializable {
 
 
-     private int idrol;
+     private Integer idrol;
      private int version;
      private int rolnum;
      private String ruta;
@@ -26,20 +28,19 @@ public class Rol  implements java.io.Serializable {
     public Rol() {
     }
 
-    public Rol(int idrol, int rolnum, String ruta) {
-       this.idrol = idrol;
+    public Rol(int rolnum, String ruta) {
        this.rolnum = rolnum;
        this.ruta = ruta;
     }
    
-     @Id 
+     @Id @GeneratedValue(strategy=IDENTITY)
     
     @Column(name="idrol", unique=true, nullable=false)
-    public int getIdrol() {
+    public Integer getIdrol() {
         return this.idrol;
     }
     
-    public void setIdrol(int idrol) {
+    public void setIdrol(Integer idrol) {
         this.idrol = idrol;
     }
     @Version

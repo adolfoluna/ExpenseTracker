@@ -64,7 +64,13 @@ export class CuentaEditComponent extends ParentEditComponent implements OnInit {
     }
     
     formToInstance() {
+        
+        if( this.datosForma.controls["nombre"].value.toString().trim().length <= 0 ) {
+            alert("Nombre de cuenta en blanco");
+            return;
+        }
         this.datosForma.value.idmoneda = this.datosForma.controls.monedaSeleccionada.value.idmoneda;
+        return true;
     }
     
     getMonedas() {

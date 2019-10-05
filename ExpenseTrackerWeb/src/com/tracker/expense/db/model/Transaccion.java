@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Oct 3, 2019, 3:42:19 PM by Hibernate Tools 3.2.2.GA
+// Generated Oct 4, 2019, 4:41:45 PM by Hibernate Tools 3.2.2.GA
 
 
 import java.util.Date;
@@ -45,6 +45,8 @@ public class Transaccion  implements java.io.Serializable {
      private String complemento;
      private byte complementorequerido;
      private String voucher;
+     private String transferencia;
+     private String cheque;
      private String nota;
      private Set<TransaccionArticulo> transaccionArticulos = new HashSet<TransaccionArticulo>(0);
 
@@ -52,8 +54,7 @@ public class Transaccion  implements java.io.Serializable {
     }
 
 	
-    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, long total, double tipocambio, long totalbase, byte complementorequerido) {
-        this.proveedor = proveedor;
+    public Transaccion(Cuenta cuenta, Date fecha, long total, double tipocambio, long totalbase, byte complementorequerido) {
         this.cuenta = cuenta;
         this.fecha = fecha;
         this.total = total;
@@ -61,7 +62,7 @@ public class Transaccion  implements java.io.Serializable {
         this.totalbase = totalbase;
         this.complementorequerido = complementorequerido;
     }
-    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, String articulos, long total, double tipocambio, long totalbase, String ticket, String pago, String factura, String complemento, byte complementorequerido, String voucher, String nota, Set<TransaccionArticulo> transaccionArticulos) {
+    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, String articulos, long total, double tipocambio, long totalbase, String ticket, String pago, String factura, String complemento, byte complementorequerido, String voucher, String transferencia, String cheque, String nota, Set<TransaccionArticulo> transaccionArticulos) {
        this.proveedor = proveedor;
        this.cuenta = cuenta;
        this.fecha = fecha;
@@ -75,6 +76,8 @@ public class Transaccion  implements java.io.Serializable {
        this.complemento = complemento;
        this.complementorequerido = complementorequerido;
        this.voucher = voucher;
+       this.transferencia = transferencia;
+       this.cheque = cheque;
        this.nota = nota;
        this.transaccionArticulos = transaccionArticulos;
     }
@@ -99,7 +102,7 @@ public class Transaccion  implements java.io.Serializable {
         this.version = version;
     }
 @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="idproveedor", nullable=false)
+    @JoinColumn(name="idproveedor")
     public Proveedor getProveedor() {
         return this.proveedor;
     }
@@ -126,7 +129,7 @@ public class Transaccion  implements java.io.Serializable {
         this.fecha = fecha;
     }
     
-    @Column(name="articulos", length=50)
+    @Column(name="articulos", length=100)
     public String getArticulos() {
         return this.articulos;
     }
@@ -214,6 +217,24 @@ public class Transaccion  implements java.io.Serializable {
     
     public void setVoucher(String voucher) {
         this.voucher = voucher;
+    }
+    
+    @Column(name="transferencia", length=50)
+    public String getTransferencia() {
+        return this.transferencia;
+    }
+    
+    public void setTransferencia(String transferencia) {
+        this.transferencia = transferencia;
+    }
+    
+    @Column(name="cheque", length=50)
+    public String getCheque() {
+        return this.cheque;
+    }
+    
+    public void setCheque(String cheque) {
+        this.cheque = cheque;
     }
     
     @Column(name="nota", length=150)

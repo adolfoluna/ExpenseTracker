@@ -61,10 +61,12 @@
         					
         					<tr>
         						<td colspan="4">
-        							<button class="btn btn-info" [class.disabled]="transaction_view_row.ticket==null"  (click)="clickViewDoc('ticket')"><i class="fa fa-file"></i>&nbsp;Ticket</button>&nbsp;&nbsp;
-        							<button class="btn btn-info" [class.disabled]="transaction_view_row.factura==null"  (click)="clickViewDoc('factura')"><i class="fa fa-file"></i>&nbsp;Factura</button>&nbsp;&nbsp;
-        							<button class="btn btn-info" [class.disabled]="transaction_view_row.complemento==null" (click)="clickViewDoc('complemento')"><i class="fa fa-file"></i>&nbsp;Complemento</button>&nbsp;&nbsp;
-        							<button class="btn btn-info" [class.disabled]="transaction_view_row.voucher==null"  (click)="clickViewDoc('voucher')"><i class="fa fa-file"></i>&nbsp;Voucher</button>
+        							<button *ngIf="transaction_view_row.ticket!=null" class="btn btn-info" (click)="clickViewDoc('ticket')"><i class="fa fa-file"></i>&nbsp;Ticket</button>&nbsp;&nbsp;
+        							<button *ngIf="transaction_view_row.factura!=null" class="btn btn-info" (click)="clickViewDoc('factura')"><i class="fa fa-file"></i>&nbsp;Factura</button>&nbsp;&nbsp;
+        							<button *ngIf="transaction_view_row.complemento!=null" class="btn btn-info" (click)="clickViewDoc('complemento')"><i class="fa fa-file"></i>&nbsp;Complemento</button>&nbsp;&nbsp;
+        							<button *ngIf="transaction_view_row.voucher!=null" class="btn btn-info" (click)="clickViewDoc('voucher')"><i class="fa fa-file"></i>&nbsp;Voucher</button>
+									<button *ngIf="transaction_view_row.transferencia!=null" class="btn btn-info" (click)="clickViewDoc('transferencia')"><i class="fa fa-file"></i>&nbsp;Transferencia</button>
+									<button *ngIf="transaction_view_row.cheque!=null" class="btn btn-info" (click)="clickViewDoc('cheque')"><i class="fa fa-file"></i>&nbsp;Cheque</button>
         						</td>
         					</tr>
         					

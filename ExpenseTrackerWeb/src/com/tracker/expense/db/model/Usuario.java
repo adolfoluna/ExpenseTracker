@@ -1,9 +1,11 @@
 package com.tracker.expense.db.model;
-// Generated Oct 3, 2019, 3:42:19 PM by Hibernate Tools 3.2.2.GA
+// Generated Oct 4, 2019, 4:41:45 PM by Hibernate Tools 3.2.2.GA
 
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -20,7 +22,7 @@ import javax.persistence.Version;
 public class Usuario  implements java.io.Serializable {
 
 
-     private int idusuario;
+     private Integer idusuario;
      private int version;
      private String usuario;
      private String clave;
@@ -32,13 +34,11 @@ public class Usuario  implements java.io.Serializable {
     }
 
 	
-    public Usuario(int idusuario, int activo, int rolnum) {
-        this.idusuario = idusuario;
+    public Usuario(int activo, int rolnum) {
         this.activo = activo;
         this.rolnum = rolnum;
     }
-    public Usuario(int idusuario, String usuario, String clave, int activo, String token, int rolnum) {
-       this.idusuario = idusuario;
+    public Usuario(String usuario, String clave, int activo, String token, int rolnum) {
        this.usuario = usuario;
        this.clave = clave;
        this.activo = activo;
@@ -46,14 +46,14 @@ public class Usuario  implements java.io.Serializable {
        this.rolnum = rolnum;
     }
    
-     @Id 
+     @Id @GeneratedValue(strategy=IDENTITY)
     
     @Column(name="idusuario", unique=true, nullable=false)
-    public int getIdusuario() {
+    public Integer getIdusuario() {
         return this.idusuario;
     }
     
-    public void setIdusuario(int idusuario) {
+    public void setIdusuario(Integer idusuario) {
         this.idusuario = idusuario;
     }
     @Version

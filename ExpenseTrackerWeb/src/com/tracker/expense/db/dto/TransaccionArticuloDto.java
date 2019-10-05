@@ -18,7 +18,7 @@ public class TransaccionArticuloDto implements Serializable {
     private long subtotal;
     private float iva;
     private long total;
-    
+ 
     private int version;
     
     public TransaccionArticuloDto() {
@@ -101,5 +101,4 @@ public class TransaccionArticuloDto implements Serializable {
 	public void setVersion(int version) {
 		this.version = version;
 	}
-    
 }

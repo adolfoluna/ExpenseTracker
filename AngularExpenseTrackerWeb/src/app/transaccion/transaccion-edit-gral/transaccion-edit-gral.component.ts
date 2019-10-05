@@ -97,16 +97,20 @@ export class TransaccionEditGralComponent extends ParentEditComponent implements
        
         //validar que se hayan seleccionado los valores necearios para guardar el registro
         if( this.datosForma.controls.cuentaSeleccionada.value == null ||!this.datosForma.controls.cuentaSeleccionada.value.id ) {alert("Cuenta no seleccionada"); return false;}
-        if( this.proveedorSeleccionado == null || this.proveedorSeleccionado.length <= 0 ) {alert("Proveedor no seleccionado"); return false;}
         if( this.fechaSeleccionada == null ) {alert("Fecha no seleccionada"); return false;}
         if( this.datosForma.value.total.length <= 0 || parseFloat(this.datosForma.value.total) == NaN ) {alert("Total incorrecto"); return false;}
-        //if( this.datosForma.value.totalbase.length <= 0 || parseFloat(this.datosForma.value.totalbase) == NaN ) {alert("Total base incorrecto"); return false;}
+        
         if( this.datosForma.value.tipocambio.length <= 0 || parseFloat(this.datosForma.value.tipocambio) == NaN ) {alert("Tipo de cambio incorrecto"); return false;}
         
-        this.datosForma.value.idproveedor = this.proveedorSeleccionado[0].id;
+        if( this.proveedorSeleccionado == null || this.proveedorSeleccionado.length <= 0 )
+            this.datosForma.value.idproveedor = 0;
+        else
+            this.datosForma.value.idproveedor = this.proveedorSeleccionado[0].id;
+            
         this.datosForma.value.idcuenta = this.datosForma.controls.cuentaSeleccionada.value.id;
         this.datosForma.value.fechaString =  format(this.fechaSeleccionada, "YYYY-MM-DD");
         this.datosForma.value.total = parseInt( (parseFloat(this.datosForma.value.total) * 100).toString() );
+        this.datosForma.value.totalbase = 0;//este valor es ignorado, por eso se asigna a cero 
         //this.datosForma.value.totalbase = parseInt( (parseFloat(this.datosForma.value.totalbase) * 100).toString() );
         
         if( $('#complementoRequeridoCheck').parent().hasClass("off") )

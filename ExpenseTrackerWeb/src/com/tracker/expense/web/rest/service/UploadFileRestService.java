@@ -149,7 +149,7 @@ public class UploadFileRestService {
     			aux = m.group();
     			aux = aux.substring(aux.indexOf("\"")+1);
     			aux = aux.substring(0,aux.indexOf("\""));
-    			aux = "tr-"+idtransaccion+"-"+tipo+aux.substring(aux.lastIndexOf("."));
+    			aux = "tr-"+tipo+"-"+idtransaccion+aux.substring(aux.lastIndexOf(".")).toLowerCase();
     			return aux;
     		}
     	}

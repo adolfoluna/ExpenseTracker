@@ -47,6 +47,26 @@
 				<td><button type="button" id="button_remove_voucher" class="btn btn-danger" (click)="remove('voucher')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
 			</tr>
 			
+			<tr><td colspan="5">&nbsp;</td></tr>
+			
+			<tr>
+				<td>Transferencia:</td>
+				<td><input type="file" class="form-control" id="transferencia" (change)="onFileChange($event,'transferencia')"></td>
+				<td><button type="button" id="button_upload_transferencia" class="btn btn-success" (click)="uploadFile('transferencia')" data-toggle="modal" data-target="#progressWindow"><i class="fa fa-upload" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_view_transferencia" class="btn btn-info" (click)="viewDocument('transferencia')"><i class="fa fa-file" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_remove_transferencia" class="btn btn-danger" (click)="remove('transferencia')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+			</tr>
+			
+			<tr><td colspan="5">&nbsp;</td></tr>
+			
+			<tr>
+				<td>Cheque:</td>
+				<td><input type="file" class="form-control" id="cheque" (change)="onFileChange($event,'cheque')"></td>
+				<td><button type="button" id="button_upload_cheque" class="btn btn-success" (click)="uploadFile('cheque')" data-toggle="modal" data-target="#progressWindow"><i class="fa fa-upload" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_view_cheque" class="btn btn-info" (click)="viewDocument('cheque')"><i class="fa fa-file" aria-hidden="true"></i></button></td>
+				<td><button type="button" id="button_remove_cheque" class="btn btn-danger" (click)="remove('cheque')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+			</tr>
+			
 		</tbody>
 	</table>
 	

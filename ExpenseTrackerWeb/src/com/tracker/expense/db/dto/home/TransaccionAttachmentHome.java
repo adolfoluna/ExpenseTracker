@@ -39,8 +39,12 @@ public class TransaccionAttachmentHome implements TransaccionAttachmentRemote {
 				case "ticket": tr.setTicket(fileName); break;
 				case "factura": tr.setFactura(fileName); break;
 				case "complemento": tr.setComplemento(fileName); break;
-				case "voucher": tr.setVoucher(fileName); break;	
-				default: return new OperationRestResult(false, "error "+tipoComprobante+" no encontrado");
+				case "voucher": tr.setVoucher(fileName); break;
+				case "transferencia": tr.setTransferencia(fileName); break;
+				case "cheque": tr.setCheque(fileName); break;
+				default:
+					log.info("error no se encontro campo a asignar para "+tipoComprobante);
+					return new OperationRestResult(false, "error "+tipoComprobante+" no encontrado");
 			}
 			
 			//intentar guardar cambios
@@ -81,6 +85,8 @@ public class TransaccionAttachmentHome implements TransaccionAttachmentRemote {
 				case "factura": temp = tr.getFactura(); break;
 				case "complemento": temp = tr.getComplemento(); break;
 				case "voucher": temp = tr.getVoucher(); break;
+				case "transferencia": temp = tr.getTransferencia(); break;
+				case "cheque": temp = tr.getCheque(); break;
 				default: return  new OperationRestResult(false, "error tipo de documento no encontrado "+tipoComprobante);
 			}
 			
@@ -93,7 +99,9 @@ public class TransaccionAttachmentHome implements TransaccionAttachmentRemote {
 				case "ticket": tr.setTicket(null); break;
 				case "factura": tr.setFactura(null); break;
 				case "complemento": tr.setComplemento(null); break;
-				case "voucher": tr.setVoucher(null); break;					
+				case "voucher": tr.setVoucher(null); break;	
+				case "transferencia": tr.setTransferencia(null); break;
+				case "cheque": tr.setCheque(null); break;
 			}
 			
 			//intentar guardar cambios
@@ -124,6 +132,8 @@ public class TransaccionAttachmentHome implements TransaccionAttachmentRemote {
 			if( tr.getFactura() != null ) list.add(tr.getFactura());
 			if( tr.getComplemento() != null ) list.add(tr.getComplemento());
 			if( tr.getVoucher() != null ) list.add(tr.getVoucher());
+			if( tr.getTransferencia() != null ) list.add(tr.getTransferencia());
+			if( tr.getCheque() != null) list.add(tr.getCheque());
 			
 			return list;
 		}catch(Exception ex) {

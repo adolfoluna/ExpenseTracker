@@ -35,7 +35,7 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 				+ "t.idtransaccion,"
 				+ "t.cuenta.idcuenta,"
 				+ "t.cuenta.nombre,"
-				+ "t.proveedor.idproveedor,"
+				+"case when t.proveedor.idproveedor is null then 0 else t.proveedor.idproveedor end,"
 				+ "t.proveedor.nombre,"
 				+ "t.fecha,"
 				+ "t.articulos,"
@@ -48,8 +48,10 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 				+ "t.complemento,"
 				+ "t.complementorequerido,"
 				+ "t.voucher,"
+				+ "t.transferencia,"
+				+ "t.cheque,"
 				+ "t.nota,"
-				+ "t.version) from Transaccion t "+addFilters(search)+" order by date(t.fecha) desc,t.idtransaccion desc";
+				+ "t.version) from Transaccion t left outer join t.proveedor "+addFilters(search)+" order by date(t.fecha) desc,t.idtransaccion desc";
 	}
 
 	@Override
@@ -84,11 +86,14 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 			tx.setCuenta(c);
 		}
 		
-		if( tx.getProveedor() == null || tdto.getIdproveedor() != tx.getProveedor().getIdproveedor() ) {
+		//si esta especificado un proveedor, ponerlo, si no poner el proveedor en null
+		if( tdto.getIdproveedor() > 0 ) {
 			Proveedor p = new Proveedor();
 			p.setIdproveedor(tdto.getIdproveedor());
 			tx.setProveedor(p);
 		}
+		else
+			tx.setProveedor(null);
 		
 		tx.setFecha(tdto.getFecha());
 		tx.setTotal(tdto.getTotal());
@@ -174,6 +179,8 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 					case "requierecomplemento": temp+=" t.complementorequerido > 0"; break;
 					case "fecha":  temp+=" date(t.fecha) "+field.getComparator()+" '"+field.getFieldValue()+"'"; break;
 					case "idcuenta": temp+=" t.cuenta.idcuenta"+field.getComparator()+Integer.valueOf(field.getFieldValue()); break;
+					case "transferencia": temp+=" t.transferencia "+field.getComparator()+" "+field.getFieldValue(); break;
+					case "cheque": temp+=" t.cheque "+field.getComparator()+" "+field.getFieldValue(); break;
 					default: log.info("error campo no encontrado "+field.getFieldName()+" al intentar construir query para busqueda de transaccion"); break;
 						
 				}

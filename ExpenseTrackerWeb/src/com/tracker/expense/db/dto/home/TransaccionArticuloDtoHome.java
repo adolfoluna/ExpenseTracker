@@ -55,6 +55,7 @@ public class TransaccionArticuloDtoHome implements PersistenceDtoRemote {
 		if( transaccionArticuloHome.findById(aux) != null ) 
 			return new OperationRestResult(false, "ya existe este articulo capturado, intentar borrar el articulo existente para reinsertarlo");
 		
+		
 		//consultar el tipo de cambio y actualizar el total de la transaccion y el saldo de la cuenta
 		double tc = totalupdaterHome.updateTransactionItem(adto.getIdtransaccion(), adto.getTotal());
 		

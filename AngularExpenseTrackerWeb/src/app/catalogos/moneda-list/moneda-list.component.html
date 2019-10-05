@@ -18,7 +18,11 @@
 		
 		<tbody>
 			
-			<tr *ngIf="data.length <= 0">
+			<tr *ngIf="loading == true">
+				<td colspan="5" align="center"><div class="spinner-border text-primary"></div></td>
+			</tr>
+			
+			<tr *ngIf="loading == false && data.length <= 0">
 				<td colspan="5" align="center"><b>No se encontraron resultados</b></td>
 			</tr>
 			

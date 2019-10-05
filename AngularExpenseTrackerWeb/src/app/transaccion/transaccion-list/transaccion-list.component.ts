@@ -130,8 +130,6 @@ export class TransaccionListComponent extends ParentListComponent implements OnI
         
         this.generarSubtitulo(parametros);
         
-        //this.addField("1","=","1",null);
-        
         if( parametros.idtransaccion != null && parametros.idtransaccion.length > 0) {
             var aux:AdvancedSearchGroup = new AdvancedSearchGroup();
             aux.addField(null,"idtransaccion",parametros.idtransaccion,"=");
@@ -155,7 +153,6 @@ export class TransaccionListComponent extends ParentListComponent implements OnI
         }
         
         if( parametros.articulos.length > 0 ) {
-            console.log("agregando");
             var aux:AdvancedSearchGroup = new AdvancedSearchGroup();
             for( var h = 0; h < parametros.articulos.length; h++ ) 
                 aux.addField("or","articulo",parametros.articulos[h].id,"=");
