@@ -4,8 +4,6 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { UserService } from "../services/user.service";
 import {Md5} from 'ts-md5/dist/md5';
 
-import { AuthService, GoogleLoginProvider } from 'angular4-social-login';
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -22,7 +20,7 @@ export class LoginComponent implements OnInit {
     errorMessage:string = "";
     temp:string = "";
     
-    constructor(private auth_service: AuthService, private userService:UserService, private fb: FormBuilder,private router: Router ) { }
+    constructor(private userService:UserService, private fb: FormBuilder,private router: Router ) { }
 
     ngOnInit() {
     }
@@ -60,7 +58,7 @@ export class LoginComponent implements OnInit {
     }
   
     signOut(): void {
-        this.auth_service.signOut();
+     
     }
 
 }
