@@ -59,17 +59,6 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl("/resumen");
     }
   
-    loginGoogle() {
-      //console.log(this.loginForma.controls["user"].value);
-      var platform = GoogleLoginProvider.PROVIDER_ID;
-      this.auth_service.signIn(platform).then(response => this.loginGoogleresponse(response) );
-    }
-  
-    loginGoogleresponse(response:any) {
-      this.temp = response.authToken;
-      this.userService.loginExternalRequest(response.email, response.authToken).subscribe(res=>this.loginResponse(res));
-    }
-  
     signOut(): void {
         this.auth_service.signOut();
     }

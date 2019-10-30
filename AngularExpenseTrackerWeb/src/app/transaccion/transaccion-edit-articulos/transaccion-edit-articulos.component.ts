@@ -98,7 +98,7 @@ export class TransaccionEditArticulosComponent implements OnInit {
         this.datosDetalleForma.value.idarticulo = this.articuloSeleccionado[0].id;
         this.datosDetalleForma.value.idtransaccion = this.idtransaccion;
         this.datosDetalleForma.value.cantidad = parseFloat(this.datosDetalleForma.value.cantidad);
-        this.datosDetalleForma.value.subtotal = parseFloat(this.datosDetalleForma.value.subtotal) * 100;
+        this.datosDetalleForma.value.subtotal = parseFloat(this.datosDetalleForma.value.subtotal.split(',').join('')) * 100;
         this.datosDetalleForma.value.subtotal = parseInt(this.datosDetalleForma.value.subtotal);
         this.datosDetalleForma.value.iva = parseFloat(this.datosDetalleForma.value.iva);
         this.datosDetalleForma.value.total = parseInt(this.datosDetalleForma.value.subtotal) * parseFloat(this.datosDetalleForma.value.iva);

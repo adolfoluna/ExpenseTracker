@@ -31,11 +31,11 @@ export class PersistenceService {
   }
   
   public uploadFile(idtransaccion:number,tipo:string,data:any) {
-      var httpOptions = this.us.getHeaders();
-      httpOptions.reportProgress = true;
-      httpOptions.observe = "events";
-      console.log(httpOptions);
-      return this.http.post<any>(enviroment.serviceURL+"archivo/subir/"+idtransaccion+"/"+tipo,data,httpOptions)//{reportProgress: true,observe: 'events'})
+      //var httpOptions = this.us.getHeaders();
+      //httpOptions.reportProgress = true;
+      //httpOptions.observe = "events";
+      //console.log(httpOptions);
+      return this.http.post<any>(enviroment.serviceURL+"archivo/subir/"+idtransaccion+"/"+tipo,data,{reportProgress: true,observe: 'events',headers: new HttpHeaders({"UserToken": localStorage.getItem("token"),"UserName":localStorage.getItem("user")})})
       .pipe(map((event) => {
 
           switch (event.type) {

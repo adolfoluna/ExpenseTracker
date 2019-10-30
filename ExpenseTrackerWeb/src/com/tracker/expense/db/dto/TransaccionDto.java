@@ -19,6 +19,7 @@ public class TransaccionDto implements Serializable {
 	private String nombreproveedor;
 	private Date fecha;
 	private String fechaString;
+	private String categoria;
 	private String articulos;
 	private long total;
 	private double tipocambio;
@@ -39,9 +40,11 @@ public class TransaccionDto implements Serializable {
     }
 
 	public TransaccionDto(int idtransaccion, int idcuenta, String nombrecuenta, int idproveedor, String nombreproveedor,
-			Date fecha,String articulos, long total, double tipocambio,long totalbase, String ticket, String pago, String factura,
+			Date fecha,String categoria,String articulos, long total, double tipocambio,long totalbase, String ticket, String pago, String factura,
 			String complemento,byte complementoRequerido, String voucher,String transferencia,String cheque, String nota,int version) {
+		
 		super();
+		
 		this.idtransaccion = idtransaccion;
 		this.idcuenta = idcuenta;
 		this.nombrecuenta = nombrecuenta;
@@ -55,6 +58,7 @@ public class TransaccionDto implements Serializable {
 		else
 			this.setComplementoRequerido(false);
 		
+		this.setCategoria(categoria);
 		this.articulos = articulos;
 		this.total = total;
 		this.tipocambio = tipocambio;
@@ -253,6 +257,14 @@ public class TransaccionDto implements Serializable {
 
 	public void setCheque(String cheque) {
 		this.cheque = cheque;
+	}
+
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 	
 }

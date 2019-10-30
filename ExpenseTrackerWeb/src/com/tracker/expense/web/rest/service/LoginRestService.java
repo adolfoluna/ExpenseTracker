@@ -38,10 +38,13 @@ public class LoginRestService {
 		//regresar inf del usuario, token, usuario y rol del usuario
 		return new OperationRestResult(udto);
 	}
-	
+	/*
 	@GET
 	@Path("/authenticate_external/{user}/{token}") 
 	public OperationRestResult savetoken(@PathParam("user") String user,@PathParam("token") String token) {
+		
+		if( !validarTokenGoogle(token) )
+			return new OperationRestResult(false, "Error no se pudo validar usuario en Google");
 		
 		UsuarioDto udto = usuarioHome.userExternalLogin(user, token);
 		
@@ -51,7 +54,7 @@ public class LoginRestService {
 		
 		//regresar inf del usuario, token, usuario y rol del usuario
 		return new OperationRestResult(udto);
-	}
+	}*/
 	
 	@GET
 	@Path("/logout/{user}")

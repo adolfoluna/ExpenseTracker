@@ -38,6 +38,7 @@ public class TransaccionDtoHome extends ParentPersistenceHome implements Persist
 				+"case when t.proveedor.idproveedor is null then 0 else t.proveedor.idproveedor end,"
 				+ "t.proveedor.nombre,"
 				+ "t.fecha,"
+				+ "t.categoria,"
 				+ "t.articulos,"
 				+ "t.total,"
 				+ "t.tipocambio,"

@@ -48,21 +48,11 @@ import { LoginComponent } from './login/login.component';
 import { HeadernavComponent } from './headernav/headernav.component';
 
 import { BehaviorSubject } from "rxjs";
-//Importing social login module and google login provider.
-import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angular4-social-login';
+
 import { UsuarioListComponent } from './catalogos/usuario-list/usuario-list.component';
 import { UsuarioEditComponent } from './catalogos/usuario-edit/usuario-edit.component';
 import { RolListComponent } from './catalogos/rol-list/rol-list.component';
 import { RolEditComponent } from './catalogos/rol-edit/rol-edit.component';
-
-const google_oauth_client_id:string = '172719573787-an7rev6thkjiu39jskup4akelu4tv2j5.apps.googleusercontent.com';
-let config = new AuthServiceConfig([
-                                    {
-                                      id: GoogleLoginProvider.PROVIDER_ID,
-                                      provider: new GoogleLoginProvider(google_oauth_client_id)
-                                    }
-                                  ]);
-
 
 @NgModule({
   declarations: [
@@ -114,7 +104,6 @@ let config = new AuthServiceConfig([
     ReactiveFormsModule,
     NgMultiSelectDropDownModule,
     NgDatepickerModule,
-    SocialLoginModule.initialize(config),
   ],
   
   entryComponents : [

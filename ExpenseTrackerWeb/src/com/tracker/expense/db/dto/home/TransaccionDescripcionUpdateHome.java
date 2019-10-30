@@ -40,27 +40,41 @@ public class TransaccionDescripcionUpdateHome implements TransaccionDescripcionU
 			//si la transaccion no tiene articulos entonces poner en null la descripcion
 			if( lista == null || lista.size() <= 0 ) {
 				t.setArticulos(null);
+				t.setCategoria(null);
 				transaccionHome.merge(t);
 				log.info("descripcion de transaccion "+idtransaccion+" exitosamente actualizada");
 				return;
 			}
 			
-			//coleccion de categorias de articulos
+			//coleccion de articulos
 			Set<String> articulos = new HashSet<String>();
 			
-			//tomar todos los nombres de todos los articulos
-			for( TransaccionArticulo transaccionarticulo: lista ) 
-				articulos.add(transaccionarticulo.getArticulo().getNombre().trim());
+			//coleccion de categorias de articulos
+			Set<String> categorias = new HashSet<String>();
 			
-			//unir todos los resultados encontrados con una coma y anteponer el nombre de la categoria del primer articulo
-			String res =  lista.stream().findFirst().get().getArticulo().getCategoria().getNombre()+"-"+String.join(",", articulos);
+			//tomar todos los nombres de todos los articulos y tambien las respectivas categorias
+			for( TransaccionArticulo transaccionarticulo: lista ) {
+				articulos.add(transaccionarticulo.getArticulo().getNombre().trim());
+				categorias.add(transaccionarticulo.getArticulo().getCategoria().getNombre().trim());
+			}
+			
+			//unir todos los resultados encontrados con una coma 
+			String res =  String.join(",", articulos);
+			String res2 = String.join(",", categorias);
 			
 			//cortar hasta los primeros 50 caracteres si la cadena es muy larga
 			if( res.length() > 50 )
 				res = res.substring(0, 51);
 			
-			//actualizar la lista de categorias que tiene la transaccion
+			//cortar hasta los primeros 50 caracteres si la cadena es muy larga
+			if( res2.length() > 50 )
+				res2 = res2.substring(0, 51);
+			
+			//actualizar la lista articulos
 			t.setArticulos(res);
+			
+			//actualizar la lista de categorias
+			t.setCategoria(res2);
 			
 			//actualizar la base de datos
 			transaccionHome.merge(t);

@@ -52,8 +52,9 @@
 				<th>Id</th>
 				<th>Cuenta</th>
 				<th>Fecha</th>
-				<th>Proveedor</th>
-				<th>Descripci&oacute;n</th>
+				<th>Proovedor</th>
+				<th>Categoria</th>
+				<th>Art&iacute;culos</th>
 				<th>Total</th>
 				<th>T/F/C</th>
 				<th>Version</th>
@@ -77,6 +78,7 @@
 				<td>{{temp.nombrecuenta}}</td>
 				<td>{{temp.fechaString | truncate:10 }}</td>
 				<td>{{temp.nombreproveedor}}</td>
+				<td>{{temp.categoria}}</td>
 				<td>{{temp.articulos}}</td>
 				
 				<td>{{temp.total/100 |  number:'1.2-2'}}</td>

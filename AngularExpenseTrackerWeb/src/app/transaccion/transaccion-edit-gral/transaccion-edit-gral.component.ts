@@ -149,6 +149,7 @@ export class TransaccionEditGralComponent extends ParentEditComponent implements
             }
         }
         
+        this.proveedorSeleccionado = null;
         for( var i = 0; i < this.listaProveedores.length; i++ ) {
             if( obj.idproveedor == this.listaProveedores[i].id ) {
                 this.proveedorSeleccionado = [this.listaProveedores[i]];

@@ -1,5 +1,5 @@
 package com.tracker.expense.db.model;
-// Generated Oct 4, 2019, 4:41:45 PM by Hibernate Tools 3.2.2.GA
+// Generated Oct 18, 2019, 8:12:21 PM by Hibernate Tools 3.2.2.GA
 
 
 import java.util.Date;
@@ -35,6 +35,7 @@ public class Transaccion  implements java.io.Serializable {
      private Proveedor proveedor;
      private Cuenta cuenta;
      private Date fecha;
+     private String categoria;
      private String articulos;
      private long total;
      private double tipocambio;
@@ -62,10 +63,11 @@ public class Transaccion  implements java.io.Serializable {
         this.totalbase = totalbase;
         this.complementorequerido = complementorequerido;
     }
-    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, String articulos, long total, double tipocambio, long totalbase, String ticket, String pago, String factura, String complemento, byte complementorequerido, String voucher, String transferencia, String cheque, String nota, Set<TransaccionArticulo> transaccionArticulos) {
+    public Transaccion(Proveedor proveedor, Cuenta cuenta, Date fecha, String categoria, String articulos, long total, double tipocambio, long totalbase, String ticket, String pago, String factura, String complemento, byte complementorequerido, String voucher, String transferencia, String cheque, String nota, Set<TransaccionArticulo> transaccionArticulos) {
        this.proveedor = proveedor;
        this.cuenta = cuenta;
        this.fecha = fecha;
+       this.categoria = categoria;
        this.articulos = articulos;
        this.total = total;
        this.tipocambio = tipocambio;
@@ -127,6 +129,15 @@ public class Transaccion  implements java.io.Serializable {
     
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+    
+    @Column(name="categoria", length=100)
+    public String getCategoria() {
+        return this.categoria;
+    }
+    
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
     
     @Column(name="articulos", length=100)
