@@ -110,7 +110,7 @@ export class TransaccionEditArticulosComponent implements OnInit {
             this.datosDetalleForma.value.sumaratransaccion = true;*/
         
         this.persistenceService.setObject("transaccionarticulo", this.datosDetalleForma.value).subscribe(message => {this.agregarResponse(message);});
-        //console.log(this.datosDetalleForma.value);
+
     }
     
     agregarResponse(res) {

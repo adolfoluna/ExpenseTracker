@@ -24,7 +24,7 @@ export class TransaccionCuentasComponent implements OnInit {
   }
   
   checkClick(event) {
-      console.log(event.target);
+      
   }
 
 }

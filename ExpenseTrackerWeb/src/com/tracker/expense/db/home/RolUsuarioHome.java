@@ -22,8 +22,8 @@ public class RolUsuarioHome {
 	@PersistenceContext private EntityManager entityManager;
 	private static final Log log = LogFactory.getLog(RolUsuarioHome.class);
 	
-	private HashMap<String,UsuarioDto> usuarios = new HashMap<String,UsuarioDto>();
-	private HashMap<String,RolDto> rolesRutas = new HashMap<String,RolDto>();
+	private static HashMap<String,UsuarioDto> usuarios = new HashMap<String,UsuarioDto>();
+	private static HashMap<String,RolDto> rolesRutas = new HashMap<String,RolDto>();
 	
 	public int getRolUsuario(String username,String token) {
 		
@@ -46,6 +46,7 @@ public class RolUsuarioHome {
 		q.setParameter("usuario", username);
 		
 		try {
+			
 			//buscar instancia
 			UsuarioDto user = (UsuarioDto) q.getSingleResult();
 			
@@ -104,6 +105,11 @@ public class RolUsuarioHome {
 		log.info("rol:"+roleNumber+" ruta:"+route+" permitido:"+r.isPermitido());
 		
 		return false;
+	}
+	
+	public static void clear() {
+		usuarios.clear();
+		rolesRutas.clear();
 	}
 	
 }

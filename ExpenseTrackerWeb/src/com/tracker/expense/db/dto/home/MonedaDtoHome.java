@@ -69,6 +69,8 @@ public class MonedaDtoHome extends ParentPersistenceHome implements PersistenceD
 		
 		Moneda moneda = new Moneda();
 		
+		moneda.setNombre(mdto.getNombre());
+		
 		if( mdto.isMonedaBase() ) {
 			eliminarMonedaBase(mdto.getIdmoneda());
 			moneda.setMonedaBase( (byte) 1 );

@@ -46,7 +46,7 @@ export class ParentListComponent  {
     }
     
     resultListResponse(res:any,paginacion:PaginacionObject) {
-       console.log(res);
+       
         if( res == null || res == undefined ) {
             alert("error no hubo respuesta del servidor");
             //indicar que ya no se esta cargando la info

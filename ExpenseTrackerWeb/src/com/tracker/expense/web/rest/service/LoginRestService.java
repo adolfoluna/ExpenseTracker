@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.tracker.expense.db.dto.UsuarioDto;
+import com.tracker.expense.db.home.RolUsuarioHome;
 import com.tracker.expense.db.home.UsuarioHome2;
 
 @RequestScoped
@@ -29,6 +30,7 @@ public class LoginRestService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public OperationRestResult authenticate( @PathParam("user") String user, @PathParam("pwd") String pwd) {
 		
+		//intentar hacer login, en caso de ser exitoso regresa el token creado
 		UsuarioDto udto = usuarioHome.userLogin(user, pwd);
 		
 		//no se pudo iniciar sesion, regresar error
@@ -38,27 +40,14 @@ public class LoginRestService {
 		//regresar inf del usuario, token, usuario y rol del usuario
 		return new OperationRestResult(udto);
 	}
-	/*
-	@GET
-	@Path("/authenticate_external/{user}/{token}") 
-	public OperationRestResult savetoken(@PathParam("user") String user,@PathParam("token") String token) {
-		
-		if( !validarTokenGoogle(token) )
-			return new OperationRestResult(false, "Error no se pudo validar usuario en Google");
-		
-		UsuarioDto udto = usuarioHome.userExternalLogin(user, token);
-		
-		//no se pudo iniciar sesion, regresar error
-		if( udto == null )
-			return new OperationRestResult(false, "Error usuario o contrasena incorrecto no encontrado");
-		
-		//regresar inf del usuario, token, usuario y rol del usuario
-		return new OperationRestResult(udto);
-	}*/
 	
 	@GET
 	@Path("/logout/{user}")
 	public OperationRestResult logout(@PathParam("user") String user) {
+		
+		//borrar todos los usuarios y rutas, para provocar que se vuelvan a consultar
+		RolUsuarioHome.clear();
+		
 		return new OperationRestResult(usuarioHome.logout(user), null);
 	}
 	

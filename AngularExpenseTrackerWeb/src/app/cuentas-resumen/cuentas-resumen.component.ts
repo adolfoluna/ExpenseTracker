@@ -52,6 +52,7 @@ export class CuentasResumenComponent implements OnInit {
         this.search.limite = 0;
         this.search.pagina = 0;
         this.search.catalogo = "cuenta";
+        this.search.orderFields = [ "tipo","nombre"];
         
         this.persistenceService.getList(this.search).subscribe( res => { this.transformData(res);} );
        

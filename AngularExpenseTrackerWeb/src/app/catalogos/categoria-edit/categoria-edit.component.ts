@@ -37,7 +37,7 @@ export class CategoriaEditComponent extends ParentEditComponent implements OnIni
         this.updateValues("categoria",["idcategoria"], this.datosForma, this.formToInstance,this.instanceToForm);
 
         //se ejecuta cada ves que se presiona el boton de editar registro
-        this.edititemService.editItemEvent().subscribe( res => {console.log("edit event"+res);this.getInstanceFromServer("categoria",res); });
+        this.edititemService.editItemEvent().subscribe( res => {this.getInstanceFromServer("categoria",res); });
     }
     
     instanceToForm(obj:any) {
