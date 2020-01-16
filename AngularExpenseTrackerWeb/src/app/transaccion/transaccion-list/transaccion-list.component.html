@@ -89,9 +89,6 @@
     						<i [ngClass]="temp.ticket==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp;
     						<i [ngClass]="temp.factura==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp;
     						<i [ngClass]="temp.complemento==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp;
-<!--     						<i [ngClass]="temp.voucher==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp; -->
-<!--     						<i [ngClass]="temp.transferencia==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp; -->
-<!--     						<i [ngClass]="temp.cheque==null ? 'fa fa-times' : 'fa fa-check'" aria-hidden="true"></i>&nbsp; -->
     					</button>
     					
     					<div class="dropdown-menu">
@@ -108,7 +105,7 @@
 					
 				</td>
 				<td>
-					<button class="btn" (click)="viewRowClick(temp)" data-toggle="modal" data-target="#transactionViewWindow"><h4><i class="fa fa-eye" aria-hidden="true"></i></h4></button>
+					<button class="btn" (click)="viewRowClick(temp)"><h4><i class="fa fa-eye" aria-hidden="true"></i></h4></button>
 					<button class="btn" (click)="editRowClick(temp,'transaccion')" *ngIf="trolnum<=2"><h4><i class="fa fa-pencil-square-o" aria-hidden="true"></i></h4></button>
 					
 				</td>

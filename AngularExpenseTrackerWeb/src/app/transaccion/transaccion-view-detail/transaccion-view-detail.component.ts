@@ -14,8 +14,6 @@ import * as $ from "jquery";
 export class TransaccionViewDetailComponent implements OnInit {
     
     transaction_view_row:any = {idtransaccion:0};
-    minWidth = 800
-    marginLeft = "auto";
 
     constructor(private viewItemService:ViewItemService) { }
 
@@ -26,14 +24,11 @@ export class TransaccionViewDetailComponent implements OnInit {
   
     viewTransactionEvent(obj:any) {
         
-        //ajustar la ventana segun el tamaño de pantalla
-        if( window.innerWidth <= 1200 ) {
-            this.minWidth = window.innerWidth - 20;
-            this.marginLeft = "10px";
-        } else {
-            this.marginLeft = "auto";
-            this.minWidth = 800;
-        }
+        //activar el tab de ver el detalle de la transaccion y desactivar los otros
+        $("#tabview").addClass("active");
+        $("#tabedit").removeClass("active");
+        $("#tablist").removeClass("active");
+        
         
         //guardar la referencia del registro que se esta viendo
         this.transaction_view_row = obj;
@@ -47,7 +42,14 @@ export class TransaccionViewDetailComponent implements OnInit {
     
     clickViewDoc(type:string) {
         if(this.transaction_view_row[type] && this.transaction_view_row[type] != null )
-            window.open(enviroment.docsURL+this.transaction_view_row[type]);
+          window.open(enviroment.docsURL+this.transaction_view_row[type]);
     }
+    
+    clickClose() {
+        //activar el tab de ver el detalle de la transaccion y desactivar los otros
+          $("#tablist").addClass("active");
+          $("#tabview").removeClass("active");
+          $("#tabedit").removeClass("active");
+      }
 
 }

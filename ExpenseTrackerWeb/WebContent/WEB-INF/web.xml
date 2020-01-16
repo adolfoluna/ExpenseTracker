@@ -10,15 +10,5 @@
 			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
 		</user-data-constraint>
 	</security-constraint>
-	
-<!-- 	<servlet> -->
-<!--     	<servlet-name>angular_app</servlet-name> -->
-<!--     	<jsp-file>/site/index.html</jsp-file> -->
-<!-- 	</servlet> -->
-	
-<!-- 	<servlet-mapping> -->
-<!--     	<servlet-name>angular_app</servlet-name> -->
-<!--     	<url-pattern>/site/*</url-pattern> -->
-<!-- 	</servlet-mapping> -->
     
 </web-app>

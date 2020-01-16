@@ -1,18 +1,14 @@
-	<!-- The Modal -->
-	<div class="modal fade" id="transactionViewWindow">
+
+	<div id="transactionViewWindow">
 	
-		<div class="modal-dialog modal-xl" [style.margin-left]="marginLeft">
-		
-			<div class="modal-content" [style.min-width.px]="minWidth">
+		<div class="card">
       
-				<!-- Modal Header -->
-				<div class="modal-header">
-					<h4 class="modal-title">Transacci&oacute;n {{transaction_view_row.idtransaccion}}</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<div class="card-header">
+					<h4>Transacci&oacute;n {{transaction_view_row.idtransaccion}}</h4>
+					<button type="button" class="close" (click)="clickClose()">&times;</button>
         		</div>
         
-        		<!-- Modal body -->
-        		<div class="modal-body">
+        		<div class="card-body">
         		
         			<table width="100%">
         				
@@ -64,8 +60,8 @@
         							<button *ngIf="transaction_view_row.ticket!=null" class="btn btn-info" (click)="clickViewDoc('ticket')"><i class="fa fa-file"></i>&nbsp;Ticket</button>&nbsp;&nbsp;
         							<button *ngIf="transaction_view_row.factura!=null" class="btn btn-info" (click)="clickViewDoc('factura')"><i class="fa fa-file"></i>&nbsp;Factura</button>&nbsp;&nbsp;
         							<button *ngIf="transaction_view_row.complemento!=null" class="btn btn-info" (click)="clickViewDoc('complemento')"><i class="fa fa-file"></i>&nbsp;Complemento</button>&nbsp;&nbsp;
-        							<button *ngIf="transaction_view_row.voucher!=null" class="btn btn-info" (click)="clickViewDoc('voucher')"><i class="fa fa-file"></i>&nbsp;Voucher</button>
-									<button *ngIf="transaction_view_row.transferencia!=null" class="btn btn-info" (click)="clickViewDoc('transferencia')"><i class="fa fa-file"></i>&nbsp;Transferencia</button>
+        							<button *ngIf="transaction_view_row.voucher!=null" class="btn btn-info" (click)="clickViewDoc('voucher')"><i class="fa fa-file"></i>&nbsp;Voucher</button>&nbsp;&nbsp;
+									<button *ngIf="transaction_view_row.transferencia!=null" class="btn btn-info" (click)="clickViewDoc('transferencia')"><i class="fa fa-file"></i>&nbsp;Transferencia</button>&nbsp;&nbsp;
 									<button *ngIf="transaction_view_row.cheque!=null" class="btn btn-info" (click)="clickViewDoc('cheque')"><i class="fa fa-file"></i>&nbsp;Cheque</button>
         						</td>
         					</tr>
@@ -85,14 +81,12 @@
         			</table>
           				
 				</div>
-        
-        		<!-- Modal footer -->
-        		<div class="modal-footer">
-          			<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+
+        		<div class="card-footer">
+          			<button type="button" class="btn btn-danger" (click)="clickClose()">Cerrar</button>
         		</div>
         		
       		</div>
       		
-    	</div>
   	
   	</div>

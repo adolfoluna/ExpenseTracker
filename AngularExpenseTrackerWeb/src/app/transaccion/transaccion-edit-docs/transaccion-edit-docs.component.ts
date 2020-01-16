@@ -9,10 +9,13 @@ import { PersistenceService } from '../../services/persistence.service';
 import { EditItemService } from '../../services/edit.item.service';
 
 import * as $ from 'jquery';
+
+declare var show_modal: any;
+
 @Component({
   selector: 'app-transaccion-edit-docs',
   templateUrl: './transaccion-edit-docs.component.html',
-  styleUrls: ['./transaccion-edit-docs.component.css']
+  styleUrls: ['./transaccion-edit-docs.component.css'],
 })
 export class TransaccionEditDocsComponent implements OnInit {
 
@@ -22,13 +25,22 @@ export class TransaccionEditDocsComponent implements OnInit {
     upload_file_message = "";
     upload_file_tittle = "";
     
+    listaTiposArchivo = [
+                         { val:"ticket", text:"Ticket", file: null },
+                         { val:"factura", text:"Factura", file: null },
+                         { val:"complemento", text:"Complemento de pago", file: null },
+                         { val:"voucher", text:"Vale/Voucher", file: null },
+                         { val:"transferencia", text:"Comprobante de transferencia", file: null },
+                         { val:"cheque", text:"Cheque", file: null },
+                         ];
+    
+    listaArchivos = [];
+    
+    botonAgregarDeshabilitado:boolean = true;
+    
     datosForma = this.fb.group( {
-        ticket : [""],
-        factura: [""],
-        complemento : [""],
-        voucher : [""],
-        transferencia: [""],
-        cheque : [""],
+        tipoarchivo: ["ticket"],
+        file: [""],
     });
     
     transaccionRow = null;
@@ -45,16 +57,46 @@ export class TransaccionEditDocsComponent implements OnInit {
       this.edititemService.editItemEvent().subscribe( message => {this.editTransaccionClick(message);});
     }
     
+    tipoArchivoChange() {
+        
+        //si no se ha seleccionado ningun archivo entonces deshabilitar boton y salir
+        if( !(this.datosForma.get("file").value instanceof Object) ) {
+            this.botonAgregarDeshabilitado = true;
+            return;
+        }
+        
+        //tomar el tipo de archivo que se selecciono
+        var temp = this.datosForma.get("tipoarchivo").value;
+        
+        //recorrer todos los archivos que tiene la transaccion
+        for( var i = 0; i < this.listaArchivos.length; i++ ) {
+            
+            //si el archivo ya esta agregado entonces deshabilitar boton
+            if( temp == this.listaArchivos[i].val ) {
+                this.botonAgregarDeshabilitado = true;
+                return;
+            }
+            
+        }
+        
+        //no se encontro agregado este documento por lo tanto habilitar boton de agregar
+        this.botonAgregarDeshabilitado = false;
+        
+    }
+    
     editTransaccionClick(obj) {
         
         //guarda el registro de la transaccion que se esta editando para tomar los valores
         this.transaccionRow = obj;
         
-        //habilitar y deshabilitar los botones de ver documento, eliminar, subir archivo
-        this.enable_disable_buttons();
+        //actualizar el arreglo listaArchivos con los archivos que tiene la transaccion
+        this.updateListaArchivos();
     }
     
-    uploadFile(tipocomprobante:string) {
+    uploadFile() {
+        
+        var tipo = this.datosForma.get("tipoarchivo").value;
+        
         
         //si el registro que se esta editando es nuevo entonces no se pueden agregar documentos
         //a una transaccion que todavia no existe
@@ -63,24 +105,25 @@ export class TransaccionEditDocsComponent implements OnInit {
             return;
         }
         
-        if( !(this.datosForma.get(tipocomprobante).value instanceof Object) ) {
-            alert("error "+tipocomprobante+" no encontrado o no se ha seleccionado archivo a subir");
+        if( !(this.datosForma.get("file").value instanceof Object) ) {
+            alert("error archivo no encontrado o no seleccionado");
             return;
         }
         
-        this.upload_file_tittle = tipocomprobante;
+        this.upload_file_tittle =tipo;
         this.upload_file_message = "";
         this.upload_file_progress = "0%";
         
         //deshabilitar boton de cerrar ventana
         $("#closeWindowButton").attr("disabled","disabled");
-     
-        this.transaccionRow.tipoComprobante = tipocomprobante;
+        
+        this.transaccionRow.tipoComprobante = tipo;
         
         const formData = new FormData();
-        formData.append('file', this.datosForma.get(tipocomprobante).value);
-        this.persistenceService.uploadFile(this.idtransaccion,tipocomprobante,formData).subscribe(message=>{this.uploadFileResponse(message)});
-        this.datosForma.controls[tipocomprobante].setValue("");
+        formData.append('file', this.datosForma.get("file").value);
+        this.persistenceService.uploadFile(this.idtransaccion,tipo,formData).subscribe(message=>{this.uploadFileResponse(message)});
+        this.datosForma.controls["file"].setValue("");
+        
     }
     
     uploadFileResponse(obj:any) {
@@ -99,21 +142,23 @@ export class TransaccionEditDocsComponent implements OnInit {
         //si el objeto tiene la propiedad status entonces es un evento http
         if( obj.status ) return;
         
+        //si la operacion no es exitosa indicarlo y salir
         if( obj.success == false ) {
+            $("#closeWindowButton").removeAttr("disabled");
             this.upload_file_message = "error al intentar guardar documento "+obj.message;
             return;
         }
   
-        this.datosForma.controls[this.transaccionRow.tipoComprobante].setValue("");
-        $("#"+this.transaccionRow.tipoComprobante).val("");
+        this.datosForma.controls["file"].setValue("");
+        $("#archivoInput").val("");
         this.upload_file_message = "Documento exitosamente guardado";
         this.transaccionRow[this.transaccionRow.tipoComprobante] = obj.message;
         
-        //habilitar y deshabilitar los botones de ver documento, eliminar, subir archivo
-        this.enable_disable_buttons();
-        
-        //habilitar el boton de cerrar
+        //habilitar el boton de cerrar ventana
         $("#closeWindowButton").removeAttr("disabled");
+        
+        this.updateListaArchivos();
+     
     }
     
     onFileUploadProgress(progress:number) {
@@ -121,16 +166,15 @@ export class TransaccionEditDocsComponent implements OnInit {
         this.upload_file_progress = progress.toString() + "%";
     }
     
-    onFileChange(event,fieldName:string) {
+    onFileChange(event) {
         
         //ocurre cuando se selecciona el archivo
         if(event.target.files.length > 0) {
           const file = event.target.files[0];
-          this.datosForma.get(fieldName).setValue(file);
-          
-          //actualizar el estado de los botones
-          this.enable_disable_buttons();
+          this.datosForma.get("file").setValue(file);
         }
+        
+        this.tipoArchivoChange();
     }
     
     viewDocument(tipocomprobante:string) {
@@ -141,45 +185,6 @@ export class TransaccionEditDocsComponent implements OnInit {
         
         //mostrar documento en una nueva ventana
         window.open(enviroment.docsURL+this.transaccionRow[tipocomprobante]);
-    }
-    
-    enable_disable_buttons() {
-        this.enable_disable_button("ticket");
-        this.enable_disable_button("factura");
-        this.enable_disable_button("complemento");
-        this.enable_disable_button("voucher");
-        this.enable_disable_button("transferencia");
-        this.enable_disable_button("cheque");
-    }
-    
-    enable_disable_button(field:string) {
-        
-        //si es una nueva transaccion entonces desabilitar todos los botones
-        if( this.transaccionRow == null ) {
-            $("#"+field).attr("disabled","disabled");
-            $("#button_upload_"+field).attr("disabled","disabled");
-            $("#button_view_"+field).attr("disabled","disabled");
-            $("#button_remove_"+field).attr("disabled","disabled");
-            return;
-        }
-            
-        if( this.transaccionRow[field] ) {
-            $("#"+field).attr("disabled","disabled");
-            $("#button_upload_"+field).attr("disabled","disabled");
-            $("#button_view_"+field).removeAttr("disabled");
-            $("#button_remove_"+field).removeAttr("disabled");
-            return;
-        }
-        
-        $("#"+field).removeAttr("disabled");
-       
-        if( (this.datosForma.get(field).value instanceof Object) )
-            $("#button_upload_"+field).removeAttr("disabled");
-        else 
-            $("#button_upload_"+field).attr("disabled","disabled");
-        
-        $("#button_view_"+field).attr("disabled","disabled");
-        $("#button_remove_"+field).attr("disabled","disabled");
     }
     
     remove(tipocomprobante:string) {
@@ -202,11 +207,33 @@ export class TransaccionEditDocsComponent implements OnInit {
         //poner el comprobante en null
         this.transaccionRow[this.transaccionRow.tipoComprobante] = null;
         
-        //actualizar el estatus de los botones
-        this.enable_disable_buttons();
+        //actualizar la lista de archivos que tiene la transaccion
+        this.updateListaArchivos();
         
         //iindicar que la transaccion se pudo realizar exitosamente
         alert("Archivo exitosamente eliminado");
+    }
+    
+    updateListaArchivos() {
+        
+        //vaciar el arreglo de archivos existentes
+        this.listaArchivos = [];
+        
+        //guardar en el arreglo listaArchivos los docuemntos que tiene la transaccion
+        for( var i = 0; i < this.listaTiposArchivo.length; i++ ) {
+            
+            var item = this.listaTiposArchivo[i];
+            
+            if( this.transaccionRow[item.val] != null ) {
+                item.file = this.transaccionRow[item.val];
+                this.listaArchivos.push(item);
+            } else
+                item.file = null;
+        }
+        
+        //habilitar o deshabilitar el boton de agregar
+        this.tipoArchivoChange();
+        
     }
 
 }
