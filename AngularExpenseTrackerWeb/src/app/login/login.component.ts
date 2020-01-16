@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
     
     errorMessage:string = "";
     temp:string = "";
+    loginDisabled:boolean = false;
     
     constructor(private userService:UserService, private fb: FormBuilder,private router: Router ) { }
 
@@ -26,6 +27,8 @@ export class LoginComponent implements OnInit {
     }
    
     login() {
+        
+        this.loginDisabled = true;
       
       //limpiar mensaje de error si es que existe
       this.errorMessage = "";
@@ -42,11 +45,13 @@ export class LoginComponent implements OnInit {
       
       if( response == null ) {
           this.errorMessage = "Error desconocido";
+          this.loginDisabled = false;
           return;
       }
       
       if( !response.success ) {
           this.errorMessage = response.message;
+          this.loginDisabled = false;
           return;
       }
       

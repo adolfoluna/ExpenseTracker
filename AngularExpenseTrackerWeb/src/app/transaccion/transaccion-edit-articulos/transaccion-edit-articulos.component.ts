@@ -50,6 +50,8 @@ export class TransaccionEditArticulosComponent implements OnInit {
     
     tablaArticulos = [];
     
+    botonAgregarDisabled:boolean = false;
+    
     constructor(private persistenceService:PersistenceService,
             private fb: FormBuilder,
             private edititemService:EditItemService,
@@ -95,6 +97,7 @@ export class TransaccionEditArticulosComponent implements OnInit {
             return;
         }
         
+        this.botonAgregarDisabled = true;
         this.datosDetalleForma.value.idarticulo = this.articuloSeleccionado[0].id;
         this.datosDetalleForma.value.idtransaccion = this.idtransaccion;
         this.datosDetalleForma.value.cantidad = parseFloat(this.datosDetalleForma.value.cantidad);
@@ -104,16 +107,13 @@ export class TransaccionEditArticulosComponent implements OnInit {
         this.datosDetalleForma.value.total = parseInt(this.datosDetalleForma.value.subtotal) * parseFloat(this.datosDetalleForma.value.iva);
         this.datosDetalleForma.value.total = parseInt(this.datosDetalleForma.value.total);
         
-        /*if( $('#sumarTransaccionCheck').parent().hasClass("off") )
-            this.datosDetalleForma.value.sumaratransaccion = false;
-        else
-            this.datosDetalleForma.value.sumaratransaccion = true;*/
-        
         this.persistenceService.setObject("transaccionarticulo", this.datosDetalleForma.value).subscribe(message => {this.agregarResponse(message);});
 
     }
     
     agregarResponse(res) {
+        
+        this.botonAgregarDisabled = false;
         
         //verificar que el resultado no venga vacio
         if( res == null || res == undefined ) { alert("error al intentar agregar articulo"); return;}

@@ -30,7 +30,7 @@
     					</div>
     					
     					<div class="col-sm form-inline">
-      						<button class="btn btn-success" (click)="agregar()">Nuevo&nbsp;<i class="fa fa-plus"></i></button>
+      						<button class="btn btn-success" (click)="agregar()" [disabled]="botonAgregarDisabled"><span *ngIf="botonAgregarDisabled" class="spinner-border spinner-border-sm"></span>Nuevo&nbsp;<i class="fa fa-plus"></i></button>
     					</div>
   					</div>
 				</div>

@@ -14,7 +14,9 @@ export class ParentEditComponent  {
     private instanceToFormf:any = null; 
     private keys:string[] = [];
 
-    public mostrarBotonEliminar = false;
+    public mostrarBotonEliminar:boolean = false;
+    
+    public botonesDeshabilitados:boolean = false;
     
     constructor(private pgService:PaginacionService,private persistService:PersistenceService,private ruta: ActivatedRoute) {
       
@@ -109,7 +111,11 @@ export class ParentEditComponent  {
         if( !this.formToInstancef() )
             return;
         
+        this.botonesDeshabilitados = true;
+        
         this.persistService.setObject(this.catalogo,this.forma.value).subscribe( res => {
+            
+            this.botonesDeshabilitados = false;
             
             if( res.success == false ) {
                 alert(res.message);
@@ -147,9 +153,9 @@ export class ParentEditComponent  {
             var aux = new SearchField(this.keys[i],this.forma.value[this.keys[i]]);
             search.searchFields.push(aux);
         }
-        
+        this.botonesDeshabilitados = true;
         this.persistService.removeObject(search).subscribe( res => {
-            
+                this.botonesDeshabilitados = false;
                 if( res == null || res == undefined ) {
                     alert("error, no se recibio respuesta del servidor");
                     return;
