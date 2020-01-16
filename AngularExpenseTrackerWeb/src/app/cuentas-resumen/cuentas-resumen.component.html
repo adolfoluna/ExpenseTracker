@@ -8,7 +8,7 @@
 				<div class="d-flex">
 	    			<div class="p-2 flex-fill">
 	    				
-	    				<h1 data-toggle="collapse" [attr.data-target] = "'#cardbody-'+i" style="cursor: pointer;" (click)="cardclick($event,itemx)">
+	    				<h1 data-toggle="collapse" [attr.data-target]="'#cardbody-'+i" style="cursor: pointer;" (click)="cardclick($event,itemx)">
 	    					<i class="fa fa-minus-circle"></i>
 	    					{{itemx.nombre}}
 	    				</h1>
@@ -18,7 +18,7 @@
 	  			</div>
 			</div>
 			
-			<div class="card-body collapse show" id="{{ 'cardbody-' + i }}">
+			<div class="card-body collapse" id="{{ 'cardbody-' + i }}">
 				<div *ngFor="let detail of itemx.cuentas">
 					<div class="card bg-light text-dark">
 		   				<div class="card-body total-cuentas">

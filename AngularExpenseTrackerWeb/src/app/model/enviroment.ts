@@ -1,8 +1,10 @@
 export const enviroment = {
     
-    serviceURL : "https://192.168.1.64:8443/ExpenseTrackerWeb/rest/",
-    //docsURL : "http://localhost:8080/expensetrackerdocs/",
+        //variables developement
+        //docsURL : "https://192.168.1.64:8443/expensetrackerdocs/",
+        //serviceURL : "https://192.168.1.64:8443/ExpenseTrackerWeb/rest/",
     
-    //serviceURL : "../rest/",
-    docsURL : "/expensetrackerdocs/",
+        //variables de produccion
+        serviceURL : "../rest/",
+        docsURL : "/expensetrackerdocs/",
 };
