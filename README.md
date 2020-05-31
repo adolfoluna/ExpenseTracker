@@ -1,5 +1,5 @@
 # ExpenseTracker
-Project developed in JEE and angular
+Project developed in JEE and AngulaJS
 
  Porpuse of this little project was to track all expenses made by a small business 
  that I owned in order to keep good and healthy finances, however it has not been
