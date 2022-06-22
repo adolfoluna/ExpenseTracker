@@ -254,7 +254,7 @@
 		<dependency>
 		  <groupId>org.wildfly.security</groupId>
 		  <artifactId>wildfly-elytron</artifactId>
-		  <version>1.8.0.Final</version>
+		  <version>1.10.14.Final</version>
 		</dependency>
   </dependencies>
   
